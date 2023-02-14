@@ -3,6 +3,8 @@ package Tetris;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
+
+import java.awt.Color;
 import java.awt.Dimension;
 
 public class MinoPanel extends JPanel {
@@ -29,7 +31,9 @@ public class MinoPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-
-        g.drawString("Hellleeleloo", 3, 3);
+        g.setColor(Color.GRAY);
+        g.fillRect(0, 0, PREF_W, PREF_H);
+        g.setColor(Color.WHITE);
+        g.drawString("MinoPanel", 20, 10);
     }
 }
