@@ -1,0 +1,7 @@
+{
+    "java.format.settings.profile": "GoogleStyle",
+    "editor.tabSize": 2,
+    "java.completion.importOrder": [
+        "#"
+    ]
+}
