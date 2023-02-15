@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
@@ -45,11 +46,21 @@ public class App {
     private JPanel miscPanel;
 
     public App() {
+        setLookAndFeel();
         f = new JFrame("Tetris");
         f.setSize(500, 500);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
         f.setVisible(true);
+    }
+
+    private void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void detailComponents() {
