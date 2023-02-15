@@ -1,6 +1,5 @@
 package Tetris;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
@@ -14,8 +13,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.Dimension;
-import java.security.acl.Group;
-import java.awt.Color;
 import java.awt.Container;
 
 public class App {
@@ -85,7 +82,7 @@ public class App {
     private void createCenterPanel() {
         centerPanel = new JPanel();
         createPlayfield();
-        createStatPanel();
+        createStatsPanel();
         createNextPanel();
         createHoldPanel();
         createMiscPanel();
@@ -198,7 +195,7 @@ public class App {
         playfield = new PlayfieldPanel();
     }
 
-    private void createStatPanel() {
+    private void createStatsPanel() {
         statsPanel = new JPanel();
         createStatsLabels();
 
@@ -232,28 +229,22 @@ public class App {
         timeText = new JLabel();
         timeCountText = new JLabel();
 
-        levelText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         levelText.setText("Level");
 
         levelCountText.setFont(levelCountText.getFont().deriveFont(
-                levelCountText.getFont().getStyle() | java.awt.Font.BOLD, levelCountText.getFont().getSize() + 4));
-        levelCountText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+                levelCountText.getFont().getStyle() | java.awt.Font.BOLD, levelCountText.getFont().getSize() + 7));
         levelCountText.setText("0");
 
-        linesText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         linesText.setText("Lines");
 
         linesCountText.setFont(linesCountText.getFont().deriveFont(
-                linesCountText.getFont().getStyle() | java.awt.Font.BOLD, linesCountText.getFont().getSize() + 4));
-        linesCountText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+                linesCountText.getFont().getStyle() | java.awt.Font.BOLD, linesCountText.getFont().getSize() + 7));
         linesCountText.setText("0");
 
-        timeText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         timeText.setText("Time");
 
         timeCountText.setFont(timeCountText.getFont().deriveFont(
-                timeCountText.getFont().getStyle() | java.awt.Font.BOLD, timeCountText.getFont().getSize() + 4));
-        timeCountText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+                timeCountText.getFont().getStyle() | java.awt.Font.BOLD, timeCountText.getFont().getSize() + 7));
         timeCountText.setText("00.00");
     }
 }
