@@ -93,7 +93,7 @@ public class App {
                         .addComponent(miscPanel)
 
                 ));
-        centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup()
+        centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(holdPanel)
                         .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
