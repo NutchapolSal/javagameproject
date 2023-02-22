@@ -68,12 +68,13 @@ public class App {
 
     private void testkbhandler() {
         var kb = new KeyboardHandler();
+        var pi = new PlayerInput(kb);
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                kb.update();
+                pi.tick();
             }
-        }, 0, 17);
+        }, 0, 100);
     }
 
     private void setLookAndFeel() {
@@ -300,7 +301,9 @@ public class App {
             setupKeyAction.accept(GameplayButton.HardDrop, KeyEvent.VK_W);
             setupKeyAction.accept(GameplayButton.SoftDrop, KeyEvent.VK_S);
             setupKeyAction.accept(GameplayButton.Hold, KeyEvent.VK_F);
-            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_R);
+            setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_R);
+            setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_T);
+            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_Y);
         }
 
         class ButtonAction extends AbstractAction {
@@ -363,12 +366,12 @@ public class App {
         @Override
         public void update() {
             lockInput.putAll(freshInput);
-            for (var entry : lockInput.entrySet()) {
-                if (entry.getValue()) {
-                    System.out.printf("%s ", entry.getKey());
-                }
-            }
-            System.out.println();
+            // for (var entry : lockInput.entrySet()) {
+            // if (entry.getValue()) {
+            // System.out.printf("%s ", entry.getKey());
+            // }
+            // }
+            // System.out.println();
         }
 
     }
