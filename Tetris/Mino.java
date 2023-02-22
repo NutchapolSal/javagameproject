@@ -1,0 +1,68 @@
+package Tetris;
+
+public class Mino{
+    protected KickTable kickTable;
+    protected MinoColor color;
+    protected ObjectDataGrid<Boolean> shape;
+    protected MinoOrigin origin;
+
+    public Mino(ObjectDataGrid<Boolean> shape, MinoOrigin origin){
+        this.shape = shape;
+        this.origin = origin;
+    }
+
+    public Mino(ObjectDataGrid<Boolean> shape, MinoOrigin origin, KickTable kickTable){
+        this.shape = shape;
+        this.origin = origin;
+        // this.kickTable = kickTable;
+    }
+
+    public Mino(ObjectDataGrid<Boolean> shape, MinoOrigin origin, KickTable kickTable, MinoColor coor){
+        this.shape = shape;
+        this.origin = origin;
+        // this.kickTable = kickTable;
+        // this.color = color;
+    }
+
+    public Mino() {
+    }
+
+    static public Mino I(){
+        // TODO
+        return new Mino();
+    }
+    
+    static public Mino O(){
+        // TODO
+        return new Mino();
+    }
+    
+    static public Mino S(){
+        // TODO
+        return new Mino();
+    }
+    
+    static public Mino Z(){
+        // TODO
+        return new Mino();
+    }
+    
+    static public Mino J(){
+        // TODO
+        return new Mino();
+    }
+    
+    static public Mino L(){
+        // TODO
+        return new Mino();
+    }
+    
+    static public Mino T(){
+        // TODO
+        return new Mino();
+    }
+    
+    public void setColor(MinoColor c){
+        this.color = c;
+    }
+}
