@@ -1,18 +1,31 @@
 package Tetris;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
+import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.function.BiConsumer;
 import java.awt.Container;
 
 public class App {
@@ -49,6 +62,18 @@ public class App {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
         f.setVisible(true);
+
+        testkbhandler();
+    }
+
+    private void testkbhandler() {
+        var kb = new KeyboardHandler();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                kb.update();
+            }
+        }, 0, 17);
     }
 
     private void setLookAndFeel() {
@@ -246,5 +271,105 @@ public class App {
         timeCountText.setFont(timeCountText.getFont().deriveFont(
                 timeCountText.getFont().getStyle() | java.awt.Font.BOLD, timeCountText.getFont().getSize() + 7));
         timeCountText.setText("00.00");
+    }
+
+    class KeyboardHandler implements RawInputSource {
+        static final String PRESSED = "pressed";
+        static final String RELEASED = "released";
+        private Map<GameplayButton, Boolean> freshInput = new HashMap<>();
+        private Map<GameplayButton, Boolean> lockInput = new HashMap<>();
+
+        public KeyboardHandler() {
+            InputMap inputMap = App.this.f.getRootPane().getInputMap();
+            ActionMap actionMap = App.this.f.getRootPane().getActionMap();
+
+            for (var v : GameplayButton.values()) {
+                freshInput.put(v, false);
+            }
+            update();
+
+            BiConsumer<GameplayButton, Integer> setupKeyAction = (gb, keyCode) -> {
+                inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), gb.name() + PRESSED);
+                inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, true), gb.name() + RELEASED);
+                actionMap.put(gb.name() + PRESSED, new ButtonAction(gb, false));
+                actionMap.put(gb.name() + RELEASED, new ButtonAction(gb, true));
+            };
+
+            setupKeyAction.accept(GameplayButton.Left, KeyEvent.VK_A);
+            setupKeyAction.accept(GameplayButton.Right, KeyEvent.VK_D);
+            setupKeyAction.accept(GameplayButton.HardDrop, KeyEvent.VK_W);
+            setupKeyAction.accept(GameplayButton.SoftDrop, KeyEvent.VK_S);
+            setupKeyAction.accept(GameplayButton.Hold, KeyEvent.VK_F);
+            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_R);
+        }
+
+        class ButtonAction extends AbstractAction {
+            private GameplayButton gameplayButton;
+            private boolean onRelease;
+
+            public ButtonAction(GameplayButton gameplayButton, boolean onRelease) {
+                this.gameplayButton = gameplayButton;
+                this.onRelease = onRelease;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                freshInput.put(gameplayButton, !onRelease);
+                // System.out.printf("%s %s%n", gameplayButton, !onRelease);
+            }
+
+        }
+
+        @Override
+        public boolean getHardDrop() {
+            return lockInput.get(GameplayButton.HardDrop);
+        }
+
+        @Override
+        public boolean getHold() {
+            return lockInput.get(GameplayButton.Hold);
+        }
+
+        @Override
+        public boolean getLeft() {
+            return lockInput.get(GameplayButton.Left);
+        }
+
+        @Override
+        public boolean getRight() {
+            return lockInput.get(GameplayButton.Right);
+        }
+
+        @Override
+        public boolean getRotateCCW() {
+            return lockInput.get(GameplayButton.RotateCCW);
+        }
+
+        @Override
+        public boolean getRotateCW() {
+            return lockInput.get(GameplayButton.RotateCW);
+        }
+
+        @Override
+        public boolean getRotateFlip() {
+            return lockInput.get(GameplayButton.RotateFlip);
+        }
+
+        @Override
+        public boolean getSoftDrop() {
+            return lockInput.get(GameplayButton.SoftDrop);
+        }
+
+        @Override
+        public void update() {
+            lockInput.putAll(freshInput);
+            for (var entry : lockInput.entrySet()) {
+                if (entry.getValue()) {
+                    System.out.printf("%s ", entry.getKey());
+                }
+            }
+            System.out.println();
+        }
+
     }
 }
