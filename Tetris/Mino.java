@@ -3,21 +3,21 @@ package Tetris;
 public class Mino{
     protected KickTable kickTable;
     protected MinoColor color;
-    protected ObjectDataGrid<Boolean> shape;
+    protected BooleanDataGrid shape;
     protected MinoOrigin origin;
 
-    public Mino(ObjectDataGrid<Boolean> shape, MinoOrigin origin){
+    public Mino(BooleanDataGrid shape, MinoOrigin origin){
         this.shape = shape;
         this.origin = origin;
     }
 
-    public Mino(ObjectDataGrid<Boolean> shape, MinoOrigin origin, KickTable kickTable){
+    public Mino(BooleanDataGrid shape, MinoOrigin origin, KickTable kickTable){
         this.shape = shape;
         this.origin = origin;
         // this.kickTable = kickTable;
     }
 
-    public Mino(ObjectDataGrid<Boolean> shape, MinoOrigin origin, KickTable kickTable, MinoColor coor){
+    public Mino(BooleanDataGrid shape, MinoOrigin origin, KickTable kickTable, MinoColor coor){
         this.shape = shape;
         this.origin = origin;
         // this.kickTable = kickTable;
