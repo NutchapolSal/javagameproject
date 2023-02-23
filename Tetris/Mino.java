@@ -1,7 +1,9 @@
 package Tetris;
 
-public class Mino{
-    protected KickTable kickTable;
+import Tetris.KickTable.KickTableBuilder;
+
+public class Mino {
+    protected KickTable kickTable = (new KickTableBuilder()).build();
     protected MinoColor color;
     protected BooleanDataGrid shape;
     protected MinoOrigin origin;
