@@ -289,11 +289,14 @@ public class App {
             }
             update();
 
+            for (GameplayButton gb : GameplayButton.values()) {
+                actionMap.put(gb.name() + PRESSED, new ButtonAction(gb, false));
+                actionMap.put(gb.name() + RELEASED, new ButtonAction(gb, true));
+            }
+
             BiConsumer<GameplayButton, Integer> setupKeyAction = (gb, keyCode) -> {
                 inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), gb.name() + PRESSED);
                 inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, true), gb.name() + RELEASED);
-                actionMap.put(gb.name() + PRESSED, new ButtonAction(gb, false));
-                actionMap.put(gb.name() + RELEASED, new ButtonAction(gb, true));
             };
 
             setupKeyAction.accept(GameplayButton.Left, KeyEvent.VK_A);
