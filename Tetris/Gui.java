@@ -28,7 +28,7 @@ import java.util.TimerTask;
 import java.util.function.BiConsumer;
 import java.awt.Container;
 
-public class App {
+public class Gui {
     private JFrame f;
     private JPanel centerPanel;
     private JLabel controlsText;
@@ -55,7 +55,7 @@ public class App {
     private JLabel timeText;
     private JPanel miscPanel;
 
-    public App() {
+    public Gui() {
         setLookAndFeel();
         f = new JFrame("Tetris");
         f.setSize(500, 500);
@@ -281,8 +281,8 @@ public class App {
         private Map<GameplayButton, Boolean> lockInput = new HashMap<>();
 
         public KeyboardHandler() {
-            InputMap inputMap = App.this.f.getRootPane().getInputMap();
-            ActionMap actionMap = App.this.f.getRootPane().getActionMap();
+            InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
+            ActionMap actionMap = Gui.this.f.getRootPane().getActionMap();
 
             for (var v : GameplayButton.values()) {
                 freshInput.put(v, false);

@@ -1,11 +1,11 @@
 import javax.swing.SwingUtilities;
 
-import Tetris.App;
+import Tetris.Gui;
 
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            App a = new App();
+            Gui a = new Gui();
         });
     }
 }
