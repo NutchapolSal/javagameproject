@@ -63,19 +63,6 @@ public class Gui {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
         f.setVisible(true);
-
-        testkbhandler();
-    }
-
-    private void testkbhandler() {
-        var kb = new KeyboardHandler();
-        var pi = new PlayerInput(kb);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                pi.tick();
-            }
-        }, 0, 100);
     }
 
     private void setLookAndFeel() {
