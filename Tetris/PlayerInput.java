@@ -101,11 +101,11 @@ public class PlayerInput {
             rotation = Rotation.Flip;
         }
 
-        System.out.println(getXMove());
-        System.out.println(getHardDrop());
-        System.out.println(getSoftDrop());
+        System.out.printf("%2d", getXMove());
+        System.out.print(getHardDrop() ? " V " : "   ");
+        System.out.print(getSoftDrop() ? "v " : "  ");
+        System.out.print(getHold() ? "H " : "  ");
         System.out.println(getRotation());
-        System.out.println(getHold());
     }
 
     public int getXMove() {
