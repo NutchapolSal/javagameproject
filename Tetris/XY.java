@@ -8,4 +8,9 @@ public class XY {
         this.x = x;
         this.y = y;
     }
+
+    @Override
+    public String toString() {
+        return "XY [x=" + x + ", y=" + y + "]";
+    }
 }
