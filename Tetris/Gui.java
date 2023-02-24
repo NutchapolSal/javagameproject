@@ -54,6 +54,7 @@ public class Gui {
     private JLabel timeCountText;
     private JLabel timeText;
     private JPanel miscPanel;
+    private KeyboardHandler kbh;
 
     public Gui() {
         setLookAndFeel();
@@ -274,13 +275,20 @@ public class Gui {
         timeCountText.setText("00.00");
     }
 
+    public KeyboardHandler getKeyboardHandler() {
+        if (kbh == null) {
+            kbh = new KeyboardHandler();
+        }
+        return kbh;
+    }
+
     class KeyboardHandler implements RawInputSource {
         static final String PRESSED = "pressed";
         static final String RELEASED = "released";
         private Map<GameplayButton, Boolean> freshInput = new HashMap<>();
         private Map<GameplayButton, Boolean> lockInput = new HashMap<>();
 
-        public KeyboardHandler() {
+        private KeyboardHandler() {
             InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
             ActionMap actionMap = Gui.this.f.getRootPane().getActionMap();
 
