@@ -69,7 +69,7 @@ public class Tetromino {
         shape.setAtPos(2, 0, true);
         shape.setAtPos(3, 0, true);
 
-        return new Mino(shape, new MinoOrigin(2, 0, true, true), getIKickTable(), MinoColor.Cyan);
+        return new Mino(shape, new MinoOrigin(2, 0, true), getIKickTable(), MinoColor.Cyan);
     }
 
     static public Mino O() {
@@ -80,7 +80,7 @@ public class Tetromino {
         shape.setAtPos(0, 1, true);
         shape.setAtPos(1, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 1, true, true), MinoColor.Yellow);
+        return new Mino(shape, new MinoOrigin(1, 1, true), MinoColor.Yellow);
     }
 
     static public Mino S() {
@@ -91,7 +91,7 @@ public class Tetromino {
         shape.setAtPos(1, 1, true);
         shape.setAtPos(2, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false, false), getCommonKickTable(), MinoColor.Green);
+        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Green);
     }
 
     static public Mino Z() {
@@ -102,7 +102,7 @@ public class Tetromino {
         shape.setAtPos(0, 1, true);
         shape.setAtPos(1, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false, false), getCommonKickTable(), MinoColor.Red);
+        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Red);
     }
 
     static public Mino J() {
@@ -113,7 +113,7 @@ public class Tetromino {
         shape.setAtPos(2, 0, true);
         shape.setAtPos(0, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false, false), getCommonKickTable(), MinoColor.Blue);
+        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Blue);
     }
 
     static public Mino L() {
@@ -124,7 +124,7 @@ public class Tetromino {
         shape.setAtPos(2, 0, true);
         shape.setAtPos(2, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false, false), getCommonKickTable(), MinoColor.Orange);
+        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Orange);
     }
 
     static public Mino T() {
@@ -135,6 +135,6 @@ public class Tetromino {
         shape.setAtPos(2, 0, true);
         shape.setAtPos(1, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false, false), getCommonKickTable(), MinoColor.Purple);
+        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Purple);
     }
 }
