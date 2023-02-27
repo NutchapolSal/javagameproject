@@ -1,6 +1,23 @@
 package Tetris;
 
 public enum MinoColor {
-    Blue, Cyan, Gray, Green, Orange, Purple,
-    Red, White, Yellow;
+    Blue("blue"),
+    Cyan("cyan"),
+    Gray("gray"),
+    Green("green"),
+    Orange("orange"),
+    Purple("purple"),
+    Red("red"),
+    White("white"),
+    Yellow("yellow");
+
+    private final String filename;
+
+    MinoColor(String filename) {
+        this.filename = "Tetris/blockImg/" + filename + ".png";
+    }
+
+    String filename() {
+        return this.filename;
+    }
 }
