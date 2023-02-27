@@ -1,15 +1,20 @@
 package Tetris;
 
 import java.awt.Graphics;
-
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 
 public class MinoPanel extends JPanel {
     private static final int PREF_W = 80;
     private static final int PREF_H = 40;
+
+    private Mino mino;
 
     public MinoPanel() {
     }
@@ -31,9 +36,38 @@ public class MinoPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        g.setColor(Color.GRAY);
-        g.fillRect(0, 0, PREF_W, PREF_H);
-        g.setColor(Color.WHITE);
-        g.drawString("MinoPanel", 20, 10);
+        if (mino == null) {
+            return;
+        }
+
+        Image img;
+        try {
+            img = ImageIO.read(new File(mino.getColor().filename()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            g.setColor(Color.RED);
+            g.fillRect(0, 0, PREF_W, PREF_H);
+            g.setColor(Color.WHITE);
+            g.drawString("Error", 2, 10);
+            return;
+        }
+
+        int centerOffsetX = (PREF_W - mino.getShapeWidth() * 20) / 2;
+        int centerOffsetY = (PREF_H - mino.getShapeHeight() * 20) / 2;
+
+        for (int y = 0; y < mino.getShapeHeight(); y++) {
+            int graphicsY = (1 - y) * 20 - centerOffsetY;
+            for (int x = 0; x < mino.getShapeWidth(); x++) {
+                int graphicsX = x * 20 + centerOffsetX;
+                if (mino.getShapeAtPos(x, y)) {
+                    g.drawImage(img, graphicsX, graphicsY, 20, 20, null);
+                }
+            }
+        }
+
+    }
+
+    public void setMino(Mino mino) {
+        this.mino = mino;
     }
 }
