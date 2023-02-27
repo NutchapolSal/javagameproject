@@ -57,8 +57,8 @@ public abstract class MinoPanel extends JPanel {
     }
 
     protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc) {
-        int graphicsX = x * 20 + centerOffsetX;
-        int graphicsY = (1 - y) * 20 - centerOffsetY;
+        int graphicsX = x * BLOCK_WIDTH + centerOffsetX;
+        int graphicsY = (PANEL_HEIGHT_BLOCKS - 1 - y) * BLOCK_HEIGHT - centerOffsetY;
         Image img;
         try {
             img = ImageIO.read(new File(mc.filename()));
