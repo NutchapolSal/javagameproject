@@ -2,25 +2,25 @@ package Tetris;
 
 public class BooleanDataGrid {
     public boolean[][] field;
-    
-    public BooleanDataGrid(int w, int h){    
+
+    public BooleanDataGrid(int w, int h) {
         this.field = new boolean[w][h];
     }
 
-    public boolean getAtPos(int x, int y){
+    public boolean getAtPos(int x, int y) {
         return field[x][y];
     }
 
-    public int getWidth(){
+    public int getWidth() {
         return field.length;
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return field[0].length;
-    } 
+    }
 
-    public void setAtPos(int x, int y, boolean input){
+    public void setAtPos(int x, int y, boolean input) {
         field[x][y] = input;
     }
-    
+
 }
