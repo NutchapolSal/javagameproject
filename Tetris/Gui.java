@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.BiConsumer;
+import Tetris.Gameplay.GuiDataSource;
 import java.awt.Container;
 
 public class Gui {
@@ -55,6 +56,10 @@ public class Gui {
     private JLabel timeText;
     private JPanel miscPanel;
     private KeyboardHandler kbh;
+
+    public void update(GuiDataSource gds) {
+        timeCountText.setText(String.format("%.3f", gds.timeMillis / 1000d));
+    }
 
     public Gui() {
         setLookAndFeel();
