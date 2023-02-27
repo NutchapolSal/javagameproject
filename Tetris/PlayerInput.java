@@ -28,7 +28,7 @@ public class PlayerInput {
         this.autoRepeatFrame = AUTO_REPEAT_FRAMES;
     }
 
-    public void RawInputSource(RawInputSource inputSource) {
+    public void setRawInputSource(RawInputSource inputSource) {
         this.inputSource = inputSource;
     }
 
