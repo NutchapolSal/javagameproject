@@ -61,7 +61,7 @@ public abstract class MinoPanel extends JPanel {
         int graphicsY = (PANEL_HEIGHT_BLOCKS - 1 - y) * BLOCK_HEIGHT - centerOffsetY;
         Image img;
         try {
-            img = ImageIO.read(new File(mc.filename()));
+            img = mc.image();
         } catch (IOException e) {
             e.printStackTrace();
             g.setColor(Color.RED);
