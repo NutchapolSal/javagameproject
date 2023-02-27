@@ -10,13 +10,45 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 
-public class MinoPanel extends JPanel {
+public class NextPanel extends JPanel {
     private static final int PREF_W = 80;
     private static final int PREF_H = 40;
 
     private Mino mino;
 
-    public MinoPanel() {
+    public NextPanel() {
+        int chosenMino = (int) Math.floor(Math.random() * 3);
+        switch (chosenMino) {
+            case 0:
+                mino = Tetromino.I();
+
+                break;
+            case 1:
+                mino = Tetromino.O();
+
+                break;
+            case 2:
+                mino = Tetromino.J();
+
+                break;
+            case 3:
+                mino = Tetromino.L();
+
+                break;
+            case 4:
+                mino = Tetromino.S();
+
+                break;
+            case 5:
+                mino = Tetromino.Z();
+
+                break;
+            case 6:
+                mino = Tetromino.T();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
