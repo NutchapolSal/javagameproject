@@ -23,11 +23,11 @@ public enum MinoColor {
     private Image image;
 
     MinoColor(String filename) {
-        this.filename = "Tetris/blockImg/" + filename + ".png";
+        this.filename = filename;
     }
 
-    String filename() {
-        return this.filename;
+    String filepath() {
+        return "Tetris/blockImg/" + filename + ".png";
     }
 
     Image image() {
@@ -36,7 +36,7 @@ public enum MinoColor {
         }
 
         try {
-            image = ImageIO.read(new File(filename()));
+            image = ImageIO.read(new File(filepath()));
         } catch (IOException e) {
             e.printStackTrace();
             BufferedImage bi = new BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB);
@@ -44,7 +44,7 @@ public enum MinoColor {
             g.setColor(Color.RED);
             g.fillRect(0, 0, 20, 20);
             g.setColor(Color.WHITE);
-            g.drawString("Err", 0, 20);
+            g.drawString(filename, 0, 15);
             g.dispose();
             image = bi;
         }
