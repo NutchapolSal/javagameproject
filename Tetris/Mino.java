@@ -3,10 +3,10 @@ package Tetris;
 import Tetris.KickTable.KickTableBuilder;
 
 public class Mino {
-    protected KickTable kickTable = (new KickTableBuilder()).build();
-    protected MinoColor color;
     protected BooleanDataGrid shape;
     protected MinoOrigin origin;
+    protected KickTable kickTable = (new KickTableBuilder()).build();
+    protected MinoColor color = MinoColor.White;
 
     public Mino(BooleanDataGrid shape, MinoOrigin origin) {
         this.shape = shape;
@@ -16,14 +16,36 @@ public class Mino {
     public Mino(BooleanDataGrid shape, MinoOrigin origin, KickTable kickTable) {
         this.shape = shape;
         this.origin = origin;
-        // this.kickTable = kickTable;
+        this.kickTable = kickTable;
     }
 
-    public Mino(BooleanDataGrid shape, MinoOrigin origin, KickTable kickTable, MinoColor coor) {
+    public Mino(BooleanDataGrid shape, MinoOrigin origin, KickTable kickTable, MinoColor color) {
         this.shape = shape;
         this.origin = origin;
-        // this.kickTable = kickTable;
-        // this.color = color;
+        this.kickTable = kickTable;
+        this.color = color;
+    }
+
+    public Mino(BooleanDataGrid shape, MinoOrigin origin, MinoColor color) {
+        this.shape = shape;
+        this.origin = origin;
+        this.color = color;
+    }
+
+    public boolean getShapeAtPos(int x, int y) {
+        return this.shape.getAtPos(x, y);
+    }
+
+    public int getShapeWidth() {
+        return this.shape.getWidth();
+    }
+
+    public int getShapeHeight() {
+        return this.shape.getHeight();
+    }
+
+    public MinoColor getColor() {
+        return this.color;
     }
 
     public Mino() {
@@ -66,5 +88,13 @@ public class Mino {
 
     public void setColor(MinoColor c) {
         this.color = c;
+    }
+
+    public KickTable getKickTable() {
+        return kickTable;
+    }
+
+    public MinoOrigin getOrigin() {
+        return origin;
     }
 }
