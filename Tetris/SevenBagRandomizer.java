@@ -1,6 +1,5 @@
 package Tetris;
 
-import java.io.Console;
 import java.util.Random;
 
 public class SevenBagRandomizer extends MinoRandomizer {
@@ -42,16 +41,5 @@ public class SevenBagRandomizer extends MinoRandomizer {
             shuffleMinoInBag();
         }
         return bag[bagIndex++];
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        var sbr = new SevenBagRandomizer(987);
-        while (true) {
-            for (int i = 0; i < 7; i++) {
-                System.out.print(sbr.next().getColor() + " ");
-            }
-            System.out.println();
-            // Thread.sleep(500);
-        }
     }
 }
