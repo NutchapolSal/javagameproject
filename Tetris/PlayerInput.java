@@ -13,6 +13,8 @@ public class PlayerInput {
     private Rotation rotation = Rotation.None;
     private boolean hold = false;
     private RawInputSource inputSource;
+    private char prevInput = ' ';
+    private boolean checkFirstTime = true;
 
     public PlayerInput(RawInputSource inputSource) {
         this.inputSource = inputSource;
@@ -33,10 +35,7 @@ public class PlayerInput {
     }
 
     public void tick() {
-        boolean lastLeft = inputSource.getLeft();
-        boolean lastRight = inputSource.getRight();
         boolean lastHardDrop = inputSource.getHardDrop();
-        boolean lastSoftDrop = inputSource.getSoftDrop();
         boolean lastHold = inputSource.getHold();
         boolean lastRotationCW = inputSource.getRotateCW();
         boolean lastRotationCCW = inputSource.getRotateCCW();
@@ -47,6 +46,55 @@ public class PlayerInput {
         xMove = 0;
 
         if (inputSource.getLeft() && !inputSource.getRight()) {
+            prevInput = 'L';
+            dasChargeRight = DAS_CHARGE_FRAMES;
+            if (dasChargeLeft == DAS_CHARGE_FRAMES) {
+                xMove = -1;
+            }
+            if (dasChargeLeft > 0) {
+                dasChargeLeft--;
+            } else {
+                if (autoRepeatFrame == AUTO_REPEAT_FRAMES) {
+                    xMove = -1;
+                }
+                autoRepeatFrame--;
+                if (autoRepeatFrame == 0) {
+                    autoRepeatFrame = AUTO_REPEAT_FRAMES;
+                }
+            }
+        } else if (inputSource.getRight() && !inputSource.getLeft()) {
+            prevInput = 'R';
+            dasChargeLeft = DAS_CHARGE_FRAMES;
+            if (dasChargeRight == DAS_CHARGE_FRAMES) {
+                xMove = 1;
+            }
+            if (dasChargeRight > 0) {
+                dasChargeRight--;
+            } else {
+                if (autoRepeatFrame == AUTO_REPEAT_FRAMES) {
+                    xMove = 1;
+                }
+                autoRepeatFrame--;
+                if (autoRepeatFrame == 0) {
+                    autoRepeatFrame = AUTO_REPEAT_FRAMES;
+                }
+            }
+        } else if (prevInput == 'L' && inputSource.getRight()) {
+            if (dasChargeRight == DAS_CHARGE_FRAMES) {
+                xMove = 1;
+            }
+            if (dasChargeRight > 0) {
+                dasChargeRight--;
+            } else {
+                if (autoRepeatFrame == AUTO_REPEAT_FRAMES) {
+                    xMove = 1;
+                }
+                autoRepeatFrame--;
+                if (autoRepeatFrame == 0) {
+                    autoRepeatFrame = AUTO_REPEAT_FRAMES;
+                }
+            }
+        } else if (prevInput == 'R' && inputSource.getLeft()) {
             if (dasChargeLeft == DAS_CHARGE_FRAMES) {
                 xMove = -1;
             }
@@ -62,25 +110,8 @@ public class PlayerInput {
                 }
             }
         } else {
+            prevInput = ' ';
             dasChargeLeft = DAS_CHARGE_FRAMES;
-        }
-
-        if (inputSource.getRight() && !inputSource.getLeft()) {
-            if (dasChargeRight == DAS_CHARGE_FRAMES) {
-                xMove = 1;
-            }
-            if (dasChargeRight > 0) {
-                dasChargeRight--;
-            } else {
-                if (autoRepeatFrame == AUTO_REPEAT_FRAMES) {
-                    xMove = 1;
-                }
-                autoRepeatFrame--;
-                if (autoRepeatFrame == 0) {
-                    autoRepeatFrame = AUTO_REPEAT_FRAMES;
-                }
-            }
-        } else {
             dasChargeRight = DAS_CHARGE_FRAMES;
         }
 
