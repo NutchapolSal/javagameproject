@@ -48,44 +48,6 @@ public class Mino {
         return this.color;
     }
 
-    public Mino() {
-    }
-
-    static public Mino I() {
-        // TODO
-        return new Mino();
-    }
-
-    static public Mino O() {
-        // TODO
-        return new Mino();
-    }
-
-    static public Mino S() {
-        // TODO
-        return new Mino();
-    }
-
-    static public Mino Z() {
-        // TODO
-        return new Mino();
-    }
-
-    static public Mino J() {
-        // TODO
-        return new Mino();
-    }
-
-    static public Mino L() {
-        // TODO
-        return new Mino();
-    }
-
-    static public Mino T() {
-        // TODO
-        return new Mino();
-    }
-
     public void setColor(MinoColor c) {
         this.color = c;
     }
