@@ -54,6 +54,19 @@ public class Gui {
     private JPanel miscPanel;
     private KeyboardHandler kbh;
 
+    private double windowDeltaX;
+    private double windowDeltaY;
+    private double windowLastDeltaX;
+    private double windowLastDeltaY;
+
+    private static double roundToZero(double in) {
+        if (in < 0) {
+            return Math.ceil(in);
+        } else {
+            return Math.floor(in);
+        }
+    }
+
     public void update(GuiDataSource gds) {
         timeCountText.setText(
                 String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
@@ -71,9 +84,21 @@ public class Gui {
         playfield.setRenderBlocks(gds.renderBlocks);
         f.repaint();
 
-        if (gds.windowVelocityX != 0 || gds.windowVelocityY != 0) {
+        windowDeltaX += gds.windowNudgeX;
+        windowDeltaY += gds.windowNudgeY;
+
+        windowDeltaX -= windowDeltaX / 12;
+        windowDeltaY -= windowDeltaY / 12;
+
+        int windowVelocityX = (int) roundToZero(windowDeltaX - windowLastDeltaX);
+        int windowVelocityY = (int) roundToZero(windowDeltaY - windowLastDeltaY);
+
+        windowLastDeltaX += windowVelocityX;
+        windowLastDeltaY += windowVelocityY;
+
+        if (windowVelocityX != 0 || windowVelocityY != 0) {
             var frameLoc = f.getLocationOnScreen();
-            f.setLocation(frameLoc.x + gds.windowVelocityX, frameLoc.y + gds.windowVelocityY);
+            f.setLocation(frameLoc.x + windowVelocityX, frameLoc.y + windowVelocityY);
         }
     }
 

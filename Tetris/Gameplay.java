@@ -25,12 +25,8 @@ public class Gameplay {
     private MinoRandomizer minoRandomizer;
     private boolean lockHold;
     private ObjectDataGrid<MinoColor> renderBlocks;
-    private double windowDeltaX;
-    private double windowDeltaY;
-    private int windowVelocityX;
-    private int windowVelocityY;
-    private double windowLastDeltaX;
-    private double windowLastDeltaY;
+    private int windowNudgeX;
+    private int windowNudgeY;
 
     private int gravityFrames = 0;
     private int lockDelayFrames = 0;
@@ -83,16 +79,16 @@ public class Gameplay {
                     timer.cancel();
                 }
 
-                windowDeltaX -= windowDeltaX / 12;
-                windowDeltaY -= windowDeltaY / 12;
-                level = (int) Math.round(windowDeltaY);
+                windowNudgeX -= windowNudgeX / 12;
+                windowNudgeY -= windowNudgeY / 12;
+                level = (int) Math.round(windowNudgeY);
 
                 gravityFrames++;
 
                 pi.tick();
 
                 if (!playfield.moveXPlayerMino(pi.getXMove())) {
-                    windowDeltaX += pi.getXMove() * 3;
+                    windowNudgeX += pi.getXMove() * 3;
                 }
                 ;
                 if (pi.getRotation() != Rotation.None) {
@@ -100,7 +96,7 @@ public class Gameplay {
                 }
                 if (pi.getHardDrop()) {
                     playfield.hardDropPlayerMino();
-                    windowDeltaY += 10;
+                    windowNudgeY += 10;
                 }
                 if (pi.getSoftDrop()) {
                     gravityFrames += 30;
@@ -118,7 +114,7 @@ public class Gameplay {
                     lockDelayFrames++;
                     if (lockDelayMaxFrames <= lockDelayFrames) {
                         playfield.lockPlayerMino();
-                        windowDeltaY += 4;
+                        windowNudgeY += 4;
                     }
                 } else {
                     lockDelayFrames = 0;
@@ -164,8 +160,8 @@ public class Gameplay {
         public final Mino hold;
         public final boolean lockHold;
         public final ObjectDataGrid<MinoColor> renderBlocks;
-        public final int windowVelocityX;
-        public final int windowVelocityY;
+        public final int windowNudgeX;
+        public final int windowNudgeY;
 
         public GuiDataSource() {
             this.timeMillis = Gameplay.this.timeMillis;
@@ -175,29 +171,15 @@ public class Gameplay {
             this.hold = Gameplay.this.hold;
             this.lockHold = Gameplay.this.lockHold;
             this.renderBlocks = Gameplay.this.renderBlocks;
-            this.windowVelocityX = Gameplay.this.windowVelocityX;
-            this.windowVelocityY = Gameplay.this.windowVelocityY;
+            this.windowNudgeX = Gameplay.this.windowNudgeX;
+            this.windowNudgeY = Gameplay.this.windowNudgeY;
         }
     }
 
     public GuiDataSource getGuiDataSource() {
-        this.windowVelocityX = (int) roundToZero(windowDeltaX - windowLastDeltaX);
-        if (windowVelocityX != 0) {
-            windowLastDeltaX += windowVelocityX;
-        }
-        this.windowVelocityY = (int) roundToZero(windowDeltaY - windowLastDeltaY);
-        if (windowVelocityY != 0) {
-            windowLastDeltaY += windowVelocityY;
-        }
-        return new GuiDataSource();
+        var gds = new GuiDataSource();
+        this.windowNudgeX = 0;
+        this.windowNudgeY = 0;
+        return gds;
     }
-
-    private static double roundToZero(double in) {
-        if (in < 0) {
-            return Math.ceil(in);
-        } else {
-            return Math.floor(in);
-        }
-    }
-
 }

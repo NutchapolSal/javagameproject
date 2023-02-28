@@ -22,7 +22,7 @@ public class App {
             }
         };
 
-        new javax.swing.Timer(16, guiUpdater).start();
+        new javax.swing.Timer(8, guiUpdater).start();
     }
 
     private void testkbhandler(Gui g) {
