@@ -44,7 +44,7 @@ public class Playfield {
     // return false;
     // }
 
-    private boolean checkShapeCollision(BooleanDataGrid shape, int x, int y) {
+    private boolean checkShapeCollision(ShapeGrid shape, int x, int y) {
         int w = shape.getWidth();
         int h = shape.getHeight();
         for (int testY = 0; testY < h; testY++) {
