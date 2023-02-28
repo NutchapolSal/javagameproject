@@ -34,7 +34,7 @@ public class Gui {
     private JFrame f;
     private JPanel centerPanel;
     private JLabel controlsText;
-    private JPanel holdMino;
+    private OneMinoPanel holdMino;
     private JPanel holdPanel;
     private JLabel holdText;
     private JPanel statsPanel;
@@ -44,11 +44,7 @@ public class Gui {
     private JLabel linesCountText;
     private JLabel linesText;
     private JButton newGameButton;
-    private JPanel nextMino1;
-    private JPanel nextMino2;
-    private JPanel nextMino3;
-    private JPanel nextMino4;
-    private JPanel nextMino5;
+    private OneMinoPanel[] nextMinos;
     private JPanel nextPanel;
     private JLabel nextText;
     private JPanel playfield;
@@ -142,7 +138,7 @@ public class Gui {
 
     private void createHoldPanel() {
         holdPanel = new JPanel();
-        holdMino = new NextPanel();
+        holdMino = new OneMinoPanel();
         holdText = new JLabel();
 
         holdText.setText("Hold");
@@ -183,35 +179,26 @@ public class Gui {
     private void createNextPanel() {
         nextPanel = new JPanel();
         nextText = new JLabel();
-        nextMino1 = new NextPanel();
-        nextMino2 = new NextPanel();
-        nextMino3 = new NextPanel();
-        nextMino4 = new NextPanel();
-        nextMino5 = new NextPanel();
+        nextMinos = new OneMinoPanel[5];
 
         nextText.setText("Next");
 
         GroupLayout nextPanelLayout = new GroupLayout(nextPanel);
         nextPanel.setLayout(nextPanelLayout);
-        nextPanelLayout.setHorizontalGroup(nextPanelLayout.createParallelGroup(Alignment.LEADING)
-                .addComponent(nextText)
-                .addComponent(nextMino1)
-                .addComponent(nextMino2)
-                .addComponent(nextMino3)
-                .addComponent(nextMino4)
-                .addComponent(nextMino5));
-        nextPanelLayout.setVerticalGroup(nextPanelLayout.createSequentialGroup()
-                .addComponent(nextText)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino1)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino2)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino3)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino4)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino5));
+        var horizGroup = nextPanelLayout.createParallelGroup(Alignment.LEADING)
+                .addComponent(nextText);
+        var vertGroup = nextPanelLayout.createSequentialGroup()
+                .addComponent(nextText);
+
+        for (int i = 0; i < nextMinos.length; i++) {
+            nextMinos[i] = new OneMinoPanel();
+            horizGroup.addComponent(nextMinos[i]);
+
+            vertGroup.addPreferredGap(ComponentPlacement.RELATED);
+            vertGroup.addComponent(nextMinos[i]);
+        }
+        nextPanelLayout.setHorizontalGroup(horizGroup);
+        nextPanelLayout.setVerticalGroup(vertGroup);
 
     }
 

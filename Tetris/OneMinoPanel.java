@@ -2,10 +2,10 @@ package Tetris;
 
 import java.awt.Graphics;
 
-public class NextPanel extends MinoPanel {
+public class OneMinoPanel extends MinoPanel {
     private Mino mino;
 
-    public NextPanel() {
+    public OneMinoPanel() {
         super(4, 2);
         int chosenMino = (int) Math.floor(Math.random() * 7);
         switch (chosenMino) {
@@ -50,7 +50,7 @@ public class NextPanel extends MinoPanel {
         for (int y = 0; y < mino.getShapeHeight(); y++) {
             for (int x = 0; x < mino.getShapeWidth(); x++) {
                 if (mino.getShapeAtPos(x, y)) {
-                    paintMinoBlock(g, x, y, mino.color);
+                    paintMinoBlock(g, x, y, mino.getColor());
                 }
             }
         }
