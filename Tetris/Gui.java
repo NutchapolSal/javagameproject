@@ -142,7 +142,7 @@ public class Gui {
 
     private void createHoldPanel() {
         holdPanel = new JPanel();
-        holdMino = new MinoPanel();
+        holdMino = new NextPanel();
         holdText = new JLabel();
 
         holdText.setText("Hold");
@@ -183,11 +183,11 @@ public class Gui {
     private void createNextPanel() {
         nextPanel = new JPanel();
         nextText = new JLabel();
-        nextMino1 = new MinoPanel();
-        nextMino2 = new MinoPanel();
-        nextMino3 = new MinoPanel();
-        nextMino4 = new MinoPanel();
-        nextMino5 = new MinoPanel();
+        nextMino1 = new NextPanel();
+        nextMino2 = new NextPanel();
+        nextMino3 = new NextPanel();
+        nextMino4 = new NextPanel();
+        nextMino5 = new NextPanel();
 
         nextText.setText("Next");
 
