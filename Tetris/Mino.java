@@ -48,10 +48,6 @@ public class Mino {
         return this.color;
     }
 
-    public void setColor(MinoColor c) {
-        this.color = c;
-    }
-
     public KickTable getKickTable() {
         return kickTable;
     }
