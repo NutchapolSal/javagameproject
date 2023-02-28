@@ -25,8 +25,8 @@ public class Gameplay {
     private MinoRandomizer minoRandomizer;
     private boolean lockHold;
     private ObjectDataGrid<MinoColor> renderBlocks;
-    private int windowNudgeX;
-    private int windowNudgeY;
+    private double windowNudgeX;
+    private double windowNudgeY;
 
     private int gravityFrames = 0;
     private int lockDelayFrames = 0;
@@ -79,10 +79,8 @@ public class Gameplay {
                     timer.cancel();
                 }
 
-                windowNudgeX -= windowNudgeX / 12;
-                windowNudgeY -= windowNudgeY / 12;
-                level = (int) Math.round(windowNudgeY);
-
+                windowNudgeX = 0;
+                windowNudgeY = 0;
                 gravityFrames++;
 
                 pi.tick();
@@ -90,7 +88,6 @@ public class Gameplay {
                 if (!playfield.moveXPlayerMino(pi.getXMove())) {
                     windowNudgeX += pi.getXMove() * 3;
                 }
-                ;
                 if (pi.getRotation() != Rotation.None) {
                     playfield.rotatePlayerMino(pi.getRotation());
                 }
@@ -136,7 +133,6 @@ public class Gameplay {
                         timer.cancel();
                     }
                 }
-
             }
         }, 0, 3);
     }
@@ -161,8 +157,8 @@ public class Gameplay {
         public final Mino hold;
         public final boolean lockHold;
         public final ObjectDataGrid<MinoColor> renderBlocks;
-        public final int windowNudgeX;
-        public final int windowNudgeY;
+        public final double windowNudgeX;
+        public final double windowNudgeY;
 
         public GuiDataSource() {
             this.timeMillis = Gameplay.this.timeMillis;
@@ -179,8 +175,8 @@ public class Gameplay {
 
     public GuiDataSource getGuiDataSource() {
         var gds = new GuiDataSource();
-        this.windowNudgeX = 0;
-        this.windowNudgeY = 0;
+        windowNudgeX = 0;
+        windowNudgeY = 0;
         return gds;
     }
 }
