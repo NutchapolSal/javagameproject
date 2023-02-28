@@ -53,9 +53,13 @@ public class Gameplay {
 
     class GuiDataSource {
         public final long timeMillis;
+        public final int linesCleared;
+        public final int level;
 
         public GuiDataSource() {
             this.timeMillis = Gameplay.this.timeMillis;
+            this.linesCleared = Gameplay.this.linesCleared;
+            this.level = Gameplay.this.level;
         }
     }
 

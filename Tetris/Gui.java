@@ -62,6 +62,8 @@ public class Gui {
         timeCountText.setText(
                 String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
                         (gds.timeMillis / 1000d) % 60));
+        linesCountText.setText(String.format("%d", gds.linesCleared));
+        levelCountText.setText(String.format("%d", gds.level));
     }
 
     public Gui() {
