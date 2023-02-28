@@ -102,14 +102,6 @@ public class Playfield {
         return resultY;
     }
 
-    public void magic() {
-        spawnPlayerMino(Tetromino.I());
-        rotatePlayerMino(Rotation.Clockwise);
-        System.out.println(playerMinoX);
-        System.out.println(playerMinoY);
-        System.out.println(getShadowYPos());
-    }
-
     public boolean spawnPlayerMino(Mino mino) {
         setPlayerMino(mino);
         boolean spawnSuccess = setPlayerMinoPos((FIELD_WIDTH - mino.getWidth()) / 2,
