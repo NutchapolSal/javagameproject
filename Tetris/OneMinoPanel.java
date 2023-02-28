@@ -28,12 +28,18 @@ public class OneMinoPanel extends MinoPanel {
 
     public void setMino(Mino mino) {
         this.mino = mino;
+        if (mino == null) {
+            return;
+        }
         this.color = mino.color;
         setMinoCanvasSize(mino.getShapeWidth(), mino.getShapeHeight());
     }
 
     public void setMino(Mino mino, MinoColor overrideColor) {
         this.mino = mino;
+        if (mino == null) {
+            return;
+        }
         this.color = overrideColor;
         setMinoCanvasSize(mino.getShapeWidth(), mino.getShapeHeight());
     }

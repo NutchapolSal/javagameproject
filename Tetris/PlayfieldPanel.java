@@ -15,8 +15,7 @@ public class PlayfieldPanel extends MinoPanel {
     protected void paintComponent(Graphics g) {
         for (int y = 0; y < PANEL_HEIGHT_BLOCKS; y++) {
             for (int x = 0; x < PANEL_WIDTH_BLOCKS; x++) {
-                MinoColor mc = MinoColor.values()[(int) Math.floor(Math.random() * MinoColor.values().length)];
-                paintMinoBlock(g, x, y, mc);
+                paintMinoBlock(g, x, y, MinoColor.White);
             }
         }
     }

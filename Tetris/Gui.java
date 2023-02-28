@@ -47,7 +47,7 @@ public class Gui {
     private OneMinoPanel[] nextMinos;
     private JPanel nextPanel;
     private JLabel nextText;
-    private JPanel playfield;
+    private PlayfieldPanel playfield;
     private Box.Filler rightFiller;
     private JLabel timeCountText;
     private JLabel timeText;
@@ -60,6 +60,15 @@ public class Gui {
                         (gds.timeMillis / 1000d) % 60));
         linesCountText.setText(String.format("%d", gds.linesCleared));
         levelCountText.setText(String.format("%d", gds.level));
+        for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
+            nextMinos[i].setMino(gds.nextQueue[i]);
+        }
+        if (gds.lockHold) {
+            holdMino.setMino(gds.hold, MinoColor.Gray);
+        } else {
+            holdMino.setMino(gds.hold);
+        }
+        f.repaint();
     }
 
     public Gui() {
