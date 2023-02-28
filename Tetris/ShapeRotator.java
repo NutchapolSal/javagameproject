@@ -85,7 +85,7 @@ public class ShapeRotator {
     }
 }
 
-class RotatedShape {
+class RotatedShape implements ShapeGrid {
     public final ShapeGrid shape;
     /**
      * offset from original shape origin
@@ -101,4 +101,20 @@ class RotatedShape {
         this.xOffset = xCornerOffset;
         this.yOffset = yCornerOffset;
     }
+
+    @Override
+    public boolean getAtPos(int x, int y) {
+        return this.shape.getAtPos(x, y);
+    }
+
+    @Override
+    public int getHeight() {
+        return this.shape.getHeight();
+    }
+
+    @Override
+    public int getWidth() {
+        return this.shape.getWidth();
+    }
+
 }
