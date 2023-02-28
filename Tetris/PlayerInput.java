@@ -1,8 +1,10 @@
 package Tetris;
 
 public class PlayerInput {
-    private static final int DAS_CHARGE_FRAMES = 9;
-    private static final int AUTO_REPEAT_FRAMES = 3;
+    // private static final int DAS_CHARGE_FRAMES = 9;
+    // private static final int AUTO_REPEAT_FRAMES = 3;
+    private static final int DAS_CHARGE_FRAMES = 4;
+    private static final int AUTO_REPEAT_FRAMES = 2;
 
     private int dasChargeLeft;
     private int dasChargeRight;
@@ -132,11 +134,11 @@ public class PlayerInput {
             rotation = Rotation.Flip;
         }
 
-        System.out.printf("%2d", getXMove());
-        System.out.print(getHardDrop() ? " V " : "   ");
-        System.out.print(getSoftDrop() ? "v " : "  ");
-        System.out.print(getHold() ? "H " : "  ");
-        System.out.println(getRotation());
+        // System.out.printf("%2d", getXMove());
+        // System.out.print(getHardDrop() ? " V " : " ");
+        // System.out.print(getSoftDrop() ? "v " : " ");
+        // System.out.print(getHold() ? "H " : " ");
+        // System.out.println(getRotation());
     }
 
     public int getXMove() {

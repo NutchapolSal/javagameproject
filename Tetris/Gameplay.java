@@ -10,17 +10,31 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class Gameplay {
+    private static long FRAME_DELAY = 16_666_666;
+    // private static long FRAME_DELAY = 250_000_000;
+    private int lockResetMaxCount = 15;
+    private int lockDelayMaxFrames = 30;
+    private int gravityMaxFrames = 256;
+
     private Queue<Mino> nextQueue = new ArrayDeque<>();
     private Mino hold;
-    private ObjectDataGrid<MinoColor> playfield;
+    private Playfield playfield;
     private int linesCleared;
     private int level;
-    private Mino playerMino;
     private long lastFrame;
     private MinoRandomizer minoRandomizer;
     private boolean lockHold;
-    private static long FRAME_DELAY = 16_666_666;
-    // private static long FRAME_DELAY = 250_000_000;
+    private ObjectDataGrid<MinoColor> renderBlocks;
+    private double windowDeltaX;
+    private double windowDeltaY;
+    private int windowVelocityX;
+    private int windowVelocityY;
+    private double windowLastDeltaX;
+    private double windowLastDeltaY;
+
+    private int gravityFrames = 0;
+    private int lockDelayFrames = 0;
+    private int lockResetCount = 0;
 
     private long timeMillis;
 
@@ -43,13 +57,15 @@ public class Gameplay {
     public void startGame() {
         nextQueue = new ArrayDeque<>();
         hold = null;
-        playfield = new ObjectDataGrid<>(10, 40);
+        playfield = new Playfield();
         linesCleared = 0;
         level = 1;
-        minoRandomizer = new SevenBagRandomizer(1234); //TODO: actually use random seed
+        minoRandomizer = new SevenBagRandomizer(1234); // TODO: actually use random seed
+        lockHold = false;
 
         fillNextQueue();
-        playerMino = getNextMino();
+        playfield.spawnPlayerMino(getNextMino());
+        renderBlocks = playfield.getRenderBlocks();
 
         Timer timer = new Timer();
         long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
@@ -67,25 +83,71 @@ public class Gameplay {
                     timer.cancel();
                 }
 
+                windowDeltaX -= windowDeltaX / 12;
+                windowDeltaY -= windowDeltaY / 12;
+                level = (int) Math.round(windowDeltaY);
+
+                gravityFrames++;
+
                 pi.tick();
 
-                int xmove = pi.getXMove();
-
-                if (xmove == 1) {
-                    getNextMino();
+                if (!playfield.moveXPlayerMino(pi.getXMove())) {
+                    windowDeltaX += pi.getXMove() * 3;
+                }
+                ;
+                if (pi.getRotation() != Rotation.None) {
+                    playfield.rotatePlayerMino(pi.getRotation());
+                }
+                if (pi.getHardDrop()) {
+                    playfield.hardDropPlayerMino();
+                    windowDeltaY += 10;
+                }
+                if (pi.getSoftDrop()) {
+                    gravityFrames += 30;
+                }
+                if (pi.getHold() && !lockHold) {
+                    if (hold == null) {
+                        hold = playfield.swapHold(getNextMino());
+                    } else {
+                        hold = playfield.swapHold(hold);
+                    }
+                    lockHold = true;
                 }
 
-                if (xmove == -1) {
-                    hold = getNextMino();
+                if (playfield.getPlayerMinoGrounded()) {
+                    lockDelayFrames++;
+                    if (lockDelayMaxFrames <= lockDelayFrames) {
+                        playfield.lockPlayerMino();
+                        windowDeltaY += 4;
+                    }
+                } else {
+                    lockDelayFrames = 0;
+                }
+
+                renderBlocks = playfield.getRenderBlocks();
+
+                if (16 < gravityFrames) {
+                    playfield.moveYPlayerMino(-1);
+                    gravityFrames = 0;
+                }
+
+                if (!playfield.hasPlayerMino()) {
+                    lockHold = false;
+                    gravityFrames = 0;
+                    boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
+                    if (!spawnSuccess) {
+                        timer.cancel();
+                    }
                 }
 
             }
-        }, 0, 1);
+        }, 0, 3);
     }
 
     private Mino getNextMino() {
         nextQueue.offer(minoRandomizer.next());
         return nextQueue.poll();
+        // return Tetromino.L();
     }
 
     private void fillNextQueue() {
@@ -101,6 +163,9 @@ public class Gameplay {
         public final Mino[] nextQueue;
         public final Mino hold;
         public final boolean lockHold;
+        public final ObjectDataGrid<MinoColor> renderBlocks;
+        public final int windowVelocityX;
+        public final int windowVelocityY;
 
         public GuiDataSource() {
             this.timeMillis = Gameplay.this.timeMillis;
@@ -108,13 +173,31 @@ public class Gameplay {
             this.level = Gameplay.this.level;
             this.nextQueue = Gameplay.this.nextQueue.toArray(new Mino[5]);
             this.hold = Gameplay.this.hold;
-            // this.lockHold = Gameplay.this.lockHold;
-            this.lockHold = true;
+            this.lockHold = Gameplay.this.lockHold;
+            this.renderBlocks = Gameplay.this.renderBlocks;
+            this.windowVelocityX = Gameplay.this.windowVelocityX;
+            this.windowVelocityY = Gameplay.this.windowVelocityY;
         }
     }
 
     public GuiDataSource getGuiDataSource() {
+        this.windowVelocityX = (int) roundToZero(windowDeltaX - windowLastDeltaX);
+        if (windowVelocityX != 0) {
+            windowLastDeltaX += windowVelocityX;
+        }
+        this.windowVelocityY = (int) roundToZero(windowDeltaY - windowLastDeltaY);
+        if (windowVelocityY != 0) {
+            windowLastDeltaY += windowVelocityY;
+        }
         return new GuiDataSource();
+    }
+
+    private static double roundToZero(double in) {
+        if (in < 0) {
+            return Math.ceil(in);
+        } else {
+            return Math.floor(in);
+        }
     }
 
 }

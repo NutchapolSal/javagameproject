@@ -68,7 +68,13 @@ public class Gui {
         } else {
             holdMino.setMino(gds.hold);
         }
+        playfield.setRenderBlocks(gds.renderBlocks);
         f.repaint();
+
+        if (gds.windowVelocityX != 0 || gds.windowVelocityY != 0) {
+            var frameLoc = f.getLocationOnScreen();
+            f.setLocation(frameLoc.x + gds.windowVelocityX, frameLoc.y + gds.windowVelocityY);
+        }
     }
 
     public Gui() {
@@ -308,6 +314,12 @@ public class Gui {
             setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_R);
             setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_T);
             setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_Y);
+
+            setupKeyAction.accept(GameplayButton.Hold, KeyEvent.VK_CAPS_LOCK);
+            setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_SLASH);
+            setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_OPEN_BRACKET);
+            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_CLOSE_BRACKET);
+
         }
 
         class ButtonAction extends AbstractAction {
