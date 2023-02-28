@@ -108,6 +108,7 @@ public class Gui {
         f.setSize(500, 500);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
+        f.setLocationRelativeTo(null);
         f.setVisible(true);
     }
 
