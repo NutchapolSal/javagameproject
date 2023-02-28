@@ -12,7 +12,7 @@ public class App {
         Gameplay gameplay = new Gameplay();
         gameplay.setRawInputSource(gui.getKeyboardHandler());
 
-        // gameplay.startGame();
+        gameplay.startGame();
 
         // testkbhandler(g);
 
@@ -21,6 +21,7 @@ public class App {
                 gui.update(gameplay.getGuiDataSource());
             }
         };
+
         new javax.swing.Timer(16, guiUpdater).start();
     }
 

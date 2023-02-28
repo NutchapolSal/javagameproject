@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class Gameplay {
     private Queue<Mino> nextQueue;
@@ -38,9 +39,14 @@ public class Gameplay {
         level = 1;
 
         Timer timer = new Timer();
+        long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(0) + TimeUnit.SECONDS.toNanos(2);
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                timeMillis += 16;
+                timeMillis = TimeUnit.NANOSECONDS.toMillis(endTime - System.nanoTime());
+                if (timeMillis <= 0) {
+                    timeMillis = 0;
+                    timer.cancel();
+                }
             }
         }, 0, 16);
     }
