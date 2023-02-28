@@ -95,7 +95,8 @@ public class Gameplay {
                     playfield.rotatePlayerMino(pi.getRotation());
                 }
                 if (pi.getHardDrop()) {
-                    playfield.hardDropPlayerMino();
+                    playfield.sonicDropPlayerMino();
+                    lockDelayFrames = lockDelayMaxFrames;
                     windowNudgeY += 10;
                 }
                 if (pi.getSoftDrop()) {

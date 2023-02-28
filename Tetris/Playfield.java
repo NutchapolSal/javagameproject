@@ -73,9 +73,8 @@ public class Playfield {
         return false;
     }
 
-    public void hardDropPlayerMino() {
+    public void sonicDropPlayerMino() {
         setPlayerMinoPos(playerMinoX, getShadowYPos());
-        lockPlayerMino();
     }
 
     public void lockPlayerMino() {
