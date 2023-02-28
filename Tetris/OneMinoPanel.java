@@ -16,9 +16,9 @@ public class OneMinoPanel extends MinoPanel {
             return;
         }
 
-        for (int y = 0; y < mino.getShapeHeight(); y++) {
-            for (int x = 0; x < mino.getShapeWidth(); x++) {
-                if (mino.getShapeAtPos(x, y)) {
+        for (int y = 0; y < mino.getHeight(); y++) {
+            for (int x = 0; x < mino.getWidth(); x++) {
+                if (mino.getAtPos(x, y)) {
                     paintMinoBlock(g, x, y, color);
                 }
             }
@@ -32,7 +32,7 @@ public class OneMinoPanel extends MinoPanel {
             return;
         }
         this.color = mino.color;
-        setMinoCanvasSize(mino.getShapeWidth(), mino.getShapeHeight());
+        setMinoCanvasSize(mino.getWidth(), mino.getHeight());
     }
 
     public void setMino(Mino mino, MinoColor overrideColor) {
@@ -41,6 +41,6 @@ public class OneMinoPanel extends MinoPanel {
             return;
         }
         this.color = overrideColor;
-        setMinoCanvasSize(mino.getShapeWidth(), mino.getShapeHeight());
+        setMinoCanvasSize(mino.getWidth(), mino.getHeight());
     }
 }

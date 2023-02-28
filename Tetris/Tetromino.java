@@ -1,6 +1,6 @@
 package Tetris;
 
-import Tetris.KickTable.KickTableBuilder;
+import Tetris.KickTableMap.KickTableBuilder;
 
 public class Tetromino {
 

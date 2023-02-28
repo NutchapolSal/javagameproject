@@ -1,10 +1,10 @@
 package Tetris;
 
 public class ShapeRotator {
-    static public RotatedShape getRotatedShape(Mino mino, Direction dir) {
+    static public ShapeGrid getRotatedShape(ShapeGrid shape, Direction dir) {
         BooleanDataGrid newShape;
-        int oldWidth = mino.getShapeWidth();
-        int oldHeight = mino.getShapeHeight();
+        int oldWidth = shape.getWidth();
+        int oldHeight = shape.getHeight();
         switch (dir) {
             case Left:
             case Right:
@@ -18,12 +18,17 @@ public class ShapeRotator {
         for (int y = 0; y < oldHeight; y++) {
             for (int x = 0; x < oldWidth; x++) {
                 XY rotated = rotatePoint(x, y, oldWidth, oldHeight, dir);
-                newShape.setAtPos(rotated.x, rotated.y, mino.getShapeAtPos(x, y));
+                newShape.setAtPos(rotated.x, rotated.y, shape.getAtPos(x, y));
             }
         }
+        return newShape;
+    }
+
+    static public RotatedShape getRotatedMino(Mino mino, Direction dir) {
+        ShapeGrid newShape = getRotatedShape(mino, dir);
 
         MinoOrigin rotOrigin;
-        XY rotOriginPoint = rotatePoint(mino.getOrigin().x, mino.getOrigin().y, oldWidth, oldHeight, dir);
+        XY rotOriginPoint = rotatePoint(mino.getOrigin().x, mino.getOrigin().y, mino.getWidth(), mino.getHeight(), dir);
         if (mino.getOrigin().offset) {
             switch (dir) {
                 case Right:
@@ -81,7 +86,7 @@ public class ShapeRotator {
 }
 
 class RotatedShape {
-    public final BooleanDataGrid shape;
+    public final ShapeGrid shape;
     /**
      * offset from original shape origin
      */
@@ -91,7 +96,7 @@ class RotatedShape {
      */
     public final int yOffset;
 
-    RotatedShape(BooleanDataGrid shape, int xCornerOffset, int yCornerOffset) {
+    RotatedShape(ShapeGrid shape, int xCornerOffset, int yCornerOffset) {
         this.shape = shape;
         this.xOffset = xCornerOffset;
         this.yOffset = yCornerOffset;

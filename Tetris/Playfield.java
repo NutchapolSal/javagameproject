@@ -19,7 +19,7 @@ public class Playfield {
         Direction beforeRotate = playerMinoDirection;
         Direction afterRotate = playerMinoDirection.rotate(rot);
 
-        XY[] kicks = playerMino.getKickTable().getKicks(beforeRotate, afterRotate);
+        XY[] kicks = playerMino.getKicks(beforeRotate, afterRotate);
         for (XY kick : kicks) {
             boolean collided = checkCollision(playerMinoX + kick.x, playerMinoY + kick.y,
                     afterRotate);
@@ -35,8 +35,8 @@ public class Playfield {
 
     public void spawnPlayerMino(Mino mino) {
         playerMino = mino;
-        playerMinoX = (FIELD_WIDTH - mino.getShapeWidth()) / 2;
-        playerMinoY = FIELD_HEIGHT + mino.getShapeHeight();
+        playerMinoX = (FIELD_WIDTH - mino.getWidth()) / 2;
+        playerMinoY = FIELD_HEIGHT + mino.getHeight();
         playerMinoDirection = Direction.Up;
     }
 
@@ -59,16 +59,16 @@ public class Playfield {
 
     public static void main(String[] args) {
         Mino aMino = Tetromino.J();
-        for (int y = aMino.getShapeHeight() - 1; 0 <= y; y--) {
-            for (int x = 0; x < aMino.getShapeWidth(); x++) {
-                System.out.print(aMino.getShapeAtPos(x, y) ? "O" : " ");
+        for (int y = aMino.getHeight() - 1; 0 <= y; y--) {
+            for (int x = 0; x < aMino.getWidth(); x++) {
+                System.out.print(aMino.getAtPos(x, y) ? "O" : " ");
             }
             System.out.println();
         }
 
         System.out.println();
 
-        RotatedShape rs = ShapeRotator.getRotatedShape(aMino, Direction.Up);
+        RotatedShape rs = ShapeRotator.getRotatedMino(aMino, Direction.Up);
         for (int y = rs.shape.getHeight() - 1; 0 <= y; y--) {
             for (int x = 0; x < rs.shape.getWidth(); x++) {
                 System.out.print(rs.shape.getAtPos(x, y) ? "O" : " ");
@@ -77,7 +77,7 @@ public class Playfield {
         }
         System.out.printf("%s %s%n%n", rs.xOffset, rs.yOffset);
 
-        rs = ShapeRotator.getRotatedShape(aMino, Direction.Right);
+        rs = ShapeRotator.getRotatedMino(aMino, Direction.Right);
         for (int y = rs.shape.getHeight() - 1; 0 <= y; y--) {
             for (int x = 0; x < rs.shape.getWidth(); x++) {
                 System.out.print(rs.shape.getAtPos(x, y) ? "O" : " ");
@@ -86,7 +86,7 @@ public class Playfield {
         }
         System.out.printf("%s %s%n%n", rs.xOffset, rs.yOffset);
 
-        rs = ShapeRotator.getRotatedShape(aMino, Direction.Down);
+        rs = ShapeRotator.getRotatedMino(aMino, Direction.Down);
         for (int y = rs.shape.getHeight() - 1; 0 <= y; y--) {
             for (int x = 0; x < rs.shape.getWidth(); x++) {
                 System.out.print(rs.shape.getAtPos(x, y) ? "O" : " ");
@@ -95,7 +95,7 @@ public class Playfield {
         }
         System.out.printf("%s %s%n%n", rs.xOffset, rs.yOffset);
 
-        rs = ShapeRotator.getRotatedShape(aMino, Direction.Left);
+        rs = ShapeRotator.getRotatedMino(aMino, Direction.Left);
         for (int y = rs.shape.getHeight() - 1; 0 <= y; y--) {
             for (int x = 0; x < rs.shape.getWidth(); x++) {
                 System.out.print(rs.shape.getAtPos(x, y) ? "O" : " ");
