@@ -1,10 +1,12 @@
 package Tetris;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import java.awt.AlphaComposite;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -57,11 +59,22 @@ public abstract class MinoPanel extends JPanel {
     }
 
     protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc) {
+        paintMinoBlock(g, x, y, mc, 1);
+    }
+
+    protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc, double opacity) {
+        Graphics2D g2d = (Graphics2D) g;
         int graphicsX = x * BLOCK_WIDTH + centerOffsetX;
         int graphicsY = (PANEL_HEIGHT_BLOCKS - 1 - y) * BLOCK_HEIGHT - centerOffsetY;
         Image img;
         img = mc.image();
 
-        g.drawImage(img, graphicsX, graphicsY, BLOCK_WIDTH, BLOCK_HEIGHT, null);
+        if (opacity < 1) {
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
+        }
+        g2d.drawImage(img, graphicsX, graphicsY, BLOCK_WIDTH, BLOCK_HEIGHT, null);
+        if (opacity < 1) {
+            g2d.setPaintMode();
+        }
     }
 }
