@@ -52,9 +52,18 @@ public class Playfield {
                 if (!shape.getAtPos(testX, testY)) {
                     continue;
                 }
-
+                if (testX + x < 0
+                        || testY + y < 0
+                        || blocks.getWidth() <= testX + x
+                        || blocks.getHeight() <= testY + y) {
+                    return true;
+                }
+                if (blocks.getAtPos(testX + x, testY + y) != null) {
+                    return true;
+                }
             }
         }
+        return false;
     }
 
     public static void main(String[] args) {
