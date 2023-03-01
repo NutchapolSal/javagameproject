@@ -28,6 +28,8 @@ public class Gameplay {
     private double windowNudgeX;
     private double windowNudgeY;
 
+    private Mino[] nextQueueGuiData = new Mino[6];
+
     private int gravityFrames = 0;
     private int lockDelayFrames = 0;
     private int lockResetCount = 0;
@@ -133,7 +135,9 @@ public class Gameplay {
 
     private Mino getNextMino() {
         nextQueue.offer(minoRandomizer.next());
-        return nextQueue.poll();
+        var nextMino = nextQueue.poll();
+        nextQueueGuiData = nextQueue.toArray(nextQueueGuiData);
+        return nextMino;
         // return Tetromino.L();
     }
 
@@ -147,7 +151,7 @@ public class Gameplay {
         var gds = new GuiData(timeMillis,
                 linesCleared,
                 level,
-                nextQueue.toArray(new Mino[5]),
+                nextQueueGuiData,
                 hold,
                 lockHold,
                 renderBlocks,
