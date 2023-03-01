@@ -194,12 +194,11 @@ public class Playfield {
         int row = FIELD_HEIGHT - 1;
         int rowsCleared = 0;
         boolean removeRow;
-        ObjectDataGrid <Boolean> obj = new ObjectDataGrid<>(FIELD_WIDTH, FIELD_HEIGHT);
 
         while (row >= 0){
             removeRow = true;
             for(int col = 0; col < FIELD_WIDTH; col++){
-                if(!(obj.getAtPos(row, col))){
+                if(blocks.getAtPos(col, row) == null){
                     removeRow = false;
                     break;
                 }
@@ -208,15 +207,19 @@ public class Playfield {
             if(removeRow){
                 for (int row1 = row; row1 > 0; row1--){
                     for(int col1 = 0; col1 < FIELD_WIDTH; col1++){
-                        obj.getAtPos(row1, col1) = obj.getAtPos(row1-1, col1);
+                        blocks.setAtPos(col1, row1, blocks.getAtPos(row1-1, col1));
                     }
                 }
                 rowsCleared++;
                 for(int col = 0; col < FIELD_WIDTH; col++){
-                    obj.getAtPos(0, col);
+                    blocks.getAtPos(col, 0);
                 }
+            } else {
+                row--;
             }
         }
+        return rowsCleared;
+    }
 
     public void magic() {
         blocks.setAtPos(1, 0, MinoColor.White);
@@ -242,7 +245,7 @@ public class Playfield {
 
         System.out.printf("lines cleared %s%n", clearLines());
 
-        for (int y = blocks.getHeight() - 1; 0 <= y; y++) {
+        for (int y = blocks.getHeight() - 1; 0 <= y; y--) {
             for (int x = 0; x < blocks.getWidth(); x++) {
                 System.out.print(blocks.getAtPos(x, y) == null ? "." : "O");
             }
