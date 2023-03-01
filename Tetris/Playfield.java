@@ -217,6 +217,42 @@ public class Playfield {
                 }
             }
         }
+
+    public void magic() {
+        blocks.setAtPos(1, 0, MinoColor.White);
+        blocks.setAtPos(0, 1, MinoColor.White);
+        blocks.setAtPos(1, 1, MinoColor.White);
+        blocks.setAtPos(2, 1, MinoColor.White);
+        blocks.setAtPos(3, 1, MinoColor.White);
+        blocks.setAtPos(4, 1, MinoColor.White);
+        blocks.setAtPos(5, 1, MinoColor.White);
+        blocks.setAtPos(6, 1, MinoColor.White);
+        blocks.setAtPos(7, 1, MinoColor.White);
+        blocks.setAtPos(8, 1, MinoColor.White);
+        blocks.setAtPos(9, 1, MinoColor.White);
+        blocks.setAtPos(5, 2, MinoColor.White);
+        blocks.setAtPos(7, 2, MinoColor.White);
+
+        for (int y = blocks.getHeight() - 1; 0 <= y; y--) {
+            for (int x = 0; x < blocks.getWidth(); x++) {
+                System.out.print(blocks.getAtPos(x, y) == null ? "." : "O");
+            }
+            System.out.println();
+        }
+
+        System.out.printf("lines cleared %s%n", clearLines());
+
+        for (int y = blocks.getHeight() - 1; 0 <= y; y++) {
+            for (int x = 0; x < blocks.getWidth(); x++) {
+                System.out.print(blocks.getAtPos(x, y) == null ? "." : "O");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+        Playfield pf = new Playfield();
+        pf.magic();
     }
 
 }
