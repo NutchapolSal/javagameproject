@@ -30,6 +30,15 @@ public class Tetromino {
         ktb.setKicks(Direction.Up, Direction.Left,
                 new XY[] { new XY(0, 0), new XY(1, 0), new XY(1, 1), new XY(0, -2), new XY(1, -2) });
 
+        ktb.setKicks(Direction.Up, Direction.Down,
+                new XY[] { new XY(0, 0), new XY(0, 1), new XY(1, 1), new XY(-1, 1), new XY(1, 0), new XY(-1, 0) });
+        ktb.setKicks(Direction.Right, Direction.Left,
+                new XY[] { new XY(0, 0), new XY(1, 0), new XY(1, 2), new XY(1, 1), new XY(0, 2), new XY(0, 1) });
+        ktb.setKicks(Direction.Down, Direction.Up,
+                new XY[] { new XY(0, 0), new XY(0, -1), new XY(-1, -1), new XY(1, -1), new XY(-1, 0), new XY(1, 0) });
+        ktb.setKicks(Direction.Left, Direction.Right,
+                new XY[] { new XY(0, 0), new XY(-1, 0), new XY(-1, 2), new XY(-1, 1), new XY(0, 2), new XY(0, 1) });
+
         iKickTable = ktb.build();
         return iKickTable;
     }
@@ -56,6 +65,15 @@ public class Tetromino {
                 new XY[] { new XY(0, 0), new XY(1, 0), new XY(-2, 0), new XY(1, -2), new XY(-2, 1) });
         ktb.setKicks(Direction.Up, Direction.Left,
                 new XY[] { new XY(0, 0), new XY(-1, 0), new XY(2, 0), new XY(-1, 2), new XY(2, -1) });
+
+        ktb.setKicks(Direction.Up, Direction.Down,
+                new XY[] { new XY(0, 0), new XY(0, 1), new XY(1, 1), new XY(-1, 1), new XY(1, 0), new XY(-1, 0) });
+        ktb.setKicks(Direction.Right, Direction.Left,
+                new XY[] { new XY(0, 0), new XY(1, 0), new XY(1, 2), new XY(1, 1), new XY(0, 2), new XY(0, 1) });
+        ktb.setKicks(Direction.Down, Direction.Up,
+                new XY[] { new XY(0, 0), new XY(0, -1), new XY(-1, -1), new XY(1, -1), new XY(-1, 0), new XY(1, 0) });
+        ktb.setKicks(Direction.Left, Direction.Right,
+                new XY[] { new XY(0, 0), new XY(-1, 0), new XY(-1, 2), new XY(-1, 1), new XY(0, 2), new XY(0, 1) });
 
         iKickTable = ktb.build();
         return iKickTable;
