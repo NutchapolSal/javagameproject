@@ -2,13 +2,27 @@ package Tetris;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class App {
 
     public App() {
-        Gui g = new Gui();
+        Gui gui = new Gui();
+        Gameplay gameplay = new Gameplay();
+        gameplay.setRawInputSource(gui.getKeyboardHandler());
 
-        testkbhandler(g);
+        gameplay.startGame();
+
+        // testkbhandler(g);
+
+        ActionListener guiUpdater = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                gui.update(gameplay.getGuiDataSource());
+            }
+        };
+
+        new javax.swing.Timer(8, guiUpdater).start();
     }
 
     private void testkbhandler(Gui g) {

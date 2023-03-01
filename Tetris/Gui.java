@@ -25,14 +25,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+import Tetris.Gameplay.GuiDataSource;
 import java.awt.Container;
 
 public class Gui {
     private JFrame f;
     private JPanel centerPanel;
     private JLabel controlsText;
-    private JPanel holdMino;
+    private OneMinoPanel holdMino;
     private JPanel holdPanel;
     private JLabel holdText;
     private JPanel statsPanel;
@@ -42,19 +44,63 @@ public class Gui {
     private JLabel linesCountText;
     private JLabel linesText;
     private JButton newGameButton;
-    private JPanel nextMino1;
-    private JPanel nextMino2;
-    private JPanel nextMino3;
-    private JPanel nextMino4;
-    private JPanel nextMino5;
+    private OneMinoPanel[] nextMinos;
     private JPanel nextPanel;
     private JLabel nextText;
-    private JPanel playfield;
+    private PlayfieldPanel playfield;
     private Box.Filler rightFiller;
     private JLabel timeCountText;
     private JLabel timeText;
     private JPanel miscPanel;
     private KeyboardHandler kbh;
+
+    private double windowDeltaX;
+    private double windowDeltaY;
+    private double windowLastDeltaX;
+    private double windowLastDeltaY;
+
+    private static double roundToZero(double in) {
+        if (in < 0) {
+            return Math.ceil(in);
+        } else {
+            return Math.floor(in);
+        }
+    }
+
+    public void update(GuiDataSource gds) {
+        timeCountText.setText(
+                String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
+                        (gds.timeMillis / 1000d) % 60));
+        linesCountText.setText(String.format("%d", gds.linesCleared));
+        levelCountText.setText(String.format("%d", gds.level));
+        for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
+            nextMinos[i].setMino(gds.nextQueue[i]);
+        }
+        if (gds.lockHold) {
+            holdMino.setMino(gds.hold, MinoColor.Gray);
+        } else {
+            holdMino.setMino(gds.hold);
+        }
+        playfield.setRenderBlocks(gds.renderBlocks);
+        f.repaint();
+
+        windowDeltaX += gds.windowNudgeX;
+        windowDeltaY += gds.windowNudgeY;
+
+        windowDeltaX -= windowDeltaX / 12;
+        windowDeltaY -= windowDeltaY / 12;
+
+        int windowVelocityX = (int) roundToZero(windowDeltaX - windowLastDeltaX);
+        int windowVelocityY = (int) roundToZero(windowDeltaY - windowLastDeltaY);
+
+        windowLastDeltaX += windowVelocityX;
+        windowLastDeltaY += windowVelocityY;
+
+        if (windowVelocityX != 0 || windowVelocityY != 0) {
+            var frameLoc = f.getLocationOnScreen();
+            f.setLocation(frameLoc.x + windowVelocityX, frameLoc.y + windowVelocityY);
+        }
+    }
 
     public Gui() {
         setLookAndFeel();
@@ -62,6 +108,7 @@ public class Gui {
         f.setSize(500, 500);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
+        f.setLocationRelativeTo(null);
         f.setVisible(true);
     }
 
@@ -132,7 +179,7 @@ public class Gui {
 
     private void createHoldPanel() {
         holdPanel = new JPanel();
-        holdMino = new NextPanel();
+        holdMino = new OneMinoPanel();
         holdText = new JLabel();
 
         holdText.setText("Hold");
@@ -175,35 +222,26 @@ public class Gui {
     private void createNextPanel() {
         nextPanel = new JPanel();
         nextText = new JLabel();
-        nextMino1 = new NextPanel();
-        nextMino2 = new NextPanel();
-        nextMino3 = new NextPanel();
-        nextMino4 = new NextPanel();
-        nextMino5 = new NextPanel();
+        nextMinos = new OneMinoPanel[5];
 
         nextText.setText("Next");
 
         GroupLayout nextPanelLayout = new GroupLayout(nextPanel);
         nextPanel.setLayout(nextPanelLayout);
-        nextPanelLayout.setHorizontalGroup(nextPanelLayout.createParallelGroup(Alignment.LEADING)
-                .addComponent(nextText)
-                .addComponent(nextMino1)
-                .addComponent(nextMino2)
-                .addComponent(nextMino3)
-                .addComponent(nextMino4)
-                .addComponent(nextMino5));
-        nextPanelLayout.setVerticalGroup(nextPanelLayout.createSequentialGroup()
-                .addComponent(nextText)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino1)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino2)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino3)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino4)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(nextMino5));
+        var horizGroup = nextPanelLayout.createParallelGroup(Alignment.LEADING)
+                .addComponent(nextText);
+        var vertGroup = nextPanelLayout.createSequentialGroup()
+                .addComponent(nextText);
+
+        for (int i = 0; i < nextMinos.length; i++) {
+            nextMinos[i] = new OneMinoPanel();
+            horizGroup.addComponent(nextMinos[i]);
+
+            vertGroup.addPreferredGap(ComponentPlacement.RELATED);
+            vertGroup.addComponent(nextMinos[i]);
+        }
+        nextPanelLayout.setHorizontalGroup(horizGroup);
+        nextPanelLayout.setVerticalGroup(vertGroup);
 
     }
 
@@ -304,6 +342,12 @@ public class Gui {
             setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_R);
             setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_T);
             setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_Y);
+
+            setupKeyAction.accept(GameplayButton.Hold, KeyEvent.VK_CAPS_LOCK);
+            setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_SLASH);
+            setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_OPEN_BRACKET);
+            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_CLOSE_BRACKET);
+
         }
 
         class ButtonAction extends AbstractAction {

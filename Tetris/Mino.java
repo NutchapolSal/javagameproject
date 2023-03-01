@@ -1,46 +1,46 @@
 package Tetris;
 
-import Tetris.KickTable.KickTableBuilder;
+import Tetris.KickTableMap.KickTableBuilder;
 
-public class Mino {
-    protected BooleanDataGrid shape;
+public class Mino implements ShapeGrid, KickTable {
+    protected ShapeGrid shape;
     protected MinoOrigin origin;
     protected KickTable kickTable = (new KickTableBuilder()).build();
     protected MinoColor color = MinoColor.White;
 
-    public Mino(BooleanDataGrid shape, MinoOrigin origin) {
+    public Mino(ShapeGrid shape, MinoOrigin origin) {
         this.shape = shape;
         this.origin = origin;
     }
 
-    public Mino(BooleanDataGrid shape, MinoOrigin origin, KickTable kickTable) {
+    public Mino(ShapeGrid shape, MinoOrigin origin, KickTable kickTable) {
         this.shape = shape;
         this.origin = origin;
         this.kickTable = kickTable;
     }
 
-    public Mino(BooleanDataGrid shape, MinoOrigin origin, KickTable kickTable, MinoColor color) {
+    public Mino(ShapeGrid shape, MinoOrigin origin, KickTable kickTable, MinoColor color) {
         this.shape = shape;
         this.origin = origin;
         this.kickTable = kickTable;
         this.color = color;
     }
 
-    public Mino(BooleanDataGrid shape, MinoOrigin origin, MinoColor color) {
+    public Mino(ShapeGrid shape, MinoOrigin origin, MinoColor color) {
         this.shape = shape;
         this.origin = origin;
         this.color = color;
     }
 
-    public boolean getShapeAtPos(int x, int y) {
+    public boolean getAtPos(int x, int y) {
         return this.shape.getAtPos(x, y);
     }
 
-    public int getShapeWidth() {
+    public int getWidth() {
         return this.shape.getWidth();
     }
 
-    public int getShapeHeight() {
+    public int getHeight() {
         return this.shape.getHeight();
     }
 
@@ -48,12 +48,9 @@ public class Mino {
         return this.color;
     }
 
-    public void setColor(MinoColor c) {
-        this.color = c;
-    }
-
-    public KickTable getKickTable() {
-        return kickTable;
+    @Override
+    public XY[] getKicks(Direction beginDir, Direction destDir) {
+        return this.kickTable.getKicks(beginDir, destDir);
     }
 
     public MinoOrigin getOrigin() {
