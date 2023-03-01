@@ -190,4 +190,33 @@ public class Playfield {
         return renderBlocks;
     }
 
+    public int clearLines(){
+        int row = FIELD_HEIGHT - 1;
+        int rowsCleared = 0;
+        boolean removeRow;
+        ObjectDataGrid <Boolean> obj = new ObjectDataGrid<>(FIELD_WIDTH, FIELD_HEIGHT);
+
+        while (row >= 0){
+            removeRow = true;
+            for(int col = 0; col < FIELD_WIDTH; col++){
+                if(!(obj.getAtPos(row, col))){
+                    removeRow = false;
+                    break;
+                }
+            }
+
+            if(removeRow){
+                for (int row1 = row; row1 > 0; row1--){
+                    for(int col1 = 0; col1 < FIELD_WIDTH; col1++){
+                        obj.getAtPos(row1, col1) = obj.getAtPos(row1-1, col1);
+                    }
+                }
+                rowsCleared++;
+                for(int col = 0; col < FIELD_WIDTH; col++){
+                    obj.getAtPos(0, col);
+                }
+            }
+        }
+    }
+
 }
