@@ -5,40 +5,48 @@ import Tetris.KickTableMap.KickTableBuilder;
 public class Mino implements ShapeGrid, KickTable {
     protected ShapeGrid shape;
     protected MinoOrigin origin;
-    protected KickTable kickTable = (new KickTableBuilder()).build();
-    protected MinoColor color = MinoColor.White;
-    protected String name = "";
+    protected KickTable kickTable;
+    protected MinoColor color;
+    protected String name;
 
-    public Mino(ShapeGrid shape, MinoOrigin origin) {
-        this.shape = shape;
-        this.origin = origin;
+    public static class MinoBuilder {
+        protected ShapeGrid shape;
+        protected MinoOrigin origin;
+        protected KickTable kickTable = (new KickTableBuilder()).build();
+        protected MinoColor color = MinoColor.White;
+        protected String name = "";
+
+        public MinoBuilder(ShapeGrid shape, MinoOrigin origin) {
+            this.shape = shape;
+            this.origin = origin;
+        }
+
+        public MinoBuilder kickTable(KickTable kickTable) {
+            this.kickTable = kickTable;
+            return this;
+        }
+
+        public MinoBuilder color(MinoColor color) {
+            this.color = color;
+            return this;
+        }
+
+        public MinoBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Mino build() {
+            return new Mino(this);
+        }
     }
 
-    public Mino(ShapeGrid shape, MinoOrigin origin, KickTable kickTable) {
-        this.shape = shape;
-        this.origin = origin;
-        this.kickTable = kickTable;
-    }
-
-    public Mino(ShapeGrid shape, MinoOrigin origin, KickTable kickTable, MinoColor color) {
-        this.shape = shape;
-        this.origin = origin;
-        this.kickTable = kickTable;
-        this.color = color;
-    }
-
-    public Mino(ShapeGrid shape, MinoOrigin origin, MinoColor color) {
-        this.shape = shape;
-        this.origin = origin;
-        this.color = color;
-    }
-
-    public Mino(ShapeGrid shape, MinoOrigin origin, KickTable kickTable, MinoColor color, String name) {
-        this.shape = shape;
-        this.origin = origin;
-        this.kickTable = kickTable;
-        this.color = color;
-        this.name = name;
+    private Mino(MinoBuilder minoBuilder) {
+        this.shape = minoBuilder.shape;
+        this.origin = minoBuilder.origin;
+        this.kickTable = minoBuilder.kickTable;
+        this.color = minoBuilder.color;
+        this.name = minoBuilder.name;
     }
 
     public boolean getAtPos(int x, int y) {
