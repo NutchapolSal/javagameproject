@@ -153,6 +153,8 @@ public class Gui {
         newGameButton = new JButton();
         controlsText = new JLabel();
 
+        newGameButton.setFocusable(false);
+
         newGameButton.setText("New Game");
         controlsText.setText("<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold");
         controlsText.setVerticalAlignment(SwingConstants.TOP);
