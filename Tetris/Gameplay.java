@@ -34,12 +34,6 @@ public class Gameplay {
 
     private long timeMillis;
 
-    private GuiDataSource gds = new GuiDataSource();
-
-    public GuiDataSource getGds() {
-        return gds;
-    }
-
     public long getTimeMillis() {
         return timeMillis;
     }
