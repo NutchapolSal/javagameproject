@@ -222,19 +222,15 @@ public class Playfield {
     }
 
     public void magic() {
-        blocks.setAtPos(1, 0, MinoColor.White);
-        blocks.setAtPos(0, 1, MinoColor.White);
-        blocks.setAtPos(1, 1, MinoColor.White);
-        blocks.setAtPos(2, 1, MinoColor.White);
-        blocks.setAtPos(3, 1, MinoColor.White);
-        blocks.setAtPos(4, 1, MinoColor.White);
-        blocks.setAtPos(5, 1, MinoColor.White);
-        blocks.setAtPos(6, 1, MinoColor.White);
-        blocks.setAtPos(7, 1, MinoColor.White);
-        blocks.setAtPos(8, 1, MinoColor.White);
-        blocks.setAtPos(9, 1, MinoColor.White);
-        blocks.setAtPos(5, 2, MinoColor.White);
-        blocks.setAtPos(7, 2, MinoColor.White);
+        for (int y = 0; y < blocks.getHeight(); y++) {
+            blocks.setAtPos(y % blocks.getWidth(), y, MinoColor.White);
+        }
+        for (int x = 0; x < blocks.getWidth(); x++) {
+            blocks.setAtPos(x, 2, MinoColor.White);
+            blocks.setAtPos(x, 4, MinoColor.White);
+            blocks.setAtPos(x, 13, MinoColor.White);
+            blocks.setAtPos(x, 26, MinoColor.White);
+        }
 
         for (int y = blocks.getHeight() - 1; 0 <= y; y--) {
             for (int x = 0; x < blocks.getWidth(); x++) {
