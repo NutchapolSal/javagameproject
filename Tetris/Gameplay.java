@@ -143,32 +143,16 @@ public class Gameplay {
         }
     }
 
-    class GuiDataSource {
-        public final long timeMillis;
-        public final int linesCleared;
-        public final int level;
-        public final Mino[] nextQueue;
-        public final Mino hold;
-        public final boolean lockHold;
-        public final ObjectDataGrid<MinoColor> renderBlocks;
-        public final double windowNudgeX;
-        public final double windowNudgeY;
-
-        public GuiDataSource() {
-            this.timeMillis = Gameplay.this.timeMillis;
-            this.linesCleared = Gameplay.this.linesCleared;
-            this.level = Gameplay.this.level;
-            this.nextQueue = Gameplay.this.nextQueue.toArray(new Mino[5]);
-            this.hold = Gameplay.this.hold;
-            this.lockHold = Gameplay.this.lockHold;
-            this.renderBlocks = Gameplay.this.renderBlocks;
-            this.windowNudgeX = Gameplay.this.windowNudgeX;
-            this.windowNudgeY = Gameplay.this.windowNudgeY;
-        }
-    }
-
     public GuiDataSource getGuiDataSource() {
-        var gds = new GuiDataSource();
+        var gds = new GuiDataSource(timeMillis,
+                linesCleared,
+                level,
+                nextQueue.toArray(new Mino[5]),
+                hold,
+                lockHold,
+                renderBlocks,
+                windowNudgeX,
+                windowNudgeY);
         windowNudgeX = 0;
         windowNudgeY = 0;
         return gds;
