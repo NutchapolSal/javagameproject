@@ -1,6 +1,6 @@
 package Tetris;
 
-public class GuiDataSource {
+public class GuiData {
     public final long timeMillis;
     public final int linesCleared;
     public final int level;
@@ -11,7 +11,7 @@ public class GuiDataSource {
     public final double windowNudgeX;
     public final double windowNudgeY;
 
-    public GuiDataSource(long timeMillis, int linesCleared, int level, Mino[] nextQueue, Mino hold, boolean lockHold,
+    public GuiData(long timeMillis, int linesCleared, int level, Mino[] nextQueue, Mino hold, boolean lockHold,
             ObjectDataGrid<MinoColor> renderBlocks, double windowNudgeX, double windowNudgeY) {
         this.timeMillis = timeMillis;
         this.linesCleared = linesCleared;

@@ -18,7 +18,7 @@ public class App {
 
         ActionListener guiUpdater = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gui.update(gameplay.getGuiDataSource());
+                gui.update(gameplay.getGuiData());
             }
         };
 

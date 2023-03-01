@@ -27,7 +27,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
-import Tetris.Gameplay.GuiDataSource;
 import java.awt.Container;
 
 public class Gui {
@@ -67,7 +66,7 @@ public class Gui {
         }
     }
 
-    public void update(GuiDataSource gds) {
+    public void update(GuiData gds) {
         timeCountText.setText(
                 String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
                         (gds.timeMillis / 1000d) % 60));

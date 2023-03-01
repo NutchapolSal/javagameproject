@@ -143,8 +143,8 @@ public class Gameplay {
         }
     }
 
-    public GuiDataSource getGuiDataSource() {
-        var gds = new GuiDataSource(timeMillis,
+    public GuiData getGuiData() {
+        var gds = new GuiData(timeMillis,
                 linesCleared,
                 level,
                 nextQueue.toArray(new Mino[5]),
