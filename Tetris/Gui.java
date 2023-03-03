@@ -55,10 +55,10 @@ public class Gui {
     private JLabel timeText;
     private JPanel miscPanel;
     private JPanel calloutsPanel;
-    private JLabel spinLabel;
-    private JLabel lineCalloutLabel;
-    private JLabel comboLabel;
-    private JLabel b2bLabel;
+    private CalloutLabel spinLabel;
+    private CalloutLabel lineCalloutLabel;
+    private CalloutLabel comboLabel;
+    private CalloutLabel b2bLabel;
 
     private KeyboardHandler kbh;
 
@@ -76,6 +76,29 @@ public class Gui {
     }
 
     public void update(GuiData gds) {
+        // spinLabel.setText(String.format("%d", gds.calloutLines));
+        if (gds.spinName != null) {
+            spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
+        }
+        if (gds.calloutLines != 0) {
+            String calloutLinesStr = "";
+            if (gds.calloutLines == 1) {
+                calloutLinesStr = "SINGLE";
+            } else if (gds.calloutLines == 2) {
+                calloutLinesStr = "DOUBLE";
+            } else if (gds.calloutLines == 3) {
+                calloutLinesStr = "TRIPLE";
+            } else if (gds.calloutLines == 4) {
+                calloutLinesStr = "QUAD";
+            } else {
+                calloutLinesStr = "";
+            }
+            lineCalloutLabel.startAnimation(calloutLinesStr);
+        }
+        // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
+        // b2bLabel.setText(String.format("%d", gds.calloutLines));
+        // comboLabel.setText(String.format("%d", gds.calloutLines));
+
         timeCountText.setText(
                 String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
                         (gds.timeMillis / 1000d) % 60));
@@ -234,30 +257,26 @@ public class Gui {
     }
 
     private void createCallOutsLabel() {
-        spinLabel = new JLabel();
-        lineCalloutLabel = new JLabel();
-        b2bLabel = new JLabel();
-        comboLabel = new JLabel();
+        spinLabel = new CalloutLabel();
+        lineCalloutLabel = new CalloutLabel();
+        b2bLabel = new CalloutLabel();
+        comboLabel = new CalloutLabel();
 
         lineCalloutLabel.setFont(lineCalloutLabel.getFont().deriveFont(
                 lineCalloutLabel.getFont().getStyle() | Font.BOLD, lineCalloutLabel.getFont().getSize() + 6));
         lineCalloutLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-        lineCalloutLabel.setText("");
 
         b2bLabel.setFont(b2bLabel.getFont().deriveFont(b2bLabel.getFont().getStyle() | Font.BOLD,
                 b2bLabel.getFont().getSize() + 2));
         b2bLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-        b2bLabel.setText("");
 
         comboLabel.setFont(comboLabel.getFont().deriveFont(comboLabel.getFont().getStyle() | Font.BOLD,
                 comboLabel.getFont().getSize() + 2));
         comboLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-        comboLabel.setText("");
 
         spinLabel.setFont(spinLabel.getFont().deriveFont(spinLabel.getFont().getStyle() | Font.BOLD,
                 spinLabel.getFont().getSize() + 2));
         spinLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-        spinLabel.setText("");
 
     }
 
@@ -485,7 +504,7 @@ public class Gui {
 
     }
 
-    public void setNewGameAction(ActionListener a){
+    public void setNewGameAction(ActionListener a) {
         newGameButton.addActionListener(a);
     }
 }
