@@ -87,7 +87,11 @@ public class Tetromino {
         shape.setAtPos(2, 0, true);
         shape.setAtPos(3, 0, true);
 
-        return new Mino(shape, new MinoOrigin(2, 0, true), getIKickTable(), MinoColor.Cyan);
+        return new Mino.MinoBuilder(shape, new MinoOrigin(2, 0, true))
+                .kickTable(getIKickTable())
+                .color(MinoColor.Cyan)
+                .name("I")
+                .build();
     }
 
     static public Mino O() {
@@ -98,7 +102,10 @@ public class Tetromino {
         shape.setAtPos(0, 1, true);
         shape.setAtPos(1, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 1, true), MinoColor.Yellow);
+        return new Mino.MinoBuilder(shape, new MinoOrigin(1, 1, true))
+                .color(MinoColor.Yellow)
+                .name("O")
+                .build();
     }
 
     static public Mino S() {
@@ -109,7 +116,11 @@ public class Tetromino {
         shape.setAtPos(1, 1, true);
         shape.setAtPos(2, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Green);
+        return new Mino.MinoBuilder(shape, new MinoOrigin(1, 0, false))
+                .kickTable(getCommonKickTable())
+                .color(MinoColor.Green)
+                .name("S")
+                .build();
     }
 
     static public Mino Z() {
@@ -120,7 +131,11 @@ public class Tetromino {
         shape.setAtPos(0, 1, true);
         shape.setAtPos(1, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Red);
+        return new Mino.MinoBuilder(shape, new MinoOrigin(1, 0, false))
+                .kickTable(getCommonKickTable())
+                .color(MinoColor.Red)
+                .name("Z")
+                .build();
     }
 
     static public Mino J() {
@@ -131,7 +146,11 @@ public class Tetromino {
         shape.setAtPos(2, 0, true);
         shape.setAtPos(0, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Blue);
+        return new Mino.MinoBuilder(shape, new MinoOrigin(1, 0, false))
+                .kickTable(getCommonKickTable())
+                .color(MinoColor.Blue)
+                .name("J")
+                .build();
     }
 
     static public Mino L() {
@@ -142,7 +161,11 @@ public class Tetromino {
         shape.setAtPos(2, 0, true);
         shape.setAtPos(2, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Orange);
+        return new Mino.MinoBuilder(shape, new MinoOrigin(1, 0, false))
+                .kickTable(getCommonKickTable())
+                .color(MinoColor.Orange)
+                .name("L")
+                .build();
     }
 
     static public Mino T() {
@@ -153,6 +176,11 @@ public class Tetromino {
         shape.setAtPos(2, 0, true);
         shape.setAtPos(1, 1, true);
 
-        return new Mino(shape, new MinoOrigin(1, 0, false), getCommonKickTable(), MinoColor.Purple);
+        return new Mino.MinoBuilder(shape, new MinoOrigin(1, 0, false))
+                .kickTable(getCommonKickTable())
+                .color(MinoColor.Purple)
+                .name("T")
+                .useTSpinCheck(true)
+                .build();
     }
 }

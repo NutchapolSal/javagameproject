@@ -1,5 +1,7 @@
 package Tetris;
 
+import java.awt.event.ActionListener;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -18,6 +20,7 @@ import javax.swing.UIManager;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -27,7 +30,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
-import Tetris.Gameplay.GuiDataSource;
 import java.awt.Container;
 
 public class Gui {
@@ -52,6 +54,12 @@ public class Gui {
     private JLabel timeCountText;
     private JLabel timeText;
     private JPanel miscPanel;
+    private JPanel calloutsPanel;
+    private CalloutLabel spinLabel;
+    private CalloutLabel lineCalloutLabel;
+    private CalloutLabel comboLabel;
+    private CalloutLabel b2bLabel;
+
     private KeyboardHandler kbh;
 
     private double windowDeltaX;
@@ -67,21 +75,50 @@ public class Gui {
         }
     }
 
-    public void update(GuiDataSource gds) {
+    public void update(GuiData gds) {
+        // spinLabel.setText(String.format("%d", gds.calloutLines));
+        if (gds.spinName != null) {
+            spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
+        }
+        if (gds.calloutLines != 0) {
+            String calloutLinesStr = "";
+            if (gds.calloutLines == 1) {
+                calloutLinesStr = "SINGLE";
+            } else if (gds.calloutLines == 2) {
+                calloutLinesStr = "DOUBLE";
+            } else if (gds.calloutLines == 3) {
+                calloutLinesStr = "TRIPLE";
+            } else if (gds.calloutLines == 4) {
+                calloutLinesStr = "QUAD";
+            } else {
+                calloutLinesStr = "";
+            }
+            lineCalloutLabel.startAnimation(calloutLinesStr);
+        }
+        // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
+        // b2bLabel.setText(String.format("%d", gds.calloutLines));
+        // comboLabel.setText(String.format("%d", gds.calloutLines));
+
         timeCountText.setText(
                 String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
                         (gds.timeMillis / 1000d) % 60));
         linesCountText.setText(String.format("%d", gds.linesCleared));
         levelCountText.setText(String.format("%d", gds.level));
-        for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
-            nextMinos[i].setMino(gds.nextQueue[i]);
-        }
         if (gds.lockHold) {
             holdMino.setMino(gds.hold, MinoColor.Gray);
         } else {
             holdMino.setMino(gds.hold);
         }
-        playfield.setRenderBlocks(gds.renderBlocks);
+
+        if (gds.renderBlocks != null) {
+            playfield.setRenderBlocks(gds.renderBlocks);
+        }
+        if (gds.nextQueue != null) {
+            for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
+                nextMinos[i].setMino(gds.nextQueue[i]);
+            }
+        }
+        playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
         f.repaint();
 
         windowDeltaX += gds.windowNudgeX;
@@ -146,6 +183,7 @@ public class Gui {
         createStatsPanel();
         createNextPanel();
         createHoldPanel();
+        createCallOutsPanel();
         createMiscPanel();
 
         GroupLayout centerPanelLayout = new GroupLayout(centerPanel);
@@ -153,6 +191,7 @@ public class Gui {
         centerPanelLayout.setHorizontalGroup(centerPanelLayout.createSequentialGroup()
                 .addGroup(centerPanelLayout.createParallelGroup(Alignment.TRAILING)
                         .addComponent(holdPanel)
+                        .addComponent(calloutsPanel)
                         .addComponent(statsPanel))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(playfield)
@@ -165,6 +204,8 @@ public class Gui {
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(holdPanel)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(calloutsPanel)
                         .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
                                 Integer.MAX_VALUE)
                         .addComponent(statsPanel))
@@ -193,6 +234,50 @@ public class Gui {
                 .addComponent(holdText)
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(holdMino));
+    }
+
+    private void createCallOutsPanel() {
+        calloutsPanel = new JPanel();
+        createCallOutsLabel();
+
+        GroupLayout calloutsPanelLayout = new GroupLayout(calloutsPanel);
+        calloutsPanel.setLayout(calloutsPanelLayout);
+        calloutsPanelLayout.setHorizontalGroup(
+                calloutsPanelLayout.createParallelGroup(Alignment.TRAILING)
+                        .addComponent(spinLabel)
+                        .addComponent(lineCalloutLabel)
+                        .addComponent(b2bLabel)
+                        .addComponent(comboLabel));
+        calloutsPanelLayout.setVerticalGroup(calloutsPanelLayout.createSequentialGroup()
+                .addComponent(spinLabel)
+                .addComponent(lineCalloutLabel)
+                .addComponent(b2bLabel)
+                .addComponent(comboLabel));
+
+    }
+
+    private void createCallOutsLabel() {
+        spinLabel = new CalloutLabel();
+        lineCalloutLabel = new CalloutLabel();
+        b2bLabel = new CalloutLabel();
+        comboLabel = new CalloutLabel();
+
+        lineCalloutLabel.setFont(lineCalloutLabel.getFont().deriveFont(
+                lineCalloutLabel.getFont().getStyle() | Font.BOLD, lineCalloutLabel.getFont().getSize() + 6));
+        lineCalloutLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+
+        b2bLabel.setFont(b2bLabel.getFont().deriveFont(b2bLabel.getFont().getStyle() | Font.BOLD,
+                b2bLabel.getFont().getSize() + 2));
+        b2bLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+
+        comboLabel.setFont(comboLabel.getFont().deriveFont(comboLabel.getFont().getStyle() | Font.BOLD,
+                comboLabel.getFont().getSize() + 2));
+        comboLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+
+        spinLabel.setFont(spinLabel.getFont().deriveFont(spinLabel.getFont().getStyle() | Font.BOLD,
+                spinLabel.getFont().getSize() + 2));
+        spinLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+
     }
 
     private void createMiscPanel() {
@@ -272,7 +357,6 @@ public class Gui {
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(timeText)
                 .addComponent(timeCountText));
-
     }
 
     private void createStatsLabels() {
@@ -286,19 +370,19 @@ public class Gui {
         levelText.setText("Level");
 
         levelCountText.setFont(levelCountText.getFont().deriveFont(
-                levelCountText.getFont().getStyle() | java.awt.Font.BOLD, levelCountText.getFont().getSize() + 7));
+                levelCountText.getFont().getStyle() | Font.BOLD, levelCountText.getFont().getSize() + 7));
         levelCountText.setText("0");
 
         linesText.setText("Lines");
 
         linesCountText.setFont(linesCountText.getFont().deriveFont(
-                linesCountText.getFont().getStyle() | java.awt.Font.BOLD, linesCountText.getFont().getSize() + 7));
+                linesCountText.getFont().getStyle() | Font.BOLD, linesCountText.getFont().getSize() + 7));
         linesCountText.setText("0");
 
         timeText.setText("Time");
 
         timeCountText.setFont(timeCountText.getFont().deriveFont(
-                timeCountText.getFont().getStyle() | java.awt.Font.BOLD, timeCountText.getFont().getSize() + 7));
+                timeCountText.getFont().getStyle() | Font.BOLD, timeCountText.getFont().getSize() + 7));
         timeCountText.setText("00.00");
     }
 
@@ -418,5 +502,9 @@ public class Gui {
             // System.out.println();
         }
 
+    }
+
+    public void setNewGameAction(ActionListener a) {
+        newGameButton.addActionListener(a);
     }
 }

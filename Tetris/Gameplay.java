@@ -14,7 +14,6 @@ public class Gameplay {
     // private static long FRAME_DELAY = 250_000_000;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
-    private int gravityMaxFrames = 256;
 
     private Queue<Mino> nextQueue = new ArrayDeque<>();
     private Mino hold;
@@ -25,26 +24,29 @@ public class Gameplay {
     private MinoRandomizer minoRandomizer;
     private boolean lockHold;
     private ObjectDataGrid<MinoColor> renderBlocks;
+    private PlayerRenderData pdr;
     private double windowNudgeX;
     private double windowNudgeY;
+    private Timer timer;
 
-    private int gravityFrames = 0;
+    private Mino[] nextQueueGuiData = new Mino[6];
+
+    private double gravityCount = 0;
     private int lockDelayFrames = 0;
     private int lockResetCount = 0;
+    private int lowestPlayerY;
 
     private long timeMillis;
-
-    private GuiDataSource gds = new GuiDataSource();
-
-    public GuiDataSource getGds() {
-        return gds;
-    }
 
     public long getTimeMillis() {
         return timeMillis;
     }
 
     private PlayerInput pi = new PlayerInput();
+    private int calloutLines;
+    private String spinName;
+    private boolean spinMini;
+    private double playerLockProgress;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -61,9 +63,12 @@ public class Gameplay {
 
         fillNextQueue();
         playfield.spawnPlayerMino(getNextMino());
+        lowestPlayerY = playfield.getPlayerMinoY();
         renderBlocks = playfield.getRenderBlocks();
 
-        Timer timer = new Timer();
+        if(timer != null)
+            timer.cancel();
+        timer = new Timer();
         long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
         lastFrame = System.nanoTime();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -81,24 +86,9 @@ public class Gameplay {
 
                 windowNudgeX = 0;
                 windowNudgeY = 0;
-                gravityFrames++;
 
                 pi.tick();
 
-                if (!playfield.moveXPlayerMino(pi.getXMove())) {
-                    windowNudgeX += pi.getXMove() * 3;
-                }
-                if (pi.getRotation() != Rotation.None) {
-                    playfield.rotatePlayerMino(pi.getRotation());
-                }
-                if (pi.getHardDrop()) {
-                    playfield.sonicDropPlayerMino();
-                    lockDelayFrames = lockDelayMaxFrames;
-                    windowNudgeY += 10;
-                }
-                if (pi.getSoftDrop()) {
-                    gravityFrames += 30;
-                }
                 if (pi.getHold() && !lockHold) {
                     if (hold == null) {
                         hold = playfield.swapHold(getNextMino());
@@ -108,30 +98,83 @@ public class Gameplay {
                     lockHold = true;
                 }
 
+                boolean nudgePlayfieldX = false;
+                if (pi.getXMove() != 0) {
+                    boolean moveSuccess = playfield.moveXPlayerMino(pi.getXMove());
+                    nudgePlayfieldX = !moveSuccess;
+                    if (moveSuccess) {
+                        resetLockDelay();
+                    }
+                }
+
+                if (nudgePlayfieldX) {
+                    windowNudgeX += pi.getXMove() * 3;
+                }
+
+                if (pi.getRotation() != Rotation.None) {
+                    RotationResult result = playfield.rotatePlayerMino(pi.getRotation());
+                    spinMini = false;
+                    switch (result) {
+                        case SuccessTSpinMini:
+                            spinMini = true;
+                        case SuccessTSpin:
+                        case SuccessTwist:
+                            spinName = playfield.getPlayerMinoName();
+                        case Success:
+                            resetLockDelay();
+                        case Fail:
+                            break;
+                    }
+                }
+
+                boolean hardDropLock = false;
+                if (pi.getHardDrop()) {
+                    playfield.sonicDropPlayerMino();
+                    hardDropLock = true;
+                    windowNudgeY += 6;
+                }
+                if (pi.getSoftDrop()) {
+                    gravityCount += getGravityFromLevel(level) * 6;
+                }
+
+                gravityCount += getGravityFromLevel(level);
+                int dropCount = (int) gravityCount;
+                for (int i = 0; i < dropCount; i++) {
+                    if (playfield.moveYPlayerMino(-1)) {
+                        resetLockCount();
+                    }
+                    gravityCount -= 1;
+                }
+
                 if (playfield.getPlayerMinoGrounded()) {
                     lockDelayFrames++;
-                    if (lockDelayMaxFrames <= lockDelayFrames) {
-                        playfield.lockPlayerMino();
+                    if (hardDropLock || lockResetMaxCount <= lockResetCount || lockDelayMaxFrames <= lockDelayFrames) {
                         windowNudgeY += 4;
+                        playfield.lockPlayerMino();
+                        int lines = playfield.clearLines();
+                        linesCleared += lines;
+                        calloutLines = lines;
+                        level = 1 + (linesCleared / 10);
+                        lockResetCount = 0;
+                        lockDelayFrames = 0;
+                        renderBlocks = playfield.getRenderBlocks();
                     }
                 } else {
                     lockDelayFrames = 0;
                 }
 
                 renderBlocks = playfield.getRenderBlocks();
-
-                if (16 < gravityFrames) {
-                    playfield.moveYPlayerMino(-1);
-                    gravityFrames = 0;
-                }
+                pdr = playfield.getPlayerRenderData();
+                playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
 
                 if (!playfield.hasPlayerMino()) {
-                    lockHold = false;
-                    gravityFrames = 0;
                     boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
                     if (!spawnSuccess) {
                         timer.cancel();
                     }
+                    lockHold = false;
+                    gravityCount = 0;
+                    lowestPlayerY = playfield.getPlayerMinoY();
                 }
             }
         }, 0, 3);
@@ -139,7 +182,9 @@ public class Gameplay {
 
     private Mino getNextMino() {
         nextQueue.offer(minoRandomizer.next());
-        return nextQueue.poll();
+        var nextMino = nextQueue.poll();
+        nextQueueGuiData = nextQueue.toArray(new Mino[0]);
+        return nextMino;
         // return Tetromino.L();
     }
 
@@ -149,34 +194,50 @@ public class Gameplay {
         }
     }
 
-    class GuiDataSource {
-        public final long timeMillis;
-        public final int linesCleared;
-        public final int level;
-        public final Mino[] nextQueue;
-        public final Mino hold;
-        public final boolean lockHold;
-        public final ObjectDataGrid<MinoColor> renderBlocks;
-        public final double windowNudgeX;
-        public final double windowNudgeY;
+    private void resetLockDelay() {
+        lockDelayFrames = 0;
+        lockResetCount++;
+    }
 
-        public GuiDataSource() {
-            this.timeMillis = Gameplay.this.timeMillis;
-            this.linesCleared = Gameplay.this.linesCleared;
-            this.level = Gameplay.this.level;
-            this.nextQueue = Gameplay.this.nextQueue.toArray(new Mino[5]);
-            this.hold = Gameplay.this.hold;
-            this.lockHold = Gameplay.this.lockHold;
-            this.renderBlocks = Gameplay.this.renderBlocks;
-            this.windowNudgeX = Gameplay.this.windowNudgeX;
-            this.windowNudgeY = Gameplay.this.windowNudgeY;
+    private void resetLockCount() {
+        if (playfield.getPlayerMinoY() < lowestPlayerY) {
+            lockResetCount = 0;
+            lowestPlayerY = playfield.getPlayerMinoY();
         }
     }
 
-    public GuiDataSource getGuiDataSource() {
-        var gds = new GuiDataSource();
+    public GuiData getGuiData() {
+        var gds = new GuiData(timeMillis,
+                linesCleared,
+                level,
+                hold,
+                lockHold,
+                pdr,
+                playerLockProgress,
+                windowNudgeX,
+                windowNudgeY,
+                0,
+                0,
+                renderBlocks,
+                nextQueueGuiData,
+                calloutLines,
+                spinName,
+                spinMini);
+        renderBlocks = null;
+        nextQueueGuiData = null;
+        spinName = null;
+        calloutLines = 0;
         windowNudgeX = 0;
         windowNudgeY = 0;
         return gds;
+    }
+
+    private static double[] levelTable = { 0.016666667, 0.021017234, 0.026977447, 0.035255958,
+            0.046921922, 0.063613232, 0.087865741, 0.123701138,
+            0.177525297, 0.259807742, 0.387747189, 0.590667454,
+            0.918273646, 1.457, 2.361, 3.909, 6.614, 11.438, 20 };
+
+    private static double getGravityFromLevel(int level) {
+        return level > 19 ? levelTable[18] : levelTable[level - 1];
     }
 }

@@ -21,8 +21,8 @@ public class Playfield {
         return movePlayerMino(x, 0);
     }
 
-    public void moveYPlayerMino(int y) {
-        movePlayerMino(0, y);
+    public boolean moveYPlayerMino(int y) {
+        return movePlayerMino(0, y);
     }
 
     public boolean getPlayerMinoGrounded() {
@@ -53,7 +53,7 @@ public class Playfield {
         return true;
     }
 
-    public boolean rotatePlayerMino(Rotation rot) {
+    public RotationResult rotatePlayerMino(Rotation rot) {
         Direction beforeRotate = playerMinoDirection;
         Direction afterRotate = playerMinoDirection.rotate(rot);
 
@@ -67,14 +67,91 @@ public class Playfield {
                 playerMinoY = playerMinoY + kick.y;
                 playerMinoDirection = afterRotate;
                 playerMinoRotateData = rotateData;
-                return true;
+                if (playerMino.useTSpinCheck) {
+                    return threeCornerCheck(kick.x, kick.y);
+                } else {
+                    return immobileCheck();
+                }
             }
         }
-        return false;
+        return RotationResult.Fail;
     }
 
-    public void sonicDropPlayerMino() {
-        setPlayerMinoPos(playerMinoX, getShadowYPos());
+    private RotationResult immobileCheck() {
+        if (!checkShapeCollision(playerMinoRotateData,
+                playerMinoX + playerMinoRotateData.xOffset,
+                playerMinoY + playerMinoRotateData.yOffset + 1)) {
+            return RotationResult.Success;
+        }
+        if (!checkShapeCollision(playerMinoRotateData,
+                playerMinoX + playerMinoRotateData.xOffset + 1,
+                playerMinoY + playerMinoRotateData.yOffset)) {
+            return RotationResult.Success;
+        }
+        if (!checkShapeCollision(playerMinoRotateData,
+                playerMinoX + playerMinoRotateData.xOffset - 1,
+                playerMinoY + playerMinoRotateData.yOffset)) {
+            return RotationResult.Success;
+        }
+        return RotationResult.SuccessTwist;
+    }
+
+    private RotationResult threeCornerCheck(int kickX, int kickY) {
+        BooleanDataGrid absoluteTopLeftCorner = new BooleanDataGrid(3, 3);
+        absoluteTopLeftCorner.setAtPos(0, 2, true);
+
+        ShapeGrid relativeTopLeftCorner = ShapeRotator.getRotatedShape(absoluteTopLeftCorner, playerMinoDirection);
+        ShapeGrid relativeTopRightCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Right);
+        ShapeGrid relativeBottomRightCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Down);
+        ShapeGrid relativeBottomLeftCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Left);
+
+        int squaresCount = 0;
+        int frontSquaresCount = 0;
+        if (checkShapeCollision(relativeTopLeftCorner,
+                playerMinoX + playerMino.getOrigin().x - 1,
+                playerMinoY + playerMino.getOrigin().y - 1)) {
+            squaresCount++;
+            frontSquaresCount++;
+        }
+        if (checkShapeCollision(relativeTopRightCorner,
+                playerMinoX + playerMino.getOrigin().x - 1,
+                playerMinoY + playerMino.getOrigin().y - 1)) {
+            squaresCount++;
+            frontSquaresCount++;
+        }
+        if (checkShapeCollision(relativeBottomLeftCorner,
+                playerMinoX + playerMino.getOrigin().x - 1,
+                playerMinoY + playerMino.getOrigin().y - 1)) {
+            squaresCount++;
+        }
+        if (checkShapeCollision(relativeBottomRightCorner,
+                playerMinoX + playerMino.getOrigin().x - 1,
+                playerMinoY + playerMino.getOrigin().y - 1)) {
+            squaresCount++;
+        }
+
+        if (3 <= squaresCount) {
+            if (frontSquaresCount == 2) {
+                return RotationResult.SuccessTSpin;
+            }
+            if (Math.abs(kickX) == 1 && Math.abs(kickY) == 2) {
+                return RotationResult.SuccessTSpin;
+            }
+            return RotationResult.SuccessTSpinMini;
+        }
+        return RotationResult.Success;
+    }
+
+    /**
+     * @return true if player mino moved, false if player mino did not move
+     */
+    public boolean sonicDropPlayerMino() {
+        int shadowYPos = getShadowYPos();
+        if (shadowYPos == playerMinoY) {
+            return false;
+        }
+        setPlayerMinoPos(playerMinoX, shadowYPos);
+        return true;
     }
 
     public void lockPlayerMino() {
@@ -173,21 +250,64 @@ public class Playfield {
                 renderBlocks.setAtPos(srcX, srcY, blocks.getAtPos(srcX, srcY));
             }
         }
-        if (hasPlayerMino()) {
-            writeShapeToColorGrid(
-                    renderBlocks,
-                    playerMinoRotateData,
-                    playerMinoX + playerMinoRotateData.xOffset,
-                    getShadowYPos() + playerMinoRotateData.yOffset,
-                    MinoColor.Gray);
-            writeShapeToColorGrid(
-                    renderBlocks,
-                    playerMinoRotateData,
-                    playerMinoX + playerMinoRotateData.xOffset,
-                    playerMinoY + playerMinoRotateData.yOffset,
-                    playerMino.getColor());
-        }
         return renderBlocks;
+    }
+
+    public PlayerRenderData getPlayerRenderData() {
+        if (playerMino == null) {
+            return null;
+        }
+
+        ObjectDataGrid<MinoColor> playerBlocks = new ObjectDataGrid<>(playerMinoRotateData.shape.getWidth(),
+                playerMinoRotateData.shape.getHeight());
+        writeShapeToColorGrid(playerBlocks, playerMinoRotateData, 0, 0, playerMino.getColor());
+
+        return new PlayerRenderData(
+                playerBlocks,
+                playerMinoX + playerMinoRotateData.xOffset,
+                playerMinoY + playerMinoRotateData.yOffset,
+                getShadowYPos() + playerMinoRotateData.yOffset);
+    }
+
+    public int clearLines() {
+        int row = blocks.getHeight() - 1;
+        int width = blocks.getWidth();
+        int rowsCleared = 0;
+        boolean removeRow;
+
+        while (row >= 0) {
+            removeRow = true;
+            for (int col = 0; col < width; col++) {
+                if (blocks.getAtPos(col, row) == null) {
+                    removeRow = false;
+                    break;
+                }
+            }
+
+            if (removeRow) {
+                for (int copyRow = row; copyRow < blocks.getHeight() - 1; copyRow++) {
+                    for (int copyCol = 0; copyCol < width; copyCol++) {
+                        blocks.setAtPos(copyCol, copyRow, blocks.getAtPos(copyCol, copyRow + 1));
+                    }
+                }
+
+                rowsCleared++;
+                for (int col = 0; col < width; col++) {
+                    blocks.setAtPos(col, blocks.getHeight() - 1, null);
+                }
+            } else {
+                row--;
+            }
+        }
+        return rowsCleared;
+    }
+
+    public int getPlayerMinoY() {
+        return playerMinoY;
+    }
+
+    public String getPlayerMinoName() {
+        return playerMino.getName();
     }
 
 }
