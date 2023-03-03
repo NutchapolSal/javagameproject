@@ -113,11 +113,14 @@ public class Gameplay {
                     switch (result) {
                         case SuccessTSpinMini:
                             spinMini = true;
+                            // fallthrough
                         case SuccessTSpin:
                         case SuccessTwist:
                             spinName = playfield.getPlayerMinoName();
+                            // fallthrough
                         case Success:
                             resetLockDelay();
+                            // fallthrough
                         case Fail:
                             break;
                     }
