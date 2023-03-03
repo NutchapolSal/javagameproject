@@ -42,6 +42,7 @@ public class Gameplay {
     }
 
     private PlayerInput pi = new PlayerInput();
+    private int calloutLines;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -134,7 +135,9 @@ public class Gameplay {
                     if (hardDropLock || lockResetMaxCount <= lockResetCount || lockDelayMaxFrames <= lockDelayFrames) {
                         windowNudgeY += 4;
                         playfield.lockPlayerMino();
-                        linesCleared += playfield.clearLines();
+                        int lines = playfield.clearLines();
+                        linesCleared += lines;
+                        calloutLines = lines;
                         level = 1 + (linesCleared / 10);
                         lockResetCount = 0;
                         lockDelayFrames = 0;
@@ -199,10 +202,11 @@ public class Gameplay {
                 0,
                 renderBlocks,
                 nextQueueGuiData,
-                0,
+                calloutLines,
                 null);
         renderBlocks = null;
         nextQueueGuiData = null;
+        calloutLines = 0;
         windowNudgeX = 0;
         windowNudgeY = 0;
         return gds;
