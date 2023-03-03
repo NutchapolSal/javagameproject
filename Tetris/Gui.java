@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -231,23 +232,23 @@ public class Gui {
         comboLabel = new JLabel();
 
         lineCalloutLabel.setFont(lineCalloutLabel.getFont().deriveFont(
-                lineCalloutLabel.getFont().getStyle() | java.awt.Font.BOLD, lineCalloutLabel.getFont().getSize() + 6));
-        lineCalloutLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+                lineCalloutLabel.getFont().getStyle() | Font.BOLD, lineCalloutLabel.getFont().getSize() + 6));
+        lineCalloutLabel.setHorizontalAlignment(SwingConstants.TRAILING);
         lineCalloutLabel.setText("");
 
-        b2bLabel.setFont(b2bLabel.getFont().deriveFont(b2bLabel.getFont().getStyle() | java.awt.Font.BOLD,
+        b2bLabel.setFont(b2bLabel.getFont().deriveFont(b2bLabel.getFont().getStyle() | Font.BOLD,
                 b2bLabel.getFont().getSize() + 2));
-        b2bLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        b2bLabel.setHorizontalAlignment(SwingConstants.TRAILING);
         b2bLabel.setText("");
 
-        comboLabel.setFont(comboLabel.getFont().deriveFont(comboLabel.getFont().getStyle() | java.awt.Font.BOLD,
+        comboLabel.setFont(comboLabel.getFont().deriveFont(comboLabel.getFont().getStyle() | Font.BOLD,
                 comboLabel.getFont().getSize() + 2));
-        comboLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        comboLabel.setHorizontalAlignment(SwingConstants.TRAILING);
         comboLabel.setText("");
 
-        spinLabel.setFont(spinLabel.getFont().deriveFont(spinLabel.getFont().getStyle() | java.awt.Font.BOLD,
+        spinLabel.setFont(spinLabel.getFont().deriveFont(spinLabel.getFont().getStyle() | Font.BOLD,
                 spinLabel.getFont().getSize() + 2));
-        spinLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        spinLabel.setHorizontalAlignment(SwingConstants.TRAILING);
         spinLabel.setText("");
 
     }
@@ -342,19 +343,19 @@ public class Gui {
         levelText.setText("Level");
 
         levelCountText.setFont(levelCountText.getFont().deriveFont(
-                levelCountText.getFont().getStyle() | java.awt.Font.BOLD, levelCountText.getFont().getSize() + 7));
+                levelCountText.getFont().getStyle() | Font.BOLD, levelCountText.getFont().getSize() + 7));
         levelCountText.setText("0");
 
         linesText.setText("Lines");
 
         linesCountText.setFont(linesCountText.getFont().deriveFont(
-                linesCountText.getFont().getStyle() | java.awt.Font.BOLD, linesCountText.getFont().getSize() + 7));
+                linesCountText.getFont().getStyle() | Font.BOLD, linesCountText.getFont().getSize() + 7));
         linesCountText.setText("0");
 
         timeText.setText("Time");
 
         timeCountText.setFont(timeCountText.getFont().deriveFont(
-                timeCountText.getFont().getStyle() | java.awt.Font.BOLD, timeCountText.getFont().getSize() + 7));
+                timeCountText.getFont().getStyle() | Font.BOLD, timeCountText.getFont().getSize() + 7));
         timeCountText.setText("00.00");
     }
 
