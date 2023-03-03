@@ -122,8 +122,8 @@ public class Gameplay {
 
                 gravityFrames++;
                 if (gravityMaxFrames < gravityFrames) {
+                    gravityFrames -= gravityMaxFrames;
                     if (playfield.moveYPlayerMino(-1)) {
-                        gravityFrames -= gravityMaxFrames;
                         resetLockCount();
                     }
                 }
