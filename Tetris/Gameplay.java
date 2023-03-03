@@ -27,6 +27,7 @@ public class Gameplay {
     private PlayerRenderData pdr;
     private double windowNudgeX;
     private double windowNudgeY;
+    private Timer timer;
 
     private Mino[] nextQueueGuiData = new Mino[6];
 
@@ -62,7 +63,9 @@ public class Gameplay {
         lowestPlayerY = playfield.getPlayerMinoY();
         renderBlocks = playfield.getRenderBlocks();
 
-        Timer timer = new Timer();
+        if(timer != null)
+            timer.cancel();
+        timer = new Timer();
         long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
         lastFrame = System.nanoTime();
         timer.scheduleAtFixedRate(new TimerTask() {
