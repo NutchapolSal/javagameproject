@@ -74,6 +74,24 @@ public class Gui {
     }
 
     public void update(GuiData gds) {
+        spinLabel.setText(String.format("%d", gds.calloutLines));
+        String calloutLinesStr = "";
+        if (gds.calloutLines == 1) {
+            calloutLinesStr = "S I N G L E";
+        } else if (gds.calloutLines == 2) {
+            calloutLinesStr = "D O U B L E";
+        } else if (gds.calloutLines == 3) {
+            calloutLinesStr = "T R I P L E";
+        } else if (gds.calloutLines == 4) {
+            calloutLinesStr = "Q U A D";
+        } else {
+            calloutLinesStr = "";
+        }
+        CalloutLabel col = new CalloutLabel();
+        lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
+        b2bLabel.setText(String.format("%d", gds.calloutLines));
+        comboLabel.setText(String.format("%d", gds.calloutLines));
+
         timeCountText.setText(
                 String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
                         (gds.timeMillis / 1000d) % 60));
