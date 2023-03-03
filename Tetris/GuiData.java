@@ -10,9 +10,11 @@ public class GuiData {
     public final ObjectDataGrid<MinoColor> renderBlocks;
     public final double windowNudgeX;
     public final double windowNudgeY;
+    public final PlayerRenderData playerRenderData;
 
     public GuiData(long timeMillis, int linesCleared, int level, Mino[] nextQueue, Mino hold, boolean lockHold,
-            ObjectDataGrid<MinoColor> renderBlocks, double windowNudgeX, double windowNudgeY) {
+            ObjectDataGrid<MinoColor> renderBlocks, double windowNudgeX, double windowNudgeY,
+            PlayerRenderData playerRenderData) {
         this.timeMillis = timeMillis;
         this.linesCleared = linesCleared;
         this.level = level;
@@ -22,5 +24,6 @@ public class GuiData {
         this.renderBlocks = renderBlocks;
         this.windowNudgeX = windowNudgeX;
         this.windowNudgeY = windowNudgeY;
+        this.playerRenderData = playerRenderData;
     }
 }

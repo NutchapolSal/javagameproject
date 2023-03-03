@@ -24,6 +24,7 @@ public class Gameplay {
     private MinoRandomizer minoRandomizer;
     private boolean lockHold;
     private ObjectDataGrid<MinoColor> renderBlocks;
+    private PlayerRenderData pdr;
     private double windowNudgeX;
     private double windowNudgeY;
 
@@ -143,6 +144,7 @@ public class Gameplay {
                 }
 
                 renderBlocks = playfield.getRenderBlocks();
+                pdr = playfield.getPlayerRenderData();
 
                 if (!playfield.hasPlayerMino()) {
                     boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
@@ -192,7 +194,8 @@ public class Gameplay {
                 lockHold,
                 renderBlocks,
                 windowNudgeX,
-                windowNudgeY);
+                windowNudgeY,
+                pdr);
         windowNudgeX = 0;
         windowNudgeY = 0;
         return gds;

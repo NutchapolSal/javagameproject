@@ -88,6 +88,7 @@ public class Gui {
             holdMino.setMino(gds.hold);
         }
         playfield.setRenderBlocks(gds.renderBlocks);
+        playfield.setPlayerRenderData(gds.playerRenderData);
         f.repaint();
 
         windowDeltaX += gds.windowNudgeX;
