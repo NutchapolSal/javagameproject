@@ -198,6 +198,39 @@ public class Playfield {
         return renderBlocks;
     }
 
+    public int clearLines() {
+        int row = blocks.getHeight() - 1;
+        int width = blocks.getWidth();
+        int rowsCleared = 0;
+        boolean removeRow;
+
+        while (row >= 0) {
+            removeRow = true;
+            for (int col = 0; col < width; col++) {
+                if (blocks.getAtPos(col, row) == null) {
+                    removeRow = false;
+                    break;
+                }
+            }
+
+            if (removeRow) {
+                for (int copyRow = row; copyRow < blocks.getHeight() - 1; copyRow++) {
+                    for (int copyCol = 0; copyCol < width; copyCol++) {
+                        blocks.setAtPos(copyCol, copyRow, blocks.getAtPos(copyCol, copyRow + 1));
+                    }
+                }
+
+                rowsCleared++;
+                for (int col = 0; col < width; col++) {
+                    blocks.setAtPos(col, blocks.getHeight() - 1, null);
+                }
+            } else {
+                row--;
+            }
+        }
+        return rowsCleared;
+    }
+
     public int getPlayerMinoY() {
         return playerMinoY;
     }

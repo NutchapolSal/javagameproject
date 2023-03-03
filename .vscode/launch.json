@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Playfield",
+            "request": "launch",
+            "mainClass": "Tetris.Playfield",
+            "projectName": "javagameproject_e62d725b"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
