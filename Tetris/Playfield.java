@@ -198,4 +198,8 @@ public class Playfield {
         return renderBlocks;
     }
 
+    public int getPlayerMinoY() {
+        return playerMinoY;
+    }
+
 }
