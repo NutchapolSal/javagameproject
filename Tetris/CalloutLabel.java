@@ -2,19 +2,12 @@ package Tetris;
 
 import javax.swing.JLabel;
 
-import javax.swing.Timer;
-import org.w3c.dom.Text;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.LogManager;
 import java.awt.font.TextAttribute;
-import java.awt.font.TransformAttribute;
-import java.awt.geom.AffineTransform;
 
 public class CalloutLabel extends JLabel {
     private static long animDuration = TimeUnit.SECONDS.toNanos(2);
