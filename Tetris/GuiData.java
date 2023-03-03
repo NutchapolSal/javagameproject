@@ -23,7 +23,7 @@ public class GuiData {
     /**
      * may be null
      */
-    public final String spinText;
+    public final String spinName;
     public final boolean spinMini;
 
     /**
@@ -60,7 +60,7 @@ public class GuiData {
         this.b2bCount = b2bCount;
         this.renderBlocks = renderBlocks;
         this.calloutLines = calloutLines;
-        this.spinText = spinName;
+        this.spinName = spinName;
         this.spinMini = spinMini;
     }
 }
