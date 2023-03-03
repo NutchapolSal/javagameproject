@@ -21,8 +21,8 @@ public class Playfield {
         return movePlayerMino(x, 0);
     }
 
-    public void moveYPlayerMino(int y) {
-        movePlayerMino(0, y);
+    public boolean moveYPlayerMino(int y) {
+        return movePlayerMino(0, y);
     }
 
     public boolean getPlayerMinoGrounded() {
