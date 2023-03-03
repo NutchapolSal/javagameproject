@@ -82,6 +82,15 @@ public class Gameplay {
 
                 pi.tick();
 
+                if (pi.getHold() && !lockHold) {
+                    if (hold == null) {
+                        hold = playfield.swapHold(getNextMino());
+                    } else {
+                        hold = playfield.swapHold(hold);
+                    }
+                    lockHold = true;
+                }
+
                 boolean nudgePlayfieldX = false;
                 if (pi.getXMove() != 0) {
                     boolean moveSuccess = playfield.moveXPlayerMino(pi.getXMove());
@@ -110,13 +119,13 @@ public class Gameplay {
                 if (pi.getSoftDrop()) {
                     gravityFrames += 30;
                 }
-                if (pi.getHold() && !lockHold) {
-                    if (hold == null) {
-                        hold = playfield.swapHold(getNextMino());
-                    } else {
-                        hold = playfield.swapHold(hold);
+
+                gravityFrames++;
+                if (gravityMaxFrames < gravityFrames) {
+                    if (playfield.moveYPlayerMino(-1)) {
+                        gravityFrames -= gravityMaxFrames;
+                        resetLockCount();
                     }
-                    lockHold = true;
                 }
 
                 if (playfield.getPlayerMinoGrounded()) {
@@ -131,25 +140,17 @@ public class Gameplay {
                     lockDelayFrames = 0;
                 }
 
-                gravityFrames++;
-                if (gravityMaxFrames < gravityFrames) {
-                    if (playfield.moveYPlayerMino(-1)) {
-                        gravityFrames -= gravityMaxFrames;
-                        resetLockCount();
-                    }
-                }
-
                 renderBlocks = playfield.getRenderBlocks();
                 level = lockDelayFrames;
                 linesCleared = lockResetCount;
 
                 if (!playfield.hasPlayerMino()) {
-                    lockHold = false;
-                    gravityFrames = 0;
                     boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
                     if (!spawnSuccess) {
                         timer.cancel();
                     }
+                    lockHold = false;
+                    gravityFrames = 0;
                     lowestPlayerY = playfield.getPlayerMinoY();
                 }
             }
