@@ -1,7 +1,7 @@
 package Tetris;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class KickTableMap implements KickTable {
@@ -25,9 +25,9 @@ public class KickTableMap implements KickTable {
         private Map<Direction, Map<Direction, XY[]>> table;
 
         public KickTableBuilder() {
-            table = new HashMap<>();
+            table = new EnumMap<>(Direction.class);
             for (Direction dir : Direction.values()) {
-                table.put(dir, new HashMap<>());
+                table.put(dir, new EnumMap<>(Direction.class));
             }
         }
 

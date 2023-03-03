@@ -22,7 +22,7 @@ import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.awt.Container;
@@ -390,8 +390,8 @@ public class Gui {
     class KeyboardHandler implements RawInputSource {
         static final String PRESSED = "pressed";
         static final String RELEASED = "released";
-        private Map<GameplayButton, Boolean> freshInput = new HashMap<>();
-        private Map<GameplayButton, Boolean> lockInput = new HashMap<>();
+        private Map<GameplayButton, Boolean> freshInput = new EnumMap<>(GameplayButton.class);
+        private Map<GameplayButton, Boolean> lockInput = new EnumMap<>(GameplayButton.class);
 
         private KeyboardHandler() {
             InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
