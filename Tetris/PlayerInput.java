@@ -16,7 +16,6 @@ public class PlayerInput {
     private boolean hold = false;
     private RawInputSource inputSource;
     private char prevInput = ' ';
-    private boolean checkFirstTime = true;
 
     public PlayerInput(RawInputSource inputSource) {
         this.inputSource = inputSource;
