@@ -1,7 +1,10 @@
 package Tetris;
 
 public class ShapeRotator {
-    static public ShapeGrid getRotatedShape(ShapeGrid shape, Direction dir) {
+    private ShapeRotator() {
+    };
+
+    public static ShapeGrid getRotatedShape(ShapeGrid shape, Direction dir) {
         BooleanDataGrid newShape;
         int oldWidth = shape.getWidth();
         int oldHeight = shape.getHeight();
@@ -24,7 +27,7 @@ public class ShapeRotator {
         return newShape;
     }
 
-    static public RotatedShape getRotatedMino(Mino mino, Direction dir) {
+    public static RotatedShape getRotatedMino(Mino mino, Direction dir) {
         ShapeGrid newShape = getRotatedShape(mino, dir);
 
         MinoOrigin rotOrigin;
@@ -48,9 +51,8 @@ public class ShapeRotator {
             rotOrigin = new MinoOrigin(rotOriginPoint.x, rotOriginPoint.y, false);
         }
 
-        RotatedShape data = new RotatedShape(newShape, mino.getOrigin().x - rotOrigin.x,
+        return new RotatedShape(newShape, mino.getOrigin().x - rotOrigin.x,
                 mino.getOrigin().y - rotOrigin.y);
-        return data;
     }
 
     /**
@@ -60,7 +62,7 @@ public class ShapeRotator {
      * @return position of new point relative to rotated rectangle's bottom left
      *         corner
      */
-    static private XY rotatePoint(int x, int y, int w, int h, Direction dir) {
+    private static XY rotatePoint(int x, int y, int w, int h, Direction dir) {
         int newX;
         int newY;
         switch (dir) {

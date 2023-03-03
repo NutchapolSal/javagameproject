@@ -5,7 +5,7 @@ import Tetris.App;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            App a = new App();
+            new App();
         });
     }
 }

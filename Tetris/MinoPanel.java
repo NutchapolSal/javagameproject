@@ -2,13 +2,9 @@ package Tetris;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.AlphaComposite;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 
@@ -23,7 +19,7 @@ public abstract class MinoPanel extends JPanel {
     protected int centerOffsetX = 0;
     protected int centerOffsetY = 0;
 
-    public MinoPanel(int w, int h) {
+    protected MinoPanel(int w, int h) {
         PANEL_WIDTH_BLOCKS = w;
         PANEL_HEIGHT_BLOCKS = h;
         PREF_W = PANEL_WIDTH_BLOCKS * BLOCK_WIDTH;
@@ -46,7 +42,7 @@ public abstract class MinoPanel extends JPanel {
     }
 
     @Override
-    abstract protected void paintComponent(Graphics g);
+    protected abstract void paintComponent(Graphics g);
 
     protected void setMinoCanvasSize(int w, int h) {
         centerOffsetX = (PREF_W - w * BLOCK_WIDTH) / 2;

@@ -1,17 +1,13 @@
 package Tetris;
 
 import java.util.ArrayDeque;
-import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class Gameplay {
     private static long FRAME_DELAY = 16_666_666;
-    // private static long FRAME_DELAY = 250_000_000;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
 
@@ -66,7 +62,7 @@ public class Gameplay {
         lowestPlayerY = playfield.getPlayerMinoY();
         renderBlocks = playfield.getRenderBlocks();
 
-        if(timer != null)
+        if (timer != null)
             timer.cancel();
         timer = new Timer();
         long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
@@ -117,11 +113,14 @@ public class Gameplay {
                     switch (result) {
                         case SuccessTSpinMini:
                             spinMini = true;
+                            // fallthrough
                         case SuccessTSpin:
                         case SuccessTwist:
                             spinName = playfield.getPlayerMinoName();
+                            // fallthrough
                         case Success:
                             resetLockDelay();
+                            // fallthrough
                         case Fail:
                             break;
                     }
@@ -185,7 +184,6 @@ public class Gameplay {
         var nextMino = nextQueue.poll();
         nextQueueGuiData = nextQueue.toArray(new Mino[0]);
         return nextMino;
-        // return Tetromino.L();
     }
 
     private void fillNextQueue() {

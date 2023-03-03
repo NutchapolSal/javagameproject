@@ -3,14 +3,12 @@ package Tetris;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,11 +22,8 @@ import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.awt.Container;
 
@@ -76,7 +71,6 @@ public class Gui {
     }
 
     public void update(GuiData gds) {
-        // spinLabel.setText(String.format("%d", gds.calloutLines));
         if (gds.spinName != null) {
             spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
         }
@@ -396,8 +390,8 @@ public class Gui {
     class KeyboardHandler implements RawInputSource {
         static final String PRESSED = "pressed";
         static final String RELEASED = "released";
-        private Map<GameplayButton, Boolean> freshInput = new HashMap<>();
-        private Map<GameplayButton, Boolean> lockInput = new HashMap<>();
+        private Map<GameplayButton, Boolean> freshInput = new EnumMap<>(GameplayButton.class);
+        private Map<GameplayButton, Boolean> lockInput = new EnumMap<>(GameplayButton.class);
 
         private KeyboardHandler() {
             InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
@@ -446,7 +440,6 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 freshInput.put(gameplayButton, !onRelease);
-                // System.out.printf("%s %s%n", gameplayButton, !onRelease);
             }
 
         }
@@ -494,12 +487,6 @@ public class Gui {
         @Override
         public void update() {
             lockInput.putAll(freshInput);
-            // for (var entry : lockInput.entrySet()) {
-            // if (entry.getValue()) {
-            // System.out.printf("%s ", entry.getKey());
-            // }
-            // }
-            // System.out.println();
         }
 
     }

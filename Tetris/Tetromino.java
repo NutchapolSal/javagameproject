@@ -3,11 +3,13 @@ package Tetris;
 import Tetris.KickTableMap.KickTableBuilder;
 
 public class Tetromino {
+    private Tetromino() {
+    };
 
-    static private KickTable commonKickTable;
-    static private KickTable iKickTable;
+    private static KickTable commonKickTable;
+    private static KickTable iKickTable;
 
-    static private KickTable getCommonKickTable() {
+    private static KickTable getCommonKickTable() {
         if (commonKickTable != null) {
             return commonKickTable;
         }
@@ -43,7 +45,7 @@ public class Tetromino {
         return iKickTable;
     }
 
-    static private KickTable getIKickTable() {
+    private static KickTable getIKickTable() {
         if (iKickTable != null) {
             return iKickTable;
         }
@@ -79,7 +81,7 @@ public class Tetromino {
         return iKickTable;
     }
 
-    static public Mino I() {
+    public static Mino I() {
         BooleanDataGrid shape = new BooleanDataGrid(4, 1);
 
         shape.setAtPos(0, 0, true);
@@ -94,7 +96,7 @@ public class Tetromino {
                 .build();
     }
 
-    static public Mino O() {
+    public static Mino O() {
         BooleanDataGrid shape = new BooleanDataGrid(2, 2);
 
         shape.setAtPos(0, 0, true);
@@ -108,7 +110,7 @@ public class Tetromino {
                 .build();
     }
 
-    static public Mino S() {
+    public static Mino S() {
         BooleanDataGrid shape = new BooleanDataGrid(3, 2);
 
         shape.setAtPos(0, 0, true);
@@ -123,7 +125,7 @@ public class Tetromino {
                 .build();
     }
 
-    static public Mino Z() {
+    public static Mino Z() {
         BooleanDataGrid shape = new BooleanDataGrid(3, 2);
 
         shape.setAtPos(1, 0, true);
@@ -138,7 +140,7 @@ public class Tetromino {
                 .build();
     }
 
-    static public Mino J() {
+    public static Mino J() {
         BooleanDataGrid shape = new BooleanDataGrid(3, 2);
 
         shape.setAtPos(0, 0, true);
@@ -153,7 +155,7 @@ public class Tetromino {
                 .build();
     }
 
-    static public Mino L() {
+    public static Mino L() {
         BooleanDataGrid shape = new BooleanDataGrid(3, 2);
 
         shape.setAtPos(0, 0, true);
@@ -168,7 +170,7 @@ public class Tetromino {
                 .build();
     }
 
-    static public Mino T() {
+    public static Mino T() {
         BooleanDataGrid shape = new BooleanDataGrid(3, 2);
 
         shape.setAtPos(0, 0, true);

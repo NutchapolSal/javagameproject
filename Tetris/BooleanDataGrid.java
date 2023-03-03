@@ -1,7 +1,7 @@
 package Tetris;
 
 public class BooleanDataGrid implements ShapeGrid {
-    public boolean[][] field;
+    private boolean[][] field;
 
     public BooleanDataGrid(int w, int h) {
         this.field = new boolean[w][h];

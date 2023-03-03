@@ -6,7 +6,6 @@ public class Playfield {
     private static int FIELD_HEIGHT_BUFFER = 10;
     private Mino playerMino;
     private RotatedShape playerMinoRotateData;
-    // private PlayfieldMinoLocation playerMinoLocation;
     private int playerMinoX;
     private int playerMinoY;
     private Direction playerMinoDirection;
@@ -197,10 +196,6 @@ public class Playfield {
         return newHoldMino;
     }
 
-    // private boolean checkPlayerCollision(int x, int y, Direction dir) {
-    // return false;
-    // }
-
     private boolean checkShapeCollision(ShapeGrid shape, int x, int y) {
         int w = shape.getWidth();
         int h = shape.getHeight();
@@ -223,7 +218,7 @@ public class Playfield {
         return false;
     }
 
-    static private void writeShapeToColorGrid(ObjectDataGrid<MinoColor> blocks, ShapeGrid shape, int x, int y,
+    private static void writeShapeToColorGrid(ObjectDataGrid<MinoColor> blocks, ShapeGrid shape, int x, int y,
             MinoColor mc) {
         int w = shape.getWidth();
         int h = shape.getHeight();
