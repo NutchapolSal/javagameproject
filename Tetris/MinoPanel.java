@@ -42,7 +42,7 @@ public abstract class MinoPanel extends JPanel {
     }
 
     @Override
-    abstract protected void paintComponent(Graphics g);
+    protected abstract void paintComponent(Graphics g);
 
     protected void setMinoCanvasSize(int w, int h) {
         centerOffsetX = (PREF_W - w * BLOCK_WIDTH) / 2;

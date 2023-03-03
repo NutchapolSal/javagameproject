@@ -218,7 +218,7 @@ public class Playfield {
         return false;
     }
 
-    static private void writeShapeToColorGrid(ObjectDataGrid<MinoColor> blocks, ShapeGrid shape, int x, int y,
+    private static void writeShapeToColorGrid(ObjectDataGrid<MinoColor> blocks, ShapeGrid shape, int x, int y,
             MinoColor mc) {
         int w = shape.getWidth();
         int h = shape.getHeight();
