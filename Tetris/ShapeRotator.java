@@ -51,9 +51,8 @@ public class ShapeRotator {
             rotOrigin = new MinoOrigin(rotOriginPoint.x, rotOriginPoint.y, false);
         }
 
-        RotatedShape data = new RotatedShape(newShape, mino.getOrigin().x - rotOrigin.x,
+        return new RotatedShape(newShape, mino.getOrigin().x - rotOrigin.x,
                 mino.getOrigin().y - rotOrigin.y);
-        return data;
     }
 
     /**
