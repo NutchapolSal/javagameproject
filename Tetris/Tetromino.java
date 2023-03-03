@@ -180,6 +180,7 @@ public class Tetromino {
                 .kickTable(getCommonKickTable())
                 .color(MinoColor.Purple)
                 .name("T")
+                .useTSpinCheck(true)
                 .build();
     }
 }

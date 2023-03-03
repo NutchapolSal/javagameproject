@@ -2,6 +2,7 @@ package Tetris;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -22,6 +23,13 @@ public class App {
             }
         };
 
+        ActionListener newGameAction = new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                gameplay.startGame();
+            }
+        };
+
+        gui.setNewGameAction(newGameAction);
         new javax.swing.Timer(8, guiUpdater).start();
     }
 
@@ -35,5 +43,4 @@ public class App {
             }
         }, 0, 100);
     }
-
 }

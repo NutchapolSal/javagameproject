@@ -27,6 +27,7 @@ public class Gameplay {
     private PlayerRenderData pdr;
     private double windowNudgeX;
     private double windowNudgeY;
+    private Timer timer;
 
     private Mino[] nextQueueGuiData = new Mino[6];
 
@@ -43,6 +44,8 @@ public class Gameplay {
 
     private PlayerInput pi = new PlayerInput();
     private int calloutLines;
+    private String spinName;
+    private boolean spinMini;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -62,7 +65,9 @@ public class Gameplay {
         lowestPlayerY = playfield.getPlayerMinoY();
         renderBlocks = playfield.getRenderBlocks();
 
-        Timer timer = new Timer();
+        if(timer != null)
+            timer.cancel();
+        timer = new Timer();
         long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
         lastFrame = System.nanoTime();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -106,8 +111,18 @@ public class Gameplay {
                 }
 
                 if (pi.getRotation() != Rotation.None) {
-                    if (playfield.rotatePlayerMino(pi.getRotation())) {
-                        resetLockDelay();
+                    RotationResult result = playfield.rotatePlayerMino(pi.getRotation());
+                    spinMini = false;
+                    switch (result) {
+                        case SuccessTSpinMini:
+                            spinMini = true;
+                        case SuccessTSpin:
+                        case SuccessTwist:
+                            spinName = playfield.getPlayerMinoName();
+                        case Success:
+                            resetLockDelay();
+                        case Fail:
+                            break;
                     }
                 }
 
@@ -203,9 +218,11 @@ public class Gameplay {
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
-                null);
+                spinName,
+                spinMini);
         renderBlocks = null;
         nextQueueGuiData = null;
+        spinName = null;
         calloutLines = 0;
         windowNudgeX = 0;
         windowNudgeY = 0;

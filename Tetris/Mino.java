@@ -8,6 +8,7 @@ public class Mino implements ShapeGrid, KickTable {
     protected KickTable kickTable;
     protected MinoColor color;
     protected String name;
+    protected boolean useTSpinCheck;
 
     public static class MinoBuilder {
         protected ShapeGrid shape;
@@ -15,6 +16,7 @@ public class Mino implements ShapeGrid, KickTable {
         protected KickTable kickTable = (new KickTableBuilder()).build();
         protected MinoColor color = MinoColor.White;
         protected String name = "";
+        protected boolean useTSpinCheck;
 
         public MinoBuilder(ShapeGrid shape, MinoOrigin origin) {
             this.shape = shape;
@@ -36,6 +38,11 @@ public class Mino implements ShapeGrid, KickTable {
             return this;
         }
 
+        public MinoBuilder useTSpinCheck(boolean useTSpinCheck) {
+            this.useTSpinCheck = useTSpinCheck;
+            return this;
+        }
+
         public Mino build() {
             return new Mino(this);
         }
@@ -47,6 +54,7 @@ public class Mino implements ShapeGrid, KickTable {
         this.kickTable = minoBuilder.kickTable;
         this.color = minoBuilder.color;
         this.name = minoBuilder.name;
+        this.useTSpinCheck = minoBuilder.useTSpinCheck;
     }
 
     public boolean getAtPos(int x, int y) {

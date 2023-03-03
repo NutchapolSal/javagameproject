@@ -1,5 +1,7 @@
 package Tetris;
 
+import java.awt.event.ActionListener;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -499,5 +501,9 @@ public class Gui {
             // System.out.println();
         }
 
+    }
+
+    public void setNewGameAction(ActionListener a){
+        newGameButton.addActionListener(a);
     }
 }

@@ -23,13 +23,14 @@ public class GuiData {
     /**
      * may be null
      */
-    public final String spinText;
+    public final String spinName;
+    public final boolean spinMini;
 
     /**
      * @param renderBlocks if null, will keep using old data
      * @param nextQueue    if null, will keep using old data
      * @param calloutLines if not 0, will start animation for line clear callout
-     * @param spinText     if not null, will start animation for spin callout
+     * @param spinName     if not null, will start animation for spin callout
      */
     public GuiData(long timeMillis,
             int linesCleared,
@@ -44,7 +45,8 @@ public class GuiData {
             ObjectDataGrid<MinoColor> renderBlocks,
             Mino[] nextQueue,
             int calloutLines,
-            String spinText) {
+            String spinName,
+            boolean spinMini) {
         this.timeMillis = timeMillis;
         this.linesCleared = linesCleared;
         this.level = level;
@@ -58,6 +60,7 @@ public class GuiData {
         this.b2bCount = b2bCount;
         this.renderBlocks = renderBlocks;
         this.calloutLines = calloutLines;
-        this.spinText = spinText;
+        this.spinName = spinName;
+        this.spinMini = spinMini;
     }
 }

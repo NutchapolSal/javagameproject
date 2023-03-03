@@ -53,7 +53,7 @@ public class Playfield {
         return true;
     }
 
-    public boolean rotatePlayerMino(Rotation rot) {
+    public RotationResult rotatePlayerMino(Rotation rot) {
         Direction beforeRotate = playerMinoDirection;
         Direction afterRotate = playerMinoDirection.rotate(rot);
 
@@ -67,10 +67,79 @@ public class Playfield {
                 playerMinoY = playerMinoY + kick.y;
                 playerMinoDirection = afterRotate;
                 playerMinoRotateData = rotateData;
-                return true;
+                if (playerMino.useTSpinCheck) {
+                    return threeCornerCheck(kick.x, kick.y);
+                } else {
+                    return immobileCheck();
+                }
             }
         }
-        return false;
+        return RotationResult.Fail;
+    }
+
+    private RotationResult immobileCheck() {
+        if (!checkShapeCollision(playerMinoRotateData,
+                playerMinoX + playerMinoRotateData.xOffset,
+                playerMinoY + playerMinoRotateData.yOffset + 1)) {
+            return RotationResult.Success;
+        }
+        if (!checkShapeCollision(playerMinoRotateData,
+                playerMinoX + playerMinoRotateData.xOffset + 1,
+                playerMinoY + playerMinoRotateData.yOffset)) {
+            return RotationResult.Success;
+        }
+        if (!checkShapeCollision(playerMinoRotateData,
+                playerMinoX + playerMinoRotateData.xOffset - 1,
+                playerMinoY + playerMinoRotateData.yOffset)) {
+            return RotationResult.Success;
+        }
+        return RotationResult.SuccessTwist;
+    }
+
+    private RotationResult threeCornerCheck(int kickX, int kickY) {
+        BooleanDataGrid absoluteTopLeftCorner = new BooleanDataGrid(3, 3);
+        absoluteTopLeftCorner.setAtPos(0, 2, true);
+
+        ShapeGrid relativeTopLeftCorner = ShapeRotator.getRotatedShape(absoluteTopLeftCorner, playerMinoDirection);
+        ShapeGrid relativeTopRightCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Right);
+        ShapeGrid relativeBottomRightCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Down);
+        ShapeGrid relativeBottomLeftCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Left);
+
+        int squaresCount = 0;
+        int frontSquaresCount = 0;
+        if (checkShapeCollision(relativeTopLeftCorner,
+                playerMinoX + playerMino.getOrigin().x - 1,
+                playerMinoY + playerMino.getOrigin().y - 1)) {
+            squaresCount++;
+            frontSquaresCount++;
+        }
+        if (checkShapeCollision(relativeTopRightCorner,
+                playerMinoX + playerMino.getOrigin().x - 1,
+                playerMinoY + playerMino.getOrigin().y - 1)) {
+            squaresCount++;
+            frontSquaresCount++;
+        }
+        if (checkShapeCollision(relativeBottomLeftCorner,
+                playerMinoX + playerMino.getOrigin().x - 1,
+                playerMinoY + playerMino.getOrigin().y - 1)) {
+            squaresCount++;
+        }
+        if (checkShapeCollision(relativeBottomRightCorner,
+                playerMinoX + playerMino.getOrigin().x - 1,
+                playerMinoY + playerMino.getOrigin().y - 1)) {
+            squaresCount++;
+        }
+
+        if (3 <= squaresCount) {
+            if (frontSquaresCount == 2) {
+                return RotationResult.SuccessTSpin;
+            }
+            if (Math.abs(kickX) == 1 && Math.abs(kickY) == 2) {
+                return RotationResult.SuccessTSpin;
+            }
+            return RotationResult.SuccessTSpinMini;
+        }
+        return RotationResult.Success;
     }
 
     /**
@@ -235,6 +304,10 @@ public class Playfield {
 
     public int getPlayerMinoY() {
         return playerMinoY;
+    }
+
+    public String getPlayerMinoName() {
+        return playerMino.getName();
     }
 
 }
