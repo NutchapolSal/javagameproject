@@ -79,15 +79,20 @@ public class Gui {
                         (gds.timeMillis / 1000d) % 60));
         linesCountText.setText(String.format("%d", gds.linesCleared));
         levelCountText.setText(String.format("%d", gds.level));
-        for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
-            nextMinos[i].setMino(gds.nextQueue[i]);
-        }
         if (gds.lockHold) {
             holdMino.setMino(gds.hold, MinoColor.Gray);
         } else {
             holdMino.setMino(gds.hold);
         }
-        playfield.setRenderBlocks(gds.renderBlocks);
+
+        if (gds.renderBlocks != null) {
+            playfield.setRenderBlocks(gds.renderBlocks);
+        }
+        if (gds.nextQueue != null) {
+            for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
+                nextMinos[i].setMino(gds.nextQueue[i]);
+            }
+        }
         playfield.setPlayerRenderData(gds.playerRenderData);
         f.repaint();
 

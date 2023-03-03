@@ -138,6 +138,7 @@ public class Gameplay {
                         level = 1 + (linesCleared / 10);
                         lockResetCount = 0;
                         lockDelayFrames = 0;
+                        renderBlocks = playfield.getRenderBlocks();
                     }
                 } else {
                     lockDelayFrames = 0;
@@ -162,7 +163,7 @@ public class Gameplay {
     private Mino getNextMino() {
         nextQueue.offer(minoRandomizer.next());
         var nextMino = nextQueue.poll();
-        nextQueueGuiData = nextQueue.toArray(nextQueueGuiData);
+        nextQueueGuiData = nextQueue.toArray(new Mino[0]);
         return nextMino;
         // return Tetromino.L();
     }
@@ -189,13 +190,19 @@ public class Gameplay {
         var gds = new GuiData(timeMillis,
                 linesCleared,
                 level,
-                nextQueueGuiData,
                 hold,
                 lockHold,
-                renderBlocks,
+                pdr,
                 windowNudgeX,
                 windowNudgeY,
-                pdr);
+                0,
+                0,
+                renderBlocks,
+                nextQueueGuiData,
+                0,
+                null);
+        renderBlocks = null;
+        nextQueueGuiData = null;
         windowNudgeX = 0;
         windowNudgeY = 0;
         return gds;
