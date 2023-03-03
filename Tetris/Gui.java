@@ -174,6 +174,7 @@ public class Gui {
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(holdPanel)
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(calloutsPanel)
                         .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
                                 Integer.MAX_VALUE)
