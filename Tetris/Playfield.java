@@ -222,38 +222,4 @@ public class Playfield {
         }
         return rowsCleared;
     }
-
-    public void magic() {
-        for (int y = 0; y < blocks.getHeight(); y++) {
-            blocks.setAtPos(y % blocks.getWidth(), y, MinoColor.White);
-        }
-        for (int x = 0; x < blocks.getWidth(); x++) {
-            blocks.setAtPos(x, 2, MinoColor.White);
-            blocks.setAtPos(x, 4, MinoColor.White);
-            blocks.setAtPos(x, 13, MinoColor.White);
-            blocks.setAtPos(x, 26, MinoColor.White);
-        }
-
-        for (int y = blocks.getHeight() - 1; 0 <= y; y--) {
-            for (int x = 0; x < blocks.getWidth(); x++) {
-                System.out.print(blocks.getAtPos(x, y) == null ? "." : "O");
-            }
-            System.out.println();
-        }
-
-        System.out.printf("lines cleared %s%n", clearLines());
-
-        for (int y = blocks.getHeight() - 1; 0 <= y; y--) {
-            for (int x = 0; x < blocks.getWidth(); x++) {
-                System.out.print(blocks.getAtPos(x, y) == null ? "." : "O");
-            }
-            System.out.println();
-        }
-    }
-
-    public static void main(String[] args) {
-        Playfield pf = new Playfield();
-        pf.magic();
-    }
-
 }
