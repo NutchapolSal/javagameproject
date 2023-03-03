@@ -116,10 +116,10 @@ public class Gameplay {
                     windowNudgeY += 6;
                 }
                 if (pi.getSoftDrop()) {
-                    gravityCount += 0.015;
+                    gravityCount += getGravityFromLevel(level) * 6;
                 }
 
-                gravityCount += 0.015;
+                gravityCount += getGravityFromLevel(level);
                 int dropCount = (int) gravityCount;
                 for (int i = 0; i < dropCount; i++) {
                     if (playfield.moveYPlayerMino(-1)) {
@@ -133,7 +133,8 @@ public class Gameplay {
                     if (hardDropLock || lockResetMaxCount <= lockResetCount || lockDelayMaxFrames <= lockDelayFrames) {
                         windowNudgeY += 4;
                         playfield.lockPlayerMino();
-                        playfield.clearLines();
+                        linesCleared += playfield.clearLines();
+                        level = 1 + (linesCleared / 10);
                         lockResetCount = 0;
                         lockDelayFrames = 0;
                     }
@@ -142,8 +143,6 @@ public class Gameplay {
                 }
 
                 renderBlocks = playfield.getRenderBlocks();
-                level = lockDelayFrames;
-                linesCleared = lockResetCount;
 
                 if (!playfield.hasPlayerMino()) {
                     boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
