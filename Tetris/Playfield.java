@@ -73,8 +73,16 @@ public class Playfield {
         return false;
     }
 
-    public void sonicDropPlayerMino() {
-        setPlayerMinoPos(playerMinoX, getShadowYPos());
+    /**
+     * @return true if player mino moved, false if player mino did not move
+     */
+    public boolean sonicDropPlayerMino() {
+        int shadowYPos = getShadowYPos();
+        if (shadowYPos == playerMinoY) {
+            return false;
+        }
+        setPlayerMinoPos(playerMinoX, shadowYPos);
+        return true;
     }
 
     public void lockPlayerMino() {
