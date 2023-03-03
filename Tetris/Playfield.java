@@ -134,6 +134,9 @@ public class Playfield {
             if (frontSquaresCount == 2) {
                 return RotationResult.SuccessTSpin;
             }
+            if (Math.abs(kickX) == 1 && Math.abs(kickY) == 2) {
+                return RotationResult.SuccessTSpin;
+            }
             return RotationResult.SuccessTSpinMini;
         }
         return RotationResult.Success;
