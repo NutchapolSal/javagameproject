@@ -303,4 +303,8 @@ public class Playfield {
         return playerMinoY;
     }
 
+    public String getPlayerMinoName() {
+        return playerMino.getName();
+    }
+
 }

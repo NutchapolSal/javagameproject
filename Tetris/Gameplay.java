@@ -43,6 +43,8 @@ public class Gameplay {
 
     private PlayerInput pi = new PlayerInput();
     private int calloutLines;
+    private String spinName;
+    private boolean spinMini;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -106,8 +108,18 @@ public class Gameplay {
                 }
 
                 if (pi.getRotation() != Rotation.None) {
-                    if (playfield.rotatePlayerMino(pi.getRotation())) {
-                        resetLockDelay();
+                    RotationResult result = playfield.rotatePlayerMino(pi.getRotation());
+                    spinMini = false;
+                    switch (result) {
+                        case SuccessTSpinMini:
+                            spinMini = true;
+                        case SuccessTSpin:
+                        case SuccessTwist:
+                            spinName = playfield.getPlayerMinoName();
+                        case Success:
+                            resetLockDelay();
+                        case Fail:
+                            break;
                     }
                 }
 
@@ -203,9 +215,11 @@ public class Gameplay {
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
-                null);
+                spinName,
+                false);
         renderBlocks = null;
         nextQueueGuiData = null;
+        spinName = null;
         calloutLines = 0;
         windowNudgeX = 0;
         windowNudgeY = 0;
