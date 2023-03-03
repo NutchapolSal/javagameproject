@@ -52,6 +52,12 @@ public class Gui {
     private JLabel timeCountText;
     private JLabel timeText;
     private JPanel miscPanel;
+    private JPanel calloutsPanel;
+    private JLabel spinLabel;
+    private JLabel lineCalloutLabel;
+    private JLabel comboLabel;
+    private JLabel b2bLabel;
+
     private KeyboardHandler kbh;
 
     private double windowDeltaX;
@@ -146,6 +152,7 @@ public class Gui {
         createStatsPanel();
         createNextPanel();
         createHoldPanel();
+        createCallOutsPanel();
         createMiscPanel();
 
         GroupLayout centerPanelLayout = new GroupLayout(centerPanel);
@@ -153,6 +160,7 @@ public class Gui {
         centerPanelLayout.setHorizontalGroup(centerPanelLayout.createSequentialGroup()
                 .addGroup(centerPanelLayout.createParallelGroup(Alignment.TRAILING)
                         .addComponent(holdPanel)
+                        .addComponent(calloutsPanel)
                         .addComponent(statsPanel))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(playfield)
@@ -165,6 +173,7 @@ public class Gui {
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(holdPanel)
+                        .addComponent(calloutsPanel)
                         .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
                                 Integer.MAX_VALUE)
                         .addComponent(statsPanel))
@@ -193,6 +202,54 @@ public class Gui {
                 .addComponent(holdText)
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(holdMino));
+    }
+
+    private void createCallOutsPanel() {
+        calloutsPanel = new JPanel();
+        createCallOutsLabel();
+
+        GroupLayout calloutsPanelLayout = new GroupLayout(calloutsPanel);
+        calloutsPanel.setLayout(calloutsPanelLayout);
+        calloutsPanelLayout.setHorizontalGroup(
+                calloutsPanelLayout.createParallelGroup(Alignment.TRAILING)
+                        .addComponent(spinLabel)
+                        .addComponent(lineCalloutLabel)
+                        .addComponent(b2bLabel)
+                        .addComponent(comboLabel));
+        calloutsPanelLayout.setVerticalGroup(calloutsPanelLayout.createSequentialGroup()
+                .addComponent(spinLabel)
+                .addComponent(lineCalloutLabel)
+                .addComponent(b2bLabel)
+                .addComponent(comboLabel));
+
+    }
+
+    private void createCallOutsLabel() {
+        spinLabel = new JLabel();
+        lineCalloutLabel = new JLabel();
+        b2bLabel = new JLabel();
+        comboLabel = new JLabel();
+
+        lineCalloutLabel.setFont(lineCalloutLabel.getFont().deriveFont(
+                lineCalloutLabel.getFont().getStyle() | java.awt.Font.BOLD, lineCalloutLabel.getFont().getSize() + 6));
+        lineCalloutLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lineCalloutLabel.setText("");
+
+        b2bLabel.setFont(b2bLabel.getFont().deriveFont(b2bLabel.getFont().getStyle() | java.awt.Font.BOLD,
+                b2bLabel.getFont().getSize() + 2));
+        b2bLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        b2bLabel.setText("");
+
+        comboLabel.setFont(comboLabel.getFont().deriveFont(comboLabel.getFont().getStyle() | java.awt.Font.BOLD,
+                comboLabel.getFont().getSize() + 2));
+        comboLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        comboLabel.setText("");
+
+        spinLabel.setFont(spinLabel.getFont().deriveFont(spinLabel.getFont().getStyle() | java.awt.Font.BOLD,
+                spinLabel.getFont().getSize() + 2));
+        spinLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        spinLabel.setText("");
+
     }
 
     private void createMiscPanel() {
@@ -272,7 +329,6 @@ public class Gui {
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(timeText)
                 .addComponent(timeCountText));
-
     }
 
     private void createStatsLabels() {
