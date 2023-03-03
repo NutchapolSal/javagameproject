@@ -181,21 +181,23 @@ public class Playfield {
                 renderBlocks.setAtPos(srcX, srcY, blocks.getAtPos(srcX, srcY));
             }
         }
-        if (hasPlayerMino()) {
-            writeShapeToColorGrid(
-                    renderBlocks,
-                    playerMinoRotateData,
-                    playerMinoX + playerMinoRotateData.xOffset,
-                    getShadowYPos() + playerMinoRotateData.yOffset,
-                    MinoColor.Gray);
-            writeShapeToColorGrid(
-                    renderBlocks,
-                    playerMinoRotateData,
-                    playerMinoX + playerMinoRotateData.xOffset,
-                    playerMinoY + playerMinoRotateData.yOffset,
-                    playerMino.getColor());
-        }
         return renderBlocks;
+    }
+
+    public PlayerRenderData getPlayerRenderData() {
+        if (playerMino == null) {
+            return null;
+        }
+
+        ObjectDataGrid<MinoColor> playerBlocks = new ObjectDataGrid<>(playerMinoRotateData.shape.getWidth(),
+                playerMinoRotateData.shape.getHeight());
+        writeShapeToColorGrid(playerBlocks, playerMinoRotateData, 0, 0, playerMino.getColor());
+
+        return new PlayerRenderData(
+                playerBlocks,
+                playerMinoX + playerMinoRotateData.xOffset,
+                playerMinoY + playerMinoRotateData.yOffset,
+                getShadowYPos() + playerMinoRotateData.yOffset);
     }
 
     public int clearLines() {
