@@ -197,4 +197,12 @@ public class Gameplay {
         windowNudgeY = 0;
         return gds;
     }
+
+    private double getGravityFromLevel(int level) {
+        double[] levelTable = { 0.016666667, 0.021017234, 0.026977447, 0.035255958,
+                0.046921922, 0.063613232, 0.087865741, 0.123701138,
+                0.177525297, 0.259807742, 0.387747189, 0.590667454,
+                0.918273646, 1.457, 2.361, 3.909, 6.614, 11.438, 20 };
+        return level > 19 ? levelTable[18] : levelTable[level - 1];
+    }
 }
