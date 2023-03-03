@@ -5,7 +5,7 @@ import java.util.Random;
 public abstract class MinoRandomizer {
     protected Random random;
 
-    public MinoRandomizer(long seed) {
+    protected MinoRandomizer(long seed) {
         random = new Random(seed);
     }
 

@@ -19,7 +19,7 @@ public abstract class MinoPanel extends JPanel {
     protected int centerOffsetX = 0;
     protected int centerOffsetY = 0;
 
-    public MinoPanel(int w, int h) {
+    protected MinoPanel(int w, int h) {
         PANEL_WIDTH_BLOCKS = w;
         PANEL_HEIGHT_BLOCKS = h;
         PREF_W = PANEL_WIDTH_BLOCKS * BLOCK_WIDTH;
