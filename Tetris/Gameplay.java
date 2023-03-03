@@ -219,7 +219,7 @@ public class Gameplay {
                 nextQueueGuiData,
                 calloutLines,
                 spinName,
-                false);
+                spinMini);
         renderBlocks = null;
         nextQueueGuiData = null;
         spinName = null;
