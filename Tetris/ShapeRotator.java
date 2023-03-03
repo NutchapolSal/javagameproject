@@ -1,6 +1,9 @@
 package Tetris;
 
 public class ShapeRotator {
+    private ShapeRotator() {
+    };
+
     static public ShapeGrid getRotatedShape(ShapeGrid shape, Direction dir) {
         BooleanDataGrid newShape;
         int oldWidth = shape.getWidth();

@@ -3,6 +3,8 @@ package Tetris;
 import Tetris.KickTableMap.KickTableBuilder;
 
 public class Tetromino {
+    private Tetromino() {
+    };
 
     static private KickTable commonKickTable;
     static private KickTable iKickTable;
