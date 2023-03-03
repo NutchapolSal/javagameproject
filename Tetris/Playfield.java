@@ -207,16 +207,16 @@ public class Playfield {
 
             if(removeRow){
                
-                for (int row1 = row; row1 < 29-1; row1++){
-                    for(int col1 = 0; col1 < width; col1++){
-                        blocks.setAtPos(col1, row1, blocks.getAtPos(col1, row1+1));
+                for (int copyRow = row; copyRow < blocks.getHeight()-1; copyRow++){
+                    for(int copyCol = 0; copyCol < width; copyCol++){
+                        blocks.setAtPos(copyCol, copyRow, blocks.getAtPos(copyCol, copyRow+1));
                     }
                 }
                 
                 
                 rowsCleared++;
                 for(int col = 0; col < width; col++){
-                    blocks.setAtPos(col, 29, null);   
+                    blocks.setAtPos(col, blocks.getHeight()-1, null);   
                 }
                     
             } else {
