@@ -191,13 +191,14 @@ public class Playfield {
     }
 
     public int clearLines(){
-        int row = FIELD_HEIGHT - 1;
+        int row = blocks.getHeight()-1;
+        int width = blocks.getWidth();
         int rowsCleared = 0;
         boolean removeRow;
 
-        while (row >= 0){
+        while (row>=0){
             removeRow = true;
-            for(int col = 0; col < FIELD_WIDTH; col++){
+            for(int col = 0; col < width; col++){
                 if(blocks.getAtPos(col, row) == null){
                     removeRow = false;
                     break;
@@ -205,18 +206,22 @@ public class Playfield {
             }
 
             if(removeRow){
-                for (int row1 = row; row1 > 0; row1--){
-                    for(int col1 = 0; col1 < FIELD_WIDTH; col1++){
-                        blocks.setAtPos(col1, row1, blocks.getAtPos(row1-1, col1));
+               
+                for (int row1 = row; row1 < 29-1; row1++){
+                    for(int col1 = 0; col1 < width; col1++){
+                        blocks.setAtPos(col1, row1, blocks.getAtPos(col1, row1+1));
                     }
                 }
+                
+                
                 rowsCleared++;
-                for(int col = 0; col < FIELD_WIDTH; col++){
-                    blocks.getAtPos(col, 0);
+                for(int col = 0; col < width; col++){
+                    blocks.setAtPos(col, 29, null);   
                 }
+                    
             } else {
                 row--;
-            }
+            }         
         }
         return rowsCleared;
     }
