@@ -79,7 +79,6 @@ public class Gameplay {
 
                 windowNudgeX = 0;
                 windowNudgeY = 0;
-                gravityFrames++;
 
                 pi.tick();
 
@@ -132,9 +131,10 @@ public class Gameplay {
                     lockDelayFrames = 0;
                 }
 
-                if (16 < gravityFrames) {
+                gravityFrames++;
+                if (gravityMaxFrames < gravityFrames) {
                     if (playfield.moveYPlayerMino(-1)) {
-                        gravityFrames = 0;
+                        gravityFrames -= gravityMaxFrames;
                         resetLockCount();
                     }
                 }
