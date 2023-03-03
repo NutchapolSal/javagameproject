@@ -14,7 +14,6 @@ public class Gameplay {
     // private static long FRAME_DELAY = 250_000_000;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
-    private int gravityMaxFrames = 256;
 
     private Queue<Mino> nextQueue = new ArrayDeque<>();
     private Mino hold;
@@ -30,7 +29,7 @@ public class Gameplay {
 
     private Mino[] nextQueueGuiData = new Mino[6];
 
-    private int gravityFrames = 0;
+    private double gravityCount = 0;
     private int lockDelayFrames = 0;
     private int lockResetCount = 0;
     private int lowestPlayerY;
@@ -117,15 +116,16 @@ public class Gameplay {
                     windowNudgeY += 6;
                 }
                 if (pi.getSoftDrop()) {
-                    gravityFrames += 30;
+                    gravityCount += 0.015;
                 }
 
-                gravityFrames++;
-                if (gravityMaxFrames < gravityFrames) {
-                    gravityFrames -= gravityMaxFrames;
+                gravityCount += 0.015;
+                int dropCount = (int) gravityCount;
+                for (int i = 0; i < dropCount; i++) {
                     if (playfield.moveYPlayerMino(-1)) {
                         resetLockCount();
                     }
+                    gravityCount -= 1;
                 }
 
                 if (playfield.getPlayerMinoGrounded()) {
@@ -133,6 +133,7 @@ public class Gameplay {
                     if (hardDropLock || lockResetMaxCount <= lockResetCount || lockDelayMaxFrames <= lockDelayFrames) {
                         windowNudgeY += 4;
                         playfield.lockPlayerMino();
+                        playfield.clearLines();
                         lockResetCount = 0;
                         lockDelayFrames = 0;
                     }
@@ -150,7 +151,7 @@ public class Gameplay {
                         timer.cancel();
                     }
                     lockHold = false;
-                    gravityFrames = 0;
+                    gravityCount = 0;
                     lowestPlayerY = playfield.getPlayerMinoY();
                 }
             }
