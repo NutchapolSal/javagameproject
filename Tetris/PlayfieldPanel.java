@@ -7,13 +7,15 @@ import java.awt.Color;
 public class PlayfieldPanel extends MinoPanel {
     private ObjectDataGrid<MinoColor> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS, PANEL_HEIGHT_BLOCKS);
     private PlayerRenderData pdr = null;
+    private double playerLockProgress;
 
     public void setRenderBlocks(ObjectDataGrid<MinoColor> renderBlocks) {
         this.renderBlocks = renderBlocks;
     }
 
-    public void setPlayerRenderData(PlayerRenderData pdr) {
+    public void setPlayerRenderData(PlayerRenderData pdr, double playerLockProgress) {
         this.pdr = pdr;
+        this.playerLockProgress = playerLockProgress;
     }
 
     public PlayfieldPanel() {
@@ -45,6 +47,7 @@ public class PlayfieldPanel extends MinoPanel {
                 }
                 paintMinoBlock(g, x + pdr.x, y + pdr.y, currColor);
                 paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, currColor, 0.3);
+                paintMinoBlock(g, x + pdr.x, y + pdr.y, MinoColor.Gray, playerLockProgress * 0.75);
             }
         }
     }

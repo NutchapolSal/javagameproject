@@ -46,6 +46,7 @@ public class Gameplay {
     private int calloutLines;
     private String spinName;
     private boolean spinMini;
+    private double playerLockProgress;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -164,6 +165,7 @@ public class Gameplay {
 
                 renderBlocks = playfield.getRenderBlocks();
                 pdr = playfield.getPlayerRenderData();
+                playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
 
                 if (!playfield.hasPlayerMino()) {
                     boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
@@ -211,6 +213,7 @@ public class Gameplay {
                 hold,
                 lockHold,
                 pdr,
+                playerLockProgress,
                 windowNudgeX,
                 windowNudgeY,
                 0,

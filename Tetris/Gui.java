@@ -95,7 +95,7 @@ public class Gui {
                 nextMinos[i].setMino(gds.nextQueue[i]);
             }
         }
-        playfield.setPlayerRenderData(gds.playerRenderData);
+        playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
         f.repaint();
 
         windowDeltaX += gds.windowNudgeX;

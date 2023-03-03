@@ -7,6 +7,7 @@ public class GuiData {
     public final Mino hold;
     public final boolean lockHold;
     public final PlayerRenderData playerRenderData;
+    public final double playerLockProgress;
     public final double windowNudgeX;
     public final double windowNudgeY;
     public final int comboCount;
@@ -38,6 +39,7 @@ public class GuiData {
             Mino hold,
             boolean lockHold,
             PlayerRenderData playerRenderData,
+            double playerLockProgress,
             double windowNudgeX,
             double windowNudgeY,
             int comboCount,
@@ -54,6 +56,7 @@ public class GuiData {
         this.hold = hold;
         this.lockHold = lockHold;
         this.playerRenderData = playerRenderData;
+        this.playerLockProgress = playerLockProgress;
         this.windowNudgeX = windowNudgeX;
         this.windowNudgeY = windowNudgeY;
         this.comboCount = comboCount;

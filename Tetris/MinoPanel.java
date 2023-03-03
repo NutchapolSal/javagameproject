@@ -63,6 +63,9 @@ public abstract class MinoPanel extends JPanel {
     }
 
     protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc, double opacity) {
+        if (opacity <= 0) {
+            return;
+        }
         Graphics2D g2d = (Graphics2D) g;
         int graphicsX = x * BLOCK_WIDTH + centerOffsetX;
         int graphicsY = (PANEL_HEIGHT_BLOCKS - 1 - y) * BLOCK_HEIGHT - centerOffsetY;
