@@ -71,7 +71,6 @@ public class Gui {
     }
 
     public void update(GuiData gds) {
-        // spinLabel.setText(String.format("%d", gds.calloutLines));
         if (gds.spinName != null) {
             spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
         }
@@ -441,7 +440,6 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 freshInput.put(gameplayButton, !onRelease);
-                // System.out.printf("%s %s%n", gameplayButton, !onRelease);
             }
 
         }
@@ -489,12 +487,6 @@ public class Gui {
         @Override
         public void update() {
             lockInput.putAll(freshInput);
-            // for (var entry : lockInput.entrySet()) {
-            // if (entry.getValue()) {
-            // System.out.printf("%s ", entry.getKey());
-            // }
-            // }
-            // System.out.println();
         }
 
     }

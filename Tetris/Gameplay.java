@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Gameplay {
     private static long FRAME_DELAY = 16_666_666;
-    // private static long FRAME_DELAY = 250_000_000;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
 
@@ -182,7 +181,6 @@ public class Gameplay {
         var nextMino = nextQueue.poll();
         nextQueueGuiData = nextQueue.toArray(new Mino[0]);
         return nextMino;
-        // return Tetromino.L();
     }
 
     private void fillNextQueue() {

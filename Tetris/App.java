@@ -12,8 +12,6 @@ public class App {
 
         gameplay.startGame();
 
-        // testkbhandler(g);
-
         ActionListener guiUpdater = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gui.update(gameplay.getGuiData());

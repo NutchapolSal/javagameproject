@@ -1,8 +1,5 @@
 package Tetris;
 
-// import java.util.ArrayList;
-// import java.util.List;
-
 public class ObjectDataGrid<T> {
     protected T[][] field;
 

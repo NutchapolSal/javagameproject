@@ -36,14 +36,11 @@ public class CalloutLabel extends JLabel {
             noPaint = true;
             return;
         }
-        // spacing += (spacing * animationProgress);
         Map<TextAttribute, Object> attribute = new HashMap<>();
         attribute.put(TextAttribute.TRACKING, spacing);
-        // // spacing += (0.1 - spacing) / 30;
         this.setFont(this.getFont().deriveFont(attribute));
 
         // Fade-out
-        // alpha -= (alpha * animationProgress);
         if (alpha < 0) {
             alpha = 0;
         }
