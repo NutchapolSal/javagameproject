@@ -12,17 +12,15 @@ import java.awt.font.TextAttribute;
 public class CalloutLabel extends JLabel {
     private static long animDuration = TimeUnit.SECONDS.toNanos(3);
     private long startTime;
-    private boolean noPaint;
 
     public CalloutLabel() {
         setText(" ");
         startTime = System.nanoTime() - animDuration;
-        noPaint = false;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        if (noPaint) {
+        if (startTime + animDuration < System.nanoTime()) {
             return;
         }
         long timeSinceStart = System.nanoTime() - startTime;
@@ -33,10 +31,6 @@ public class CalloutLabel extends JLabel {
         double spacing = -0.2 + (spacingAnim * 0.25);
         double alpha = 1.0 - alphaAnim;
 
-        if (animationProgress >= 1) {
-            noPaint = true;
-            return;
-        }
         Map<TextAttribute, Object> attribute = new HashMap<>();
         attribute.put(TextAttribute.TRACKING, spacing);
         this.setFont(this.getFont().deriveFont(attribute));
@@ -54,6 +48,5 @@ public class CalloutLabel extends JLabel {
     public void startAnimation(String s) {
         startTime = System.nanoTime();
         this.setText(s);
-        noPaint = false;
     }
 }
