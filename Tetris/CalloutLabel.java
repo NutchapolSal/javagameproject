@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.awt.font.TextAttribute;
 
 public class CalloutLabel extends JLabel {
-    private static long animDuration = TimeUnit.SECONDS.toNanos(2);
+    private static long animDuration = TimeUnit.SECONDS.toNanos(3);
     private long startTime;
     private boolean noPaint;
 
@@ -27,10 +27,11 @@ public class CalloutLabel extends JLabel {
         }
         long timeSinceStart = System.nanoTime() - startTime;
         double rawAnimProgress = (double) timeSinceStart / animDuration;
-        double animationProgress = 1 - Math.pow(1 - rawAnimProgress, 5);
+        double spacingAnim = 1 - Math.pow(1 - rawAnimProgress, 7);
+        double alphaAnim = Math.pow(Math.max(0.0, (rawAnimProgress * 1.75) - 0.75), 3);
 
-        double spacing = -0.1 + (animationProgress * 0.24);
-        double alpha = Math.min(1.0, 2.0 - rawAnimProgress * 2);
+        double spacing = -0.2 + (spacingAnim * 0.25);
+        double alpha = 1.0 - alphaAnim;
 
         if (animationProgress >= 1) {
             noPaint = true;
