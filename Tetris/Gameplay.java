@@ -147,6 +147,7 @@ public class Gameplay {
 
                 if (playfield.getPlayerMinoGrounded()) {
                     lockDelayFrames++;
+                    playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
                     if (hardDropLock || lockResetMaxCount <= lockResetCount || lockDelayMaxFrames <= lockDelayFrames) {
                         windowNudgeY += 4;
                         playfield.lockPlayerMino();
@@ -159,12 +160,11 @@ public class Gameplay {
                         renderBlocks = playfield.getRenderBlocks();
                     }
                 } else {
+                    playerLockProgress = 0.0;
                     lockDelayFrames = 0;
                 }
 
-                renderBlocks = playfield.getRenderBlocks();
                 pdr = playfield.getPlayerRenderData();
-                playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
 
                 if (!playfield.hasPlayerMino()) {
                     boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
