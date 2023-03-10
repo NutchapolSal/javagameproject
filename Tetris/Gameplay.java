@@ -2,9 +2,11 @@ package Tetris;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.Timer;
+import javax.swing.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Gameplay {
     private static long FRAME_DELAY = 16_666_666;
@@ -63,12 +65,11 @@ public class Gameplay {
         renderBlocks = playfield.getRenderBlocks();
 
         if (timer != null)
-            timer.cancel();
-        timer = new Timer();
+            timer.stop();
         long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
         lastFrame = System.nanoTime();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
+        ActionListener al = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 long nowFrame = System.nanoTime();
                 if (nowFrame - lastFrame < FRAME_DELAY) {
                     return;
@@ -77,7 +78,7 @@ public class Gameplay {
                 timeMillis = TimeUnit.NANOSECONDS.toMillis(endTime - System.nanoTime());
                 if (timeMillis <= 0) {
                     timeMillis = 0;
-                    timer.cancel();
+                    timer.stop();
                 }
 
                 windowNudgeX = 0;
@@ -169,14 +170,16 @@ public class Gameplay {
                 if (!playfield.hasPlayerMino()) {
                     boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
                     if (!spawnSuccess) {
-                        timer.cancel();
+                        timer.stop();
                     }
                     lockHold = false;
                     gravityCount = 0;
                     lowestPlayerY = playfield.getPlayerMinoY();
                 }
             }
-        }, 0, 3);
+        };
+        timer = new Timer(3, al);
+        timer.start();
     }
 
     private Mino getNextMino() {
