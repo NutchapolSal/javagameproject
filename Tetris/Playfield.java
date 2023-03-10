@@ -164,18 +164,24 @@ public class Playfield {
     }
 
     private int getShadowYPos() {
-        int resultY;
-        for (int y = playerMinoY;; y--) {
-            boolean collided = checkShapeCollision(
+        int y = playerMinoY;
+        fastcheck: for (; 0 < y + playerMinoRotateData.yOffset; y--) {
+            for (int x = 0; x < playerMinoRotateData.getWidth(); x++) {
+                if (blocks.getAtPos(playerMinoX + playerMinoRotateData.xOffset + x,
+                        y + playerMinoRotateData.yOffset - 1) != null) {
+                    break fastcheck;
+                }
+            }
+        }
+        for (;; y--) {
+            if (checkShapeCollision(
                     playerMinoRotateData,
                     playerMinoX + playerMinoRotateData.xOffset,
-                    y + playerMinoRotateData.yOffset);
-            if (collided) {
-                resultY = y + 1;
+                    y + playerMinoRotateData.yOffset - 1)) {
                 break;
             }
         }
-        return resultY;
+        return y;
     }
 
     public boolean spawnPlayerMino(Mino mino) {
