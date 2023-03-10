@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.awt.Container;
 
@@ -62,6 +63,8 @@ public class Gui {
     private double windowLastDeltaX;
     private double windowLastDeltaY;
 
+    private long lastFrameTime = System.nanoTime();
+
     private static double roundToZero(double in) {
         if (in < 0) {
             return Math.ceil(in);
@@ -71,6 +74,9 @@ public class Gui {
     }
 
     public void update(GuiData gds) {
+        long currFrameTime = System.nanoTime();
+        long deltaFrameTime = currFrameTime - lastFrameTime;
+
         if (gds.spinName != null) {
             spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
         }
@@ -118,8 +124,8 @@ public class Gui {
         windowDeltaX += gds.windowNudgeX;
         windowDeltaY += gds.windowNudgeY;
 
-        windowDeltaX -= windowDeltaX / 12;
-        windowDeltaY -= windowDeltaY / 12;
+        windowDeltaX *= Math.pow(11.0 / 12.0, deltaFrameTime / TimeUnit.MILLISECONDS.toNanos(10));
+        windowDeltaY *= Math.pow(11.0 / 12.0, deltaFrameTime / TimeUnit.MILLISECONDS.toNanos(10));
 
         int windowVelocityX = (int) roundToZero(windowDeltaX - windowLastDeltaX);
         int windowVelocityY = (int) roundToZero(windowDeltaY - windowLastDeltaY);
@@ -131,6 +137,8 @@ public class Gui {
             var frameLoc = f.getLocationOnScreen();
             f.setLocation(frameLoc.x + windowVelocityX, frameLoc.y + windowVelocityY);
         }
+
+        lastFrameTime = currFrameTime;
     }
 
     public Gui() {
