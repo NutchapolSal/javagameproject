@@ -170,16 +170,15 @@ public class Gameplay {
     }
 
     private void processRotation() {
-        RotationResult result = playfield.rotatePlayerMino(pi.getRotation());
         spinMini = false;
-        switch (result) {
+        switch (playfield.rotatePlayerMino(pi.getRotation())) {
             case SuccessTSpinMini:
                 spinMini = true;
                 // fallthrough
             case SuccessTSpin:
             case SuccessTwist:
                 spinName = playfield.getPlayerMinoName();
-                processRotationNudge();
+                windowNudgeX += calculateRotationNudge();
                 // fallthrough
             case Success:
                 resetLockDelay();
@@ -189,28 +188,22 @@ public class Gameplay {
         }
     }
 
-    private void processRotationNudge() {
+    private int calculateRotationNudge() {
         switch (pi.getRotation()) {
             case Clockwise:
-                windowNudgeX += 6;
-                break;
+                return 6;
             case CounterClockwise:
-                windowNudgeX += -6;
-                break;
+                return -6;
             case Flip:
                 switch (playfield.getPlayerMinoDirection()) {
                     case Down:
                     case Right:
-                        windowNudgeX += 6;
-                        break;
-                    case Up:
-                    case Left:
-                        windowNudgeX += -6;
-                        break;
+                        return 6;
+                    default:
+                        return -6;
                 }
-                break;
             default:
-                break;
+                return 0;
         }
     }
 
