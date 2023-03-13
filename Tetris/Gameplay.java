@@ -149,9 +149,11 @@ public class Gameplay {
         for (int i = 0; i < dropCount; i++) {
             if (playfield.moveYPlayerMino(-1)) {
                 resetLockCount();
+            } else {
+                break;
             }
-            gravityCount -= 1;
         }
+        gravityCount -= dropCount;
     }
 
     private void processSoftDrop() {
