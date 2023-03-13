@@ -83,6 +83,11 @@ public class Playfield {
             return RotationResult.Success;
         }
         if (!checkShapeCollision(playerMinoRotateData,
+                playerMinoX + playerMinoRotateData.xOffset,
+                playerMinoY + playerMinoRotateData.yOffset - 1)) {
+            return RotationResult.Success;
+        }
+        if (!checkShapeCollision(playerMinoRotateData,
                 playerMinoX + playerMinoRotateData.xOffset + 1,
                 playerMinoY + playerMinoRotateData.yOffset)) {
             return RotationResult.Success;
