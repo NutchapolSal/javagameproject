@@ -12,39 +12,32 @@ public class Gameplay {
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
 
+    private PlayerInput pi = new PlayerInput();
+    private Timer timer;
+    private long lastFrame;
+    private long timeMillis;
+    private Playfield playfield;
+    private MinoRandomizer minoRandomizer;
     private Queue<Mino> nextQueue = new ArrayDeque<>();
     private Mino hold;
-    private Playfield playfield;
+    private boolean lockHold;
     private int linesCleared;
     private int level;
-    private long lastFrame;
-    private MinoRandomizer minoRandomizer;
-    private boolean lockHold;
-    private ObjectDataGrid<MinoColor> renderBlocks;
-    private PlayerRenderData pdr;
-    private double windowNudgeX;
-    private double windowNudgeY;
-    private Timer timer;
-    private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
-
-    private Mino[] nextQueueGuiData = new Mino[6];
-
     private double gravityCount = 0;
     private int lockDelayFrames = 0;
     private int lockResetCount = 0;
     private int lowestPlayerY;
 
-    private long timeMillis;
-
-    public long getTimeMillis() {
-        return timeMillis;
-    }
-
-    private PlayerInput pi = new PlayerInput();
+    private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
+    private PlayerRenderData pdr;
+    private double playerLockProgress;
+    private double windowNudgeX;
+    private double windowNudgeY;
+    private ObjectDataGrid<MinoColor> renderBlocks;
+    private Mino[] nextQueueGuiData = new Mino[6];
     private int calloutLines;
     private String spinName;
     private boolean spinMini;
-    private double playerLockProgress;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
