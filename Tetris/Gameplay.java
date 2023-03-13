@@ -5,6 +5,7 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Gameplay {
     private static long FRAME_DELAY = 16_666_666;
@@ -24,6 +25,7 @@ public class Gameplay {
     private double windowNudgeX;
     private double windowNudgeY;
     private Timer timer;
+    private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
 
     private Mino[] nextQueueGuiData = new Mino[6];
 
@@ -61,6 +63,7 @@ public class Gameplay {
         playfield.spawnPlayerMino(getNextMino());
         lowestPlayerY = playfield.getPlayerMinoY();
         renderBlocks = playfield.getRenderBlocks();
+        renderFrame();
 
         if (timer != null)
             timer.cancel();
@@ -80,6 +83,10 @@ public class Gameplay {
                     timer.cancel();
                 }
 
+                renderBlocks = null;
+                nextQueueGuiData = null;
+                spinName = null;
+                calloutLines = 0;
                 windowNudgeX = 0;
                 windowNudgeY = 0;
 
@@ -117,6 +124,28 @@ public class Gameplay {
                         case SuccessTSpin:
                         case SuccessTwist:
                             spinName = playfield.getPlayerMinoName();
+                            switch (pi.getRotation()) {
+                                case Clockwise:
+                                    windowNudgeX += 6;
+                                    break;
+                                case CounterClockwise:
+                                    windowNudgeX += -6;
+                                    break;
+                                case Flip:
+                                    switch (playfield.getPlayerMinoDirection()) {
+                                        case Down:
+                                        case Right:
+                                            windowNudgeX += 18;
+                                            break;
+                                        case Up:
+                                        case Left:
+                                            windowNudgeX += -18;
+                                            break;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                             // fallthrough
                         case Success:
                             resetLockDelay();
@@ -147,6 +176,7 @@ public class Gameplay {
 
                 if (playfield.getPlayerMinoGrounded()) {
                     lockDelayFrames++;
+                    playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
                     if (hardDropLock || lockResetMaxCount <= lockResetCount || lockDelayMaxFrames <= lockDelayFrames) {
                         windowNudgeY += 4;
                         playfield.lockPlayerMino();
@@ -159,12 +189,11 @@ public class Gameplay {
                         renderBlocks = playfield.getRenderBlocks();
                     }
                 } else {
+                    playerLockProgress = 0.0;
                     lockDelayFrames = 0;
                 }
 
-                renderBlocks = playfield.getRenderBlocks();
                 pdr = playfield.getPlayerRenderData();
-                playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
 
                 if (!playfield.hasPlayerMino()) {
                     boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
@@ -175,8 +204,30 @@ public class Gameplay {
                     gravityCount = 0;
                     lowestPlayerY = playfield.getPlayerMinoY();
                 }
+
+                renderFrame();
             }
         }, 0, 3);
+
+    }
+
+    private void renderFrame() {
+        renderQueue.offer(new GuiData(timeMillis,
+                linesCleared,
+                level,
+                hold,
+                lockHold,
+                pdr,
+                playerLockProgress,
+                windowNudgeX,
+                windowNudgeY,
+                0,
+                0,
+                renderBlocks,
+                nextQueueGuiData,
+                calloutLines,
+                spinName,
+                spinMini));
     }
 
     private Mino getNextMino() {
@@ -205,29 +256,7 @@ public class Gameplay {
     }
 
     public GuiData getGuiData() {
-        var gds = new GuiData(timeMillis,
-                linesCleared,
-                level,
-                hold,
-                lockHold,
-                pdr,
-                playerLockProgress,
-                windowNudgeX,
-                windowNudgeY,
-                0,
-                0,
-                renderBlocks,
-                nextQueueGuiData,
-                calloutLines,
-                spinName,
-                spinMini);
-        renderBlocks = null;
-        nextQueueGuiData = null;
-        spinName = null;
-        calloutLines = 0;
-        windowNudgeX = 0;
-        windowNudgeY = 0;
-        return gds;
+        return renderQueue.poll();
     }
 
     private static double[] levelTable = { 0.016666667, 0.021017234, 0.026977447, 0.035255958,
