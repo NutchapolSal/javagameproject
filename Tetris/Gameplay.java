@@ -117,6 +117,28 @@ public class Gameplay {
                         case SuccessTSpin:
                         case SuccessTwist:
                             spinName = playfield.getPlayerMinoName();
+                            switch (pi.getRotation()) {
+                                case Clockwise:
+                                    windowNudgeX += 6;
+                                    break;
+                                case CounterClockwise:
+                                    windowNudgeX += -6;
+                                    break;
+                                case Flip:
+                                    switch (playfield.getPlayerMinoDirection()) {
+                                        case Down:
+                                        case Right:
+                                            windowNudgeX += 18;
+                                            break;
+                                        case Up:
+                                        case Left:
+                                            windowNudgeX += -18;
+                                            break;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                             // fallthrough
                         case Success:
                             resetLockDelay();

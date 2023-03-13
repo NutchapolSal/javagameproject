@@ -305,4 +305,7 @@ public class Playfield {
         return playerMino.getName();
     }
 
+    public Direction getPlayerMinoDirection() {
+        return playerMinoDirection;
+    }
 }
