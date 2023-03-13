@@ -140,6 +140,7 @@ public class Gameplay {
         lockDelayFrames = 0;
         renderBlocks = playfield.getRenderBlocks();
         windowNudgeY += 4;
+        windowNudgeY *= (lines * 0.25) + 1;
     }
 
     private void processGravity() {
