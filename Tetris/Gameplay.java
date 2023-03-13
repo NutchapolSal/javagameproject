@@ -123,11 +123,11 @@ public class Gameplay {
                                     switch (playfield.getPlayerMinoDirection()) {
                                         case Down:
                                         case Right:
-                                            windowNudgeX += 18;
+                                            windowNudgeX += 6;
                                             break;
                                         case Up:
                                         case Left:
-                                            windowNudgeX += -18;
+                                            windowNudgeX += -6;
                                             break;
                                     }
                                     break;
