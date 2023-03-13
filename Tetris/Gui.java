@@ -76,53 +76,55 @@ public class Gui {
     public void update(GuiData gds) {
         long currFrameTime = System.nanoTime();
         long deltaFrameTime = currFrameTime - lastFrameTime;
+        if (gds != null) {
 
-        if (gds.spinName != null) {
-            spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
-        }
-        if (gds.calloutLines != 0) {
-            String calloutLinesStr = "";
-            if (gds.calloutLines == 1) {
-                calloutLinesStr = "SINGLE";
-            } else if (gds.calloutLines == 2) {
-                calloutLinesStr = "DOUBLE";
-            } else if (gds.calloutLines == 3) {
-                calloutLinesStr = "TRIPLE";
-            } else if (gds.calloutLines == 4) {
-                calloutLinesStr = "QUAD";
+            if (gds.spinName != null) {
+                spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
+            }
+            if (gds.calloutLines != 0) {
+                String calloutLinesStr = "";
+                if (gds.calloutLines == 1) {
+                    calloutLinesStr = "SINGLE";
+                } else if (gds.calloutLines == 2) {
+                    calloutLinesStr = "DOUBLE";
+                } else if (gds.calloutLines == 3) {
+                    calloutLinesStr = "TRIPLE";
+                } else if (gds.calloutLines == 4) {
+                    calloutLinesStr = "QUAD";
+                } else {
+                    calloutLinesStr = "";
+                }
+                lineCalloutLabel.startAnimation(calloutLinesStr);
+            }
+            // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
+            // b2bLabel.setText(String.format("%d", gds.calloutLines));
+            // comboLabel.setText(String.format("%d", gds.calloutLines));
+
+            timeCountText.setText(
+                    String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
+                            (gds.timeMillis / 1000d) % 60));
+            linesCountText.setText(String.format("%d", gds.linesCleared));
+            levelCountText.setText(String.format("%d", gds.level));
+            if (gds.lockHold) {
+                holdMino.setMino(gds.hold, MinoColor.Gray);
             } else {
-                calloutLinesStr = "";
+                holdMino.setMino(gds.hold);
             }
-            lineCalloutLabel.startAnimation(calloutLinesStr);
-        }
-        // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
-        // b2bLabel.setText(String.format("%d", gds.calloutLines));
-        // comboLabel.setText(String.format("%d", gds.calloutLines));
 
-        timeCountText.setText(
-                String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
-                        (gds.timeMillis / 1000d) % 60));
-        linesCountText.setText(String.format("%d", gds.linesCleared));
-        levelCountText.setText(String.format("%d", gds.level));
-        if (gds.lockHold) {
-            holdMino.setMino(gds.hold, MinoColor.Gray);
-        } else {
-            holdMino.setMino(gds.hold);
-        }
-
-        if (gds.renderBlocks != null) {
-            playfield.setRenderBlocks(gds.renderBlocks);
-        }
-        if (gds.nextQueue != null) {
-            for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
-                nextMinos[i].setMino(gds.nextQueue[i]);
+            if (gds.renderBlocks != null) {
+                playfield.setRenderBlocks(gds.renderBlocks);
             }
-        }
-        playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
-        f.repaint();
+            if (gds.nextQueue != null) {
+                for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
+                    nextMinos[i].setMino(gds.nextQueue[i]);
+                }
+            }
+            playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
+            f.repaint();
 
-        windowDeltaX += gds.windowNudgeX;
-        windowDeltaY += gds.windowNudgeY;
+            windowDeltaX += gds.windowNudgeX;
+            windowDeltaY += gds.windowNudgeY;
+        }
 
         windowDeltaX *= Math.pow(11.0 / 12.0, deltaFrameTime / TimeUnit.MILLISECONDS.toNanos(10));
         windowDeltaY *= Math.pow(11.0 / 12.0, deltaFrameTime / TimeUnit.MILLISECONDS.toNanos(10));
