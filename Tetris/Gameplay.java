@@ -86,101 +86,40 @@ public class Gameplay {
                 pi.tick();
 
                 if (pi.getHold() && !lockHold) {
-                    if (hold == null) {
-                        hold = playfield.swapHold(getNextMino());
-                    } else {
-                        hold = playfield.swapHold(hold);
-                    }
-                    lockHold = true;
+                    processHold();
                 }
 
                 if (pi.getXMove() != 0) {
-                    if (playfield.moveXPlayerMino(pi.getXMove())) {
-                        resetLockDelay();
-                    } else {
-                        windowNudgeX += pi.getXMove() * 3;
-                    }
+                    processXMove();
                 }
 
                 if (pi.getRotation() != Rotation.None) {
-                    RotationResult result = playfield.rotatePlayerMino(pi.getRotation());
-                    spinMini = false;
-                    switch (result) {
-                        case SuccessTSpinMini:
-                            spinMini = true;
-                            // fallthrough
-                        case SuccessTSpin:
-                        case SuccessTwist:
-                            spinName = playfield.getPlayerMinoName();
-                            switch (pi.getRotation()) {
-                                case Clockwise:
-                                    windowNudgeX += 6;
-                                    break;
-                                case CounterClockwise:
-                                    windowNudgeX += -6;
-                                    break;
-                                case Flip:
-                                    switch (playfield.getPlayerMinoDirection()) {
-                                        case Down:
-                                        case Right:
-                                            windowNudgeX += 6;
-                                            break;
-                                        case Up:
-                                        case Left:
-                                            windowNudgeX += -6;
-                                            break;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            // fallthrough
-                        case Success:
-                            resetLockDelay();
-                            // fallthrough
-                        case Fail:
-                            break;
-                    }
+                    processRotation();
                 }
 
                 boolean hardDropLock = false;
                 if (pi.getHardDrop()) {
-                    playfield.sonicDropPlayerMino();
+                    processHardDrop();
                     hardDropLock = true;
-                    windowNudgeY += 6;
                 }
                 if (pi.getSoftDrop()) {
-                    gravityCount += getGravityFromLevel(level) * 6;
+                    processSoftDrop();
                 }
 
-                gravityCount += getGravityFromLevel(level);
-                int dropCount = (int) gravityCount;
-                for (int i = 0; i < dropCount; i++) {
-                    if (playfield.moveYPlayerMino(-1)) {
-                        resetLockCount();
-                    }
-                    gravityCount -= 1;
-                }
+                processGravity();
 
                 if (playfield.getPlayerMinoGrounded()) {
                     lockDelayFrames++;
-                    playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
-                    if (hardDropLock || lockResetMaxCount <= lockResetCount || lockDelayMaxFrames <= lockDelayFrames) {
-                        windowNudgeY += 4;
-                        playfield.lockPlayerMino();
-                        int lines = playfield.clearLines();
-                        linesCleared += lines;
-                        calloutLines = lines;
-                        level = 1 + (linesCleared / 10);
-                        lockResetCount = 0;
-                        lockDelayFrames = 0;
-                        renderBlocks = playfield.getRenderBlocks();
+                    if (hardDropLock ||
+                            lockResetMaxCount <= lockResetCount ||
+                            lockDelayMaxFrames <= lockDelayFrames) {
+                        processPieceLock();
                     }
                 } else {
-                    playerLockProgress = 0.0;
                     lockDelayFrames = 0;
                 }
 
+                playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
                 pdr = playfield.getPlayerRenderData();
 
                 if (!playfield.hasPlayerMino()) {
@@ -196,7 +135,100 @@ public class Gameplay {
                 renderFrame();
             }
         }, 0, 3);
+    }
 
+    private void processPieceLock() {
+        playfield.lockPlayerMino();
+        int lines = playfield.clearLines();
+        linesCleared += lines;
+        calloutLines = lines;
+        level = 1 + (linesCleared / 10);
+        lockResetCount = 0;
+        lockDelayFrames = 0;
+        renderBlocks = playfield.getRenderBlocks();
+        windowNudgeY += 4;
+    }
+
+    private void processGravity() {
+        gravityCount += getGravityFromLevel(level);
+        int dropCount = (int) gravityCount;
+        for (int i = 0; i < dropCount; i++) {
+            if (playfield.moveYPlayerMino(-1)) {
+                resetLockCount();
+            }
+            gravityCount -= 1;
+        }
+    }
+
+    private void processSoftDrop() {
+        gravityCount += getGravityFromLevel(level) * 6;
+    }
+
+    private void processHardDrop() {
+        playfield.sonicDropPlayerMino();
+        windowNudgeY += 6;
+    }
+
+    private void processRotation() {
+        RotationResult result = playfield.rotatePlayerMino(pi.getRotation());
+        spinMini = false;
+        switch (result) {
+            case SuccessTSpinMini:
+                spinMini = true;
+                // fallthrough
+            case SuccessTSpin:
+            case SuccessTwist:
+                spinName = playfield.getPlayerMinoName();
+                processRotationNudge();
+                // fallthrough
+            case Success:
+                resetLockDelay();
+                // fallthrough
+            case Fail:
+                break;
+        }
+    }
+
+    private void processRotationNudge() {
+        switch (pi.getRotation()) {
+            case Clockwise:
+                windowNudgeX += 6;
+                break;
+            case CounterClockwise:
+                windowNudgeX += -6;
+                break;
+            case Flip:
+                switch (playfield.getPlayerMinoDirection()) {
+                    case Down:
+                    case Right:
+                        windowNudgeX += 6;
+                        break;
+                    case Up:
+                    case Left:
+                        windowNudgeX += -6;
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void processXMove() {
+        if (playfield.moveXPlayerMino(pi.getXMove())) {
+            resetLockDelay();
+        } else {
+            windowNudgeX += pi.getXMove() * 3;
+        }
+    }
+
+    private void processHold() {
+        if (hold == null) {
+            hold = playfield.swapHold(getNextMino());
+        } else {
+            hold = playfield.swapHold(hold);
+        }
+        lockHold = true;
     }
 
     private void renderFrame() {
