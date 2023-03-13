@@ -76,13 +76,6 @@ public class Gameplay {
                     timer.cancel();
                 }
 
-                renderBlocks = null;
-                nextQueueGuiData = null;
-                spinName = null;
-                calloutLines = 0;
-                windowNudgeX = 0;
-                windowNudgeY = 0;
-
                 pi.tick();
 
                 if (pi.getHold() && !lockHold) {
@@ -225,7 +218,7 @@ public class Gameplay {
     }
 
     private void renderFrame() {
-        renderQueue.offer(new GuiData(timeMillis,
+        boolean offerResult = renderQueue.offer(new GuiData(timeMillis,
                 linesCleared,
                 level,
                 hold,
@@ -241,6 +234,14 @@ public class Gameplay {
                 calloutLines,
                 spinName,
                 spinMini));
+        if (offerResult) {
+            renderBlocks = null;
+            nextQueueGuiData = null;
+            spinName = null;
+            calloutLines = 0;
+            windowNudgeX = 0;
+            windowNudgeY = 0;
+        }
     }
 
     private Mino getNextMino() {
