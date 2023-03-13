@@ -94,17 +94,12 @@ public class Gameplay {
                     lockHold = true;
                 }
 
-                boolean nudgePlayfieldX = false;
                 if (pi.getXMove() != 0) {
-                    boolean moveSuccess = playfield.moveXPlayerMino(pi.getXMove());
-                    nudgePlayfieldX = !moveSuccess;
-                    if (moveSuccess) {
+                    if (playfield.moveXPlayerMino(pi.getXMove())) {
                         resetLockDelay();
+                    } else {
+                        windowNudgeX += pi.getXMove() * 3;
                     }
-                }
-
-                if (nudgePlayfieldX) {
-                    windowNudgeX += pi.getXMove() * 3;
                 }
 
                 if (pi.getRotation() != Rotation.None) {
