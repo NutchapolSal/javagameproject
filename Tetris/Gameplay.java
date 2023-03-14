@@ -241,6 +241,8 @@ public class Gameplay {
             hold = playfield.swapHold(hold);
         }
         lockHold = true;
+        lockResetCount = 0;
+        lockDelayFrames = 0;
         gravityCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
     }
