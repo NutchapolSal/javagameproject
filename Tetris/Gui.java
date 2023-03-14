@@ -159,7 +159,6 @@ public class Gui {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void detailComponents() {
