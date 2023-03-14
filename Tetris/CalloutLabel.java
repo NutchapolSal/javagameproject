@@ -49,15 +49,14 @@ public class CalloutLabel extends JLabel {
 
     }
 
-    public void startAnimation(String s) {
+    public void startAnimation(String s, boolean isFadeOut) {
         startTime = System.nanoTime();
+        this.isFadeOut = isFadeOut;
         this.setText(s);
     }
 
-    public void startFadeOutAnimation(String s) {
-        startTime = System.nanoTime();
-        isFadeOut = true;
-        this.setText(s);
+    public void startAnimation(String s) {
+        startAnimation(s, true);
     }
 
 }

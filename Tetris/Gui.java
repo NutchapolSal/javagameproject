@@ -74,7 +74,7 @@ public class Gui {
 
     public void update(GuiData gds) {
         if (gds.spinName != null) {
-            spinLabel.startFadeOutAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
+            spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
         }
         if (gds.calloutLines != 0) {
             String calloutLinesStr = "";
@@ -89,15 +89,15 @@ public class Gui {
             } else {
                 calloutLinesStr = "";
             }
-            lineCalloutLabel.startFadeOutAnimation(calloutLinesStr);
+            lineCalloutLabel.startAnimation(calloutLinesStr);
         }
         // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
         if (gds.b2bCount != lastB2B) {
             if (gds.b2bCount != 0) {
-                b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount));
+                b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount), false);
                 lastB2B = gds.b2bCount;
             } else {
-                b2bLabel.startFadeOutAnimation(String.format("B2B x%s", gds.b2bCount));
+                b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount));
                 lastB2B = gds.b2bCount;
             }
         }
