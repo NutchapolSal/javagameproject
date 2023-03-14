@@ -218,6 +218,8 @@ public class Gameplay {
             hold = playfield.swapHold(hold);
         }
         lockHold = true;
+        gravityCount = 0;
+        lowestPlayerY = playfield.getPlayerMinoY();
     }
 
     private void renderFrame() {
