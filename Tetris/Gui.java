@@ -64,6 +64,7 @@ public class Gui {
     private double windowLastDeltaY;
 
     private long lastFrameTime = System.nanoTime();
+    private int lastB2B = 0;
 
     private static double roundToZero(double in) {
         if (in < 0) {
@@ -97,7 +98,15 @@ public class Gui {
                 lineCalloutLabel.startAnimation(calloutLinesStr);
             }
             // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
-            // b2bLabel.setText(String.format("%d", gds.calloutLines));
+            if (gds.b2bCount != lastB2B) {
+                if (gds.b2bCount != 0) {
+                    b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount), false);
+                    lastB2B = gds.b2bCount;
+                } else {
+                    b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount));
+                    lastB2B = gds.b2bCount;
+                }
+            }
             // comboLabel.setText(String.format("%d", gds.calloutLines));
 
             timeCountText.setText(

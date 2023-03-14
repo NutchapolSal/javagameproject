@@ -10,14 +10,13 @@ import java.util.concurrent.TimeUnit;
 import java.awt.font.TextAttribute;
 
 public class CalloutLabel extends JLabel {
-    private static long animDuration = TimeUnit.SECONDS.toNanos(2);
+    private static long animDuration = TimeUnit.SECONDS.toNanos(3);
     private long startTime;
-    private boolean noPaint;
+    private boolean isFadeOut = false;
 
     public CalloutLabel() {
         setText(" ");
         startTime = System.nanoTime() - animDuration;
-        noPaint = false;
 
         Map<java.awt.font.TextAttribute, Object> deriveMap = new java.util.HashMap<>();
         deriveMap.put(java.awt.font.TextAttribute.FAMILY, "Tw Cen MT");
@@ -27,37 +26,42 @@ public class CalloutLabel extends JLabel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        if (noPaint) {
-            return;
-        }
         long timeSinceStart = System.nanoTime() - startTime;
         double rawAnimProgress = (double) timeSinceStart / animDuration;
-        double animationProgress = 1 - Math.pow(1 - rawAnimProgress, 5);
-
-        double spacing = -0.1 + (animationProgress * 0.24);
-        double alpha = Math.min(1.0, 2.0 - rawAnimProgress * 2);
-
-        if (animationProgress >= 1) {
-            noPaint = true;
+        rawAnimProgress = Math.min(1, rawAnimProgress);
+        if (rawAnimProgress == 1 && isFadeOut) {
             return;
         }
+        double spacingAnim = 1 - Math.pow(1 - rawAnimProgress, 7);
+        double alphaAnim = Math.pow(Math.max(0.0, (rawAnimProgress * 1.75) - 0.75), 3);
+
+        double spacing = -0.2 + (spacingAnim * 0.25);
+        double alpha = 1.0 - alphaAnim;
+
         Map<TextAttribute, Object> attribute = new HashMap<>();
         attribute.put(TextAttribute.TRACKING, spacing);
         this.setFont(this.getFont().deriveFont(attribute));
 
         // Fade-out
-        if (alpha < 0) {
-            alpha = 0;
+        if (isFadeOut) {
+            if (alpha < 0) {
+                alpha = 0;
+            }
+            this.setForeground(new Color(this.getForeground().getRed(), this.getForeground().getGreen(),
+                    this.getForeground().getBlue(), (int) (255 * alpha)));
         }
-        this.setForeground(new Color(this.getForeground().getRed(), this.getForeground().getGreen(),
-                this.getForeground().getBlue(), (int) (255 * alpha)));
         super.paintComponent(g);
 
     }
 
-    public void startAnimation(String s) {
+    public void startAnimation(String s, boolean isFadeOut) {
         startTime = System.nanoTime();
+        this.isFadeOut = isFadeOut;
         this.setText(s);
-        noPaint = false;
     }
+
+    public void startAnimation(String s) {
+        startAnimation(s, true);
+    }
+
 }
