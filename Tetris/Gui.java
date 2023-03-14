@@ -149,21 +149,6 @@ public class Gui {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        var keys = UIManager.getDefaults().keys();
-        while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            Object value = UIManager.get(key);
-            if (value instanceof javax.swing.plaf.FontUIResource) {
-                javax.swing.plaf.FontUIResource font = ((javax.swing.plaf.FontUIResource) value);
-                if (font.getFamily().equals("Tahoma")) {
-                    Map<java.awt.font.TextAttribute, Object> attribute = new java.util.HashMap<>();
-                    attribute.put(java.awt.font.TextAttribute.FAMILY, "Cambria");
-                    attribute.put(java.awt.font.TextAttribute.SIZE, font.getSize() + 1);
-                    UIManager.put(key, font.deriveFont(attribute));
-                }
-            }
-        }
     }
 
     private void detailComponents() {

@@ -18,6 +18,11 @@ public class CalloutLabel extends JLabel {
         setText(" ");
         startTime = System.nanoTime() - animDuration;
         noPaint = false;
+
+        Map<java.awt.font.TextAttribute, Object> deriveMap = new java.util.HashMap<>();
+        deriveMap.put(java.awt.font.TextAttribute.FAMILY, "Tw Cen MT");
+        deriveMap.put(java.awt.font.TextAttribute.SIZE, getFont().getSize() + 3);
+        this.setFont(getFont().deriveFont(deriveMap));
     }
 
     @Override
