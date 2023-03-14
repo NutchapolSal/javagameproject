@@ -83,6 +83,11 @@ public class Playfield {
             return RotationResult.Success;
         }
         if (!checkShapeCollision(playerMinoRotateData,
+                playerMinoX + playerMinoRotateData.xOffset,
+                playerMinoY + playerMinoRotateData.yOffset - 1)) {
+            return RotationResult.Success;
+        }
+        if (!checkShapeCollision(playerMinoRotateData,
                 playerMinoX + playerMinoRotateData.xOffset + 1,
                 playerMinoY + playerMinoRotateData.yOffset)) {
             return RotationResult.Success;
@@ -164,24 +169,39 @@ public class Playfield {
     }
 
     private int getShadowYPos() {
-        int y = playerMinoY;
-        fastcheck: for (; 0 < y + playerMinoRotateData.yOffset; y--) {
+        int shadowY = playerMinoY;
+
+        boolean blocksInBounds = false;
+        bibcheck: for (int y = 0; y < playerMinoRotateData.getHeight(); y++) {
             for (int x = 0; x < playerMinoRotateData.getWidth(); x++) {
                 if (blocks.getAtPos(playerMinoX + playerMinoRotateData.xOffset + x,
-                        y + playerMinoRotateData.yOffset - 1) != null) {
-                    break fastcheck;
+                        playerMinoY + playerMinoRotateData.yOffset + y) != null) {
+                    blocksInBounds = true;
+                    break bibcheck;
                 }
             }
         }
-        for (;; y--) {
+
+        if (!blocksInBounds) {
+            fastcheck: for (; 0 < shadowY + playerMinoRotateData.yOffset; shadowY--) {
+                for (int x = 0; x < playerMinoRotateData.getWidth(); x++) {
+                    if (blocks.getAtPos(playerMinoX + playerMinoRotateData.xOffset + x,
+                            shadowY + playerMinoRotateData.yOffset - 1) != null) {
+                        break fastcheck;
+                    }
+                }
+            }
+        }
+
+        for (;; shadowY--) {
             if (checkShapeCollision(
                     playerMinoRotateData,
                     playerMinoX + playerMinoRotateData.xOffset,
-                    y + playerMinoRotateData.yOffset - 1)) {
+                    shadowY + playerMinoRotateData.yOffset - 1)) {
                 break;
             }
         }
-        return y;
+        return shadowY;
     }
 
     public boolean spawnPlayerMino(Mino mino) {
