@@ -23,6 +23,9 @@ public class Gameplay {
     private boolean lockHold;
     private int linesCleared;
     private int level;
+    private int b2bCount;
+    private int comboCount;
+    private boolean lastMoveTSpin;
     private double gravityCount = 0;
     private int lockDelayFrames = 0;
     private int lockResetCount = 0;
@@ -134,11 +137,25 @@ public class Gameplay {
         playfield.lockPlayerMino();
         int lines = playfield.clearLines();
         linesCleared += lines;
+
+        if (4 <= lines || (lastMoveTSpin && 0 < lines)) {
+            b2bCount++;
+        } else if (0 < lines) {
+            b2bCount = 0;
+        }
+
+        if (0 < lines) {
+            comboCount++;
+        } else {
+            comboCount = 0;
+        }
+
         calloutLines = lines;
         level = 1 + (linesCleared / 10);
         lockResetCount = 0;
         lockDelayFrames = 0;
         renderBlocks = playfield.getRenderBlocks();
+
         windowNudgeY += 4;
         windowNudgeY *= (lines * 0.25) + 1;
     }
@@ -149,6 +166,7 @@ public class Gameplay {
         for (int i = 0; i < dropCount; i++) {
             if (playfield.moveYPlayerMino(-1)) {
                 resetLockCount();
+                lastMoveTSpin = false;
             } else {
                 break;
             }
@@ -162,16 +180,20 @@ public class Gameplay {
 
     private void processHardDrop() {
         playfield.sonicDropPlayerMino();
+        lastMoveTSpin = false;
         windowNudgeY += 6;
     }
 
     private void processRotation() {
+        lastMoveTSpin = false;
         spinMini = false;
         switch (playfield.rotatePlayerMino(pi.getRotation())) {
             case SuccessTSpinMini:
                 spinMini = true;
                 // fallthrough
             case SuccessTSpin:
+                lastMoveTSpin = true;
+                // fallthrough
             case SuccessTwist:
                 spinName = playfield.getPlayerMinoName();
                 windowNudgeX += calculateRotationNudge();
@@ -206,6 +228,7 @@ public class Gameplay {
     private void processXMove() {
         if (playfield.moveXPlayerMino(pi.getXMove())) {
             resetLockDelay();
+            lastMoveTSpin = false;
         } else {
             windowNudgeX += pi.getXMove() * 3;
         }
@@ -232,8 +255,8 @@ public class Gameplay {
                 playerLockProgress,
                 windowNudgeX,
                 windowNudgeY,
-                0,
-                0,
+                Math.max(0, comboCount - 1),
+                Math.max(0, b2bCount - 1),
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
