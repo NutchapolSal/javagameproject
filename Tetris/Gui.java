@@ -62,6 +62,8 @@ public class Gui {
     private double windowLastDeltaX;
     private double windowLastDeltaY;
 
+    private int lastB2B = 0;
+
     private static double roundToZero(double in) {
         if (in < 0) {
             return Math.ceil(in);
@@ -72,7 +74,7 @@ public class Gui {
 
     public void update(GuiData gds) {
         if (gds.spinName != null) {
-            spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
+            spinLabel.startFadeOutAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
         }
         if (gds.calloutLines != 0) {
             String calloutLinesStr = "";
@@ -87,10 +89,18 @@ public class Gui {
             } else {
                 calloutLinesStr = "";
             }
-            lineCalloutLabel.startAnimation(calloutLinesStr);
+            lineCalloutLabel.startFadeOutAnimation(calloutLinesStr);
         }
         // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
-        // b2bLabel.setText(String.format("%d", gds.calloutLines));
+        if (gds.b2bCount != lastB2B) {
+            if (gds.b2bCount != 0) {
+                b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount));
+                lastB2B = gds.b2bCount;
+            } else {
+                b2bLabel.startFadeOutAnimation(String.format("B2B x%s", gds.b2bCount));
+                lastB2B = gds.b2bCount;
+            }
+        }
         // comboLabel.setText(String.format("%d", gds.calloutLines));
 
         timeCountText.setText(
