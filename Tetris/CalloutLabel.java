@@ -12,7 +12,7 @@ import java.awt.font.TextAttribute;
 public class CalloutLabel extends JLabel {
     private static long animDuration = TimeUnit.SECONDS.toNanos(3);
     private long startTime;
-    private boolean isFadeOut = false;
+    private boolean isFadeOut = true;
 
     public CalloutLabel() {
         setText(" ");
