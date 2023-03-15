@@ -47,25 +47,42 @@ public class Gameplay {
     }
 
     public void startGame() {
+        if (timer != null)
+            timer.cancel();
+
+        timer = new Timer();
+        lastFrame = System.nanoTime();
+        timeMillis = 0;
+        playfield = new Playfield();
+        minoRandomizer = new SevenBagRandomizer(1234); // TODO: actually use random seed
         nextQueue = new ArrayDeque<>();
         hold = null;
-        playfield = new Playfield();
+        lockHold = false;
         linesCleared = 0;
         level = 1;
-        minoRandomizer = new SevenBagRandomizer(1234); // TODO: actually use random seed
-        lockHold = false;
+        b2bCount = 0;
+        comboCount = 0;
+        lastMoveTSpin = false;
+        gravityCount = 0;
+        lockDelayFrames = 0;
+        lockResetCount = 0;
+        lowestPlayerY = playfield.getPlayerMinoY();
+
+        pdr = playfield.getPlayerRenderData();
+        playerLockProgress = 0;
+        windowNudgeX = 0;
+        windowNudgeY = 0;
+        renderBlocks = playfield.getRenderBlocks();
+        calloutLines = 0;
+        spinName = null;
+        spinMini = false;
 
         fillNextQueue();
         playfield.spawnPlayerMino(getNextMino());
-        lowestPlayerY = playfield.getPlayerMinoY();
-        renderBlocks = playfield.getRenderBlocks();
         renderFrame();
 
-        if (timer != null)
-            timer.cancel();
-        timer = new Timer();
         long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
-        lastFrame = System.nanoTime();
+
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 long nowFrame = System.nanoTime();
