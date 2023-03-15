@@ -395,7 +395,7 @@ public class Gui {
 
         timeCountText.setFont(timeCountText.getFont().deriveFont(
                 timeCountText.getFont().getStyle() | Font.BOLD, timeCountText.getFont().getSize() + 7));
-        timeCountText.setText("00.00");
+        timeCountText.setText("0:00.00");
     }
 
     public KeyboardHandler getKeyboardHandler() {
