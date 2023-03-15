@@ -302,6 +302,7 @@ public class Gameplay {
         for (int i = 0; i < 5; i++) {
             nextQueue.offer(minoRandomizer.next());
         }
+        nextQueueGuiData = nextQueue.toArray(new Mino[0]);
     }
 
     private void resetLockDelay() {
