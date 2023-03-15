@@ -25,6 +25,7 @@ public class PlayfieldPanel extends MinoPanel {
 
     public PlayfieldPanel() {
         super(10, 20);
+        setOpaque(false);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         callout = new CalloutLabel();
         callout.setHorizontalAlignment(SwingConstants.CENTER);
