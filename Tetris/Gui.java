@@ -65,6 +65,7 @@ public class Gui {
 
     private long lastFrameTime = System.nanoTime();
     private int lastB2B = 0;
+    private int lastCombo = 0;
 
     private static double roundToZero(double in) {
         if (in < 0) {
@@ -107,7 +108,10 @@ public class Gui {
                     lastB2B = gds.b2bCount;
                 }
             }
-            // comboLabel.setText(String.format("%d", gds.calloutLines));
+            if (gds.comboCount != lastCombo && 0 < gds.comboCount) {
+                comboLabel.startAnimation(String.format("%d COMBO", gds.comboCount));
+            }
+            lastCombo = gds.comboCount;
 
             timeCountText.setText(
                     String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
