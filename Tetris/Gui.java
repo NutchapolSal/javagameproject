@@ -99,7 +99,6 @@ public class Gui {
                 lineCalloutLabel.startAnimation(calloutLinesStr);
                 playfield.startAnimation(calloutLinesStr);
             }
-            // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
             if (gds.b2bCount != lastB2B) {
                 if (gds.b2bCount != 0) {
                     b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount), false);
