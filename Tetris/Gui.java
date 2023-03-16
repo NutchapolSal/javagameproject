@@ -26,6 +26,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+import java.awt.BorderLayout;
 import java.awt.Container;
 
 public class Gui {
@@ -171,22 +172,40 @@ public class Gui {
     }
 
     private void detailComponents() {
-        leftFiller = new Box.Filler(
-                new Dimension(0, 0),
-                new Dimension(0, 0),
-                new Dimension(32767, 0));
         createCenterPanel();
-        rightFiller = new Box.Filler(
-                new Dimension(0, 0),
-                new Dimension(0, 0),
-                new Dimension(32767, 0));
 
         Container contentPane = f.getContentPane();
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
-        contentPane.add(leftFiller);
-        contentPane.add(centerPanel);
-        contentPane.add(rightFiller);
 
+        JPanel lPane = new JPanel();
+        JPanel rPane = new JPanel();
+
+        GroupLayout lPaneLayout = new GroupLayout(lPane);
+        lPane.setLayout(lPaneLayout);
+        lPaneLayout.setHorizontalGroup(lPaneLayout.createParallelGroup(Alignment.TRAILING)
+                .addComponent(holdPanel)
+                .addComponent(calloutsPanel)
+                .addComponent(statsPanel)
+                .addGap(0, 0, Integer.MAX_VALUE));
+        lPaneLayout.setVerticalGroup(lPaneLayout.createSequentialGroup()
+                .addComponent(holdPanel)
+                .addComponent(calloutsPanel)
+                .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+                        Integer.MAX_VALUE)
+                .addComponent(statsPanel));
+
+        GroupLayout rPaneLayout = new GroupLayout(rPane);
+        rPane.setLayout(rPaneLayout);
+        rPaneLayout.setHorizontalGroup(rPaneLayout.createParallelGroup(Alignment.LEADING)
+                .addComponent(nextPanel)
+                .addComponent(miscPanel)
+                .addGap(0, 0, Integer.MAX_VALUE));
+        rPaneLayout.setVerticalGroup(rPaneLayout.createSequentialGroup()
+                .addComponent(nextPanel)
+                .addComponent(miscPanel));
+
+        contentPane.add(lPane, BorderLayout.WEST);
+        contentPane.add(playfield, BorderLayout.CENTER);
+        contentPane.add(rPane, BorderLayout.EAST);
     }
 
     private void createCenterPanel() {
@@ -197,37 +216,6 @@ public class Gui {
         createHoldPanel();
         createCallOutsPanel();
         createMiscPanel();
-
-        GroupLayout centerPanelLayout = new GroupLayout(centerPanel);
-        centerPanel.setLayout(centerPanelLayout);
-        centerPanelLayout.setHorizontalGroup(centerPanelLayout.createSequentialGroup()
-                .addGroup(centerPanelLayout.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(holdPanel)
-                        .addComponent(calloutsPanel)
-                        .addComponent(statsPanel))
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(playfield)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(centerPanelLayout.createParallelGroup()
-                        .addComponent(nextPanel)
-                        .addComponent(miscPanel)
-
-                ));
-        centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
-                .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(holdPanel)
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(calloutsPanel)
-                        .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-                                Integer.MAX_VALUE)
-                        .addComponent(statsPanel))
-                .addComponent(playfield)
-                .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(nextPanel)
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(miscPanel)
-
-                ));
     }
 
     private void createHoldPanel() {
