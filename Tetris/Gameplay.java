@@ -30,6 +30,7 @@ public class Gameplay {
     private int lockDelayFrames = 0;
     private int lockResetCount = 0;
     private int lowestPlayerY;
+    private boolean hardDropLock;
 
     private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
     private PlayerRenderData pdr;
@@ -67,6 +68,7 @@ public class Gameplay {
         lockDelayFrames = 0;
         lockResetCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
+        hardDropLock = false;
 
         pdr = playfield.getPlayerRenderData();
         playerLockProgress = 0;
@@ -110,10 +112,8 @@ public class Gameplay {
                     processRotation();
                 }
 
-                boolean hardDropLock = false;
                 if (pi.getHardDrop()) {
                     processHardDrop();
-                    hardDropLock = true;
                 }
                 if (pi.getSoftDrop()) {
                     processSoftDrop();
@@ -171,6 +171,7 @@ public class Gameplay {
         level = 1 + (linesCleared / 10);
         lockResetCount = 0;
         lockDelayFrames = 0;
+        hardDropLock = false;
         renderBlocks = playfield.getRenderBlocks();
 
         windowNudgeY += 4;
@@ -200,6 +201,7 @@ public class Gameplay {
         if (moved) {
             lastMoveTSpin = false;
         }
+        hardDropLock = true;
         windowNudgeY += 6;
     }
 
