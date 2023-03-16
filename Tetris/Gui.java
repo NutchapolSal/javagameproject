@@ -97,6 +97,7 @@ public class Gui {
                     calloutLinesStr = "";
                 }
                 lineCalloutLabel.startAnimation(calloutLinesStr);
+                playfield.startAnimation(calloutLinesStr);
             }
             // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
             if (gds.b2bCount != lastB2B) {

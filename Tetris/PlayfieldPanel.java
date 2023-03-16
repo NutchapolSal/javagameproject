@@ -42,9 +42,6 @@ public class PlayfieldPanel extends MinoPanel {
                 layout.createSequentialGroup()
                         .addGap(PREF_H / 6)
                         .addComponent(callout));
-
-        callout.startAnimation("WOOOOOWW!!!");
-
     }
 
     @Override
