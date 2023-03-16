@@ -31,6 +31,8 @@ public class Gameplay {
     private int lockResetCount = 0;
     private int lowestPlayerY;
     private boolean hardDropLock;
+    private String spinName;
+    private boolean spinMini;
 
     private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
     private PlayerRenderData pdr;
@@ -40,8 +42,7 @@ public class Gameplay {
     private ObjectDataGrid<MinoColor> renderBlocks;
     private Mino[] nextQueueGuiData = new Mino[6];
     private int calloutLines;
-    private String spinName;
-    private boolean spinMini;
+    private String spinNameGui;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -261,6 +262,10 @@ public class Gameplay {
         lockDelayFrames = 0;
         hardDropLock = false;
         renderBlocks = playfield.getRenderBlocks();
+        if (lastMoveTSpin) {
+            spinNameGui = spinName;
+        }
+        spinName = null;
 
         windowNudgeY += 4;
         windowNudgeY *= (lines * 0.25) + 1;
@@ -291,12 +296,12 @@ public class Gameplay {
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
-                spinName,
+                spinNameGui,
                 spinMini));
         if (offerResult) {
             renderBlocks = null;
             nextQueueGuiData = null;
-            spinName = null;
+            spinNameGui = null;
             calloutLines = 0;
             windowNudgeX = 0;
             windowNudgeY = 0;
