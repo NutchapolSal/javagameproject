@@ -187,6 +187,7 @@ public class Gui {
         contentPane.add(centerPanel);
         contentPane.add(rightFiller);
 
+        debugWithBorder();
     }
 
     private void createCenterPanel() {
@@ -511,5 +512,22 @@ public class Gui {
 
     public void setNewGameAction(ActionListener a) {
         newGameButton.addActionListener(a);
+    }
+
+    private void debugWithBorder() {
+        recurseAddBorders(f.getContentPane());
+    }
+
+    private void recurseAddBorders(Container c) {
+        for (var v : c.getComponents()) {
+            try {
+                ((JComponent) v).setBorder(BorderFactory.createLineBorder(Color.RED));
+            } catch (ClassCastException e) {
+            }
+            try {
+                recurseAddBorders((Container) v);
+            } catch (ClassCastException e) {
+            }
+        }
     }
 }
