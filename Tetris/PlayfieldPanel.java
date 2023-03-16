@@ -50,7 +50,6 @@ public class PlayfieldPanel extends MinoPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponents(g);
         for (int y = 0; y < PANEL_HEIGHT_BLOCKS; y++) {
             for (int x = 0; x < PANEL_WIDTH_BLOCKS; x++) {
                 MinoColor currColor = renderBlocks.getAtPos(x, y);
