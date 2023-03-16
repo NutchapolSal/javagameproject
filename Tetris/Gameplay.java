@@ -196,8 +196,10 @@ public class Gameplay {
     }
 
     private void processHardDrop() {
-        playfield.sonicDropPlayerMino();
-        lastMoveTSpin = false;
+        boolean moved = playfield.sonicDropPlayerMino();
+        if (moved) {
+            lastMoveTSpin = false;
+        }
         windowNudgeY += 6;
     }
 
