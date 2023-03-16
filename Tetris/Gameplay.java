@@ -135,82 +135,26 @@ public class Gameplay {
         }, 0, 3);
     }
 
-    private void processLockDelay() {
-        if (playfield.getPlayerMinoGrounded()) {
-            lockDelayFrames++;
-            if (hardDropLock ||
-                    lockResetMaxCount <= lockResetCount ||
-                    lockDelayMaxFrames <= lockDelayFrames) {
-                processPieceLock();
-            }
+    private void processHold() {
+        if (hold == null) {
+            hold = playfield.swapHold(getNextMino());
         } else {
-            lockDelayFrames = 0;
+            hold = playfield.swapHold(hold);
         }
-    }
-
-    private void processPieceSpawn() {
-        boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
-        if (!spawnSuccess) {
-            timer.cancel();
-        }
-        lockHold = false;
+        lockHold = true;
+        lockResetCount = 0;
+        lockDelayFrames = 0;
         gravityCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
     }
 
-    private void processPieceLock() {
-        playfield.lockPlayerMino();
-        int lines = playfield.clearLines();
-        linesCleared += lines;
-
-        if (4 <= lines || (lastMoveTSpin && 0 < lines)) {
-            b2bCount++;
-        } else if (0 < lines) {
-            b2bCount = 0;
-        }
-
-        if (0 < lines) {
-            comboCount++;
-        } else {
-            comboCount = 0;
-        }
-
-        calloutLines = lines;
-        level = 1 + (linesCleared / 10);
-        lockResetCount = 0;
-        lockDelayFrames = 0;
-        hardDropLock = false;
-        renderBlocks = playfield.getRenderBlocks();
-
-        windowNudgeY += 4;
-        windowNudgeY *= (lines * 0.25) + 1;
-    }
-
-    private void processGravity() {
-        gravityCount += getGravityFromLevel(level);
-        int dropCount = (int) gravityCount;
-        for (int i = 0; i < dropCount; i++) {
-            if (playfield.moveYPlayerMino(-1)) {
-                resetLockCount();
-                lastMoveTSpin = false;
-            } else {
-                break;
-            }
-        }
-        gravityCount -= dropCount;
-    }
-
-    private void processSoftDrop() {
-        gravityCount += getGravityFromLevel(level) * 6;
-    }
-
-    private void processHardDrop() {
-        boolean moved = playfield.sonicDropPlayerMino();
-        if (moved) {
+    private void processXMove() {
+        if (playfield.moveXPlayerMino(pi.getXMove())) {
+            resetLockDelay();
             lastMoveTSpin = false;
+        } else {
+            windowNudgeX += pi.getXMove() * 3;
         }
-        hardDropLock = true;
-        windowNudgeY += 6;
     }
 
     private void processRotation() {
@@ -254,24 +198,80 @@ public class Gameplay {
         }
     }
 
-    private void processXMove() {
-        if (playfield.moveXPlayerMino(pi.getXMove())) {
-            resetLockDelay();
+    private void processHardDrop() {
+        boolean moved = playfield.sonicDropPlayerMino();
+        if (moved) {
             lastMoveTSpin = false;
+        }
+        hardDropLock = true;
+        windowNudgeY += 6;
+    }
+
+    private void processSoftDrop() {
+        gravityCount += getGravityFromLevel(level) * 6;
+    }
+
+    private void processGravity() {
+        gravityCount += getGravityFromLevel(level);
+        int dropCount = (int) gravityCount;
+        for (int i = 0; i < dropCount; i++) {
+            if (playfield.moveYPlayerMino(-1)) {
+                resetLockCount();
+                lastMoveTSpin = false;
+            } else {
+                break;
+            }
+        }
+        gravityCount -= dropCount;
+    }
+
+    private void processLockDelay() {
+        if (playfield.getPlayerMinoGrounded()) {
+            lockDelayFrames++;
+            if (hardDropLock ||
+                    lockResetMaxCount <= lockResetCount ||
+                    lockDelayMaxFrames <= lockDelayFrames) {
+                processPieceLock();
+            }
         } else {
-            windowNudgeX += pi.getXMove() * 3;
+            lockDelayFrames = 0;
         }
     }
 
-    private void processHold() {
-        if (hold == null) {
-            hold = playfield.swapHold(getNextMino());
-        } else {
-            hold = playfield.swapHold(hold);
+    private void processPieceLock() {
+        playfield.lockPlayerMino();
+        int lines = playfield.clearLines();
+        linesCleared += lines;
+
+        if (4 <= lines || (lastMoveTSpin && 0 < lines)) {
+            b2bCount++;
+        } else if (0 < lines) {
+            b2bCount = 0;
         }
-        lockHold = true;
+
+        if (0 < lines) {
+            comboCount++;
+        } else {
+            comboCount = 0;
+        }
+
+        calloutLines = lines;
+        level = 1 + (linesCleared / 10);
         lockResetCount = 0;
         lockDelayFrames = 0;
+        hardDropLock = false;
+        renderBlocks = playfield.getRenderBlocks();
+
+        windowNudgeY += 4;
+        windowNudgeY *= (lines * 0.25) + 1;
+    }
+
+    private void processPieceSpawn() {
+        boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
+        if (!spawnSuccess) {
+            timer.cancel();
+        }
+        lockHold = false;
         gravityCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
     }
