@@ -81,7 +81,7 @@ public class Gui {
         if (gds != null) {
 
             if (gds.spinName != null) {
-                spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
+                spinLabel.startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName + "-SPIN");
             }
             if (gds.calloutLines != 0) {
                 String calloutLinesStr = "";
