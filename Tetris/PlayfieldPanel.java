@@ -76,4 +76,12 @@ public class PlayfieldPanel extends MinoPanel {
             }
         }
     }
+
+    public void startAnimation(String s, boolean isFadeOut) {
+        callout.startAnimation(s, isFadeOut);
+    }
+
+    public void startAnimation(String s) {
+        callout.startAnimation(s);
+    }
 }
