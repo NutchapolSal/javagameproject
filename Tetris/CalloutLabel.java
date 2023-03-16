@@ -15,7 +15,6 @@ public class CalloutLabel extends JLabel {
     private boolean isFadeOut = true;
 
     public CalloutLabel() {
-        setOpaque(false);
         setText(" ");
         startTime = System.nanoTime() - animDuration;
 
