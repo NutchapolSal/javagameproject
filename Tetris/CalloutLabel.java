@@ -39,7 +39,7 @@ public class CalloutLabel extends JLabel {
         double alphaAnim = Math.pow(Math.max(0.0, (rawAnimProgress * 1.75) - 0.75), 3);
 
         double spacing = -0.2 + (spacingAnim * 0.25);
-        double alpha = isFadeOut ? 1.0 - alphaAnim : 1;
+        double alpha = isFadeOut ? Math.max(0, 1.0 - alphaAnim) : 1;
 
         Map<TextAttribute, Object> attribute = new HashMap<>();
         attribute.put(TextAttribute.TRACKING, spacing);
