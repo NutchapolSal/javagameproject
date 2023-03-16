@@ -121,33 +121,41 @@ public class Gameplay {
 
                 processGravity();
 
-                if (playfield.getPlayerMinoGrounded()) {
-                    lockDelayFrames++;
-                    if (hardDropLock ||
-                            lockResetMaxCount <= lockResetCount ||
-                            lockDelayMaxFrames <= lockDelayFrames) {
-                        processPieceLock();
-                    }
-                } else {
-                    lockDelayFrames = 0;
-                }
+                processLockDelay();
 
                 playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
                 pdr = playfield.getPlayerRenderData();
 
                 if (!playfield.hasPlayerMino()) {
-                    boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
-                    if (!spawnSuccess) {
-                        timer.cancel();
-                    }
-                    lockHold = false;
-                    gravityCount = 0;
-                    lowestPlayerY = playfield.getPlayerMinoY();
+                    processPieceSpawn();
                 }
 
                 renderFrame();
             }
         }, 0, 3);
+    }
+
+    private void processLockDelay() {
+        if (playfield.getPlayerMinoGrounded()) {
+            lockDelayFrames++;
+            if (hardDropLock ||
+                    lockResetMaxCount <= lockResetCount ||
+                    lockDelayMaxFrames <= lockDelayFrames) {
+                processPieceLock();
+            }
+        } else {
+            lockDelayFrames = 0;
+        }
+    }
+
+    private void processPieceSpawn() {
+        boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
+        if (!spawnSuccess) {
+            timer.cancel();
+        }
+        lockHold = false;
+        gravityCount = 0;
+        lowestPlayerY = playfield.getPlayerMinoY();
     }
 
     private void processPieceLock() {
