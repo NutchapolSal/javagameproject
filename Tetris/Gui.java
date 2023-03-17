@@ -65,7 +65,13 @@ public class Gui {
     private JMenu gameMenu;
     private JMenu optionsMenu;
     private JMenuBar menuBar;
-    private JMenuItem jMenuItem1;
+    private JMenuItem dasMenuItem;
+    private JMenuItem arrMenuItem;
+    private JMenuItem sonicDropMenuItem;
+    private JMenuItem ctrlSchemeMenuItem;
+    private JMenuItem classicMenuItem;
+    private JMenuItem WASDMenuItem;
+    private JMenuItem slashBracketMenuItem;
 
     private double windowDeltaX;
     private double windowDeltaY;
@@ -209,17 +215,36 @@ public class Gui {
         menuBar = new JMenuBar();
         gameMenu = new JMenu();
         optionsMenu = new JMenu();
-        jMenuItem1 = new JMenuItem();
+        dasMenuItem = new JMenuItem();
+        arrMenuItem = new JMenuItem();
+        sonicDropMenuItem = new JMenuItem();
+        ctrlSchemeMenuItem = new JMenuItem();
+        classicMenuItem = new JMenuItem();
+        WASDMenuItem = new JMenuItem();
+        slashBracketMenuItem = new JMenuItem();
 
-        gameMenu.setText("Game");
-
-        jMenuItem1.setText("jMenuItem1");
-        gameMenu.add(jMenuItem1);
-
-        optionsMenu.setText("Options");
+        dasMenuItem.setText("DAS");
+        arrMenuItem.setText("ARR");
+        sonicDropMenuItem.setText("SonicDrop");
+        ctrlSchemeMenuItem.setText("ControlScheme");
+        classicMenuItem.setText("Classic");
+        WASDMenuItem.setText("WASD");
+        slashBracketMenuItem.setText("SlashBracket");
 
         menuBar.add(gameMenu);
         menuBar.add(optionsMenu);
+
+        gameMenu.setText("Game");
+        gameMenu.add(dasMenuItem);
+        gameMenu.add(arrMenuItem);
+        gameMenu.add(sonicDropMenuItem);
+        gameMenu.add(ctrlSchemeMenuItem);
+
+        optionsMenu.setText("Options");
+        optionsMenu.add(classicMenuItem);
+        optionsMenu.add(WASDMenuItem);
+        optionsMenu.add(slashBracketMenuItem);
+
     }
 
     private void createCenterPanel() {
