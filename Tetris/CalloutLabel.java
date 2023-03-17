@@ -12,7 +12,7 @@ import java.awt.font.TextAttribute;
 public class CalloutLabel extends JLabel {
     private static long animDuration = TimeUnit.SECONDS.toNanos(3);
     private long startTime;
-    private boolean isFadeOut = false;
+    private boolean isFadeOut = true;
 
     public CalloutLabel() {
         setText(" ");
@@ -29,27 +29,25 @@ public class CalloutLabel extends JLabel {
         long timeSinceStart = System.nanoTime() - startTime;
         double rawAnimProgress = (double) timeSinceStart / animDuration;
         rawAnimProgress = Math.min(1, rawAnimProgress);
-        if (rawAnimProgress == 1 && isFadeOut) {
+        if (rawAnimProgress == 1) {
+            if (!isFadeOut) {
+                super.paintComponent(g);
+            }
             return;
         }
         double spacingAnim = 1 - Math.pow(1 - rawAnimProgress, 7);
         double alphaAnim = Math.pow(Math.max(0.0, (rawAnimProgress * 1.75) - 0.75), 3);
 
         double spacing = -0.2 + (spacingAnim * 0.25);
-        double alpha = 1.0 - alphaAnim;
+        double alpha = isFadeOut ? Math.max(0, 1.0 - alphaAnim) : 1;
 
         Map<TextAttribute, Object> attribute = new HashMap<>();
         attribute.put(TextAttribute.TRACKING, spacing);
         this.setFont(this.getFont().deriveFont(attribute));
 
-        // Fade-out
-        if (isFadeOut) {
-            if (alpha < 0) {
-                alpha = 0;
-            }
-            this.setForeground(new Color(this.getForeground().getRed(), this.getForeground().getGreen(),
-                    this.getForeground().getBlue(), (int) (255 * alpha)));
-        }
+        this.setForeground(new Color(this.getForeground().getRed(), this.getForeground().getGreen(),
+                this.getForeground().getBlue(), (int) (255 * alpha)));
+
         super.paintComponent(g);
 
     }
