@@ -27,6 +27,11 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.awt.Container;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 
 public class Gui {
     private JFrame f;
@@ -57,6 +62,10 @@ public class Gui {
     private CalloutLabel b2bLabel;
 
     private KeyboardHandler kbh;
+    private JMenu gameMenu;
+    private JMenu optionsMenu;
+    private JMenuBar menuBar;
+    private JMenuItem jMenuItem1;
 
     private double windowDeltaX;
     private double windowDeltaY;
@@ -175,6 +184,9 @@ public class Gui {
     }
 
     private void detailComponents() {
+        createMenu();
+        f.setJMenuBar(menuBar);
+
         leftFiller = new Box.Filler(
                 new Dimension(0, 0),
                 new Dimension(0, 0),
@@ -191,6 +203,23 @@ public class Gui {
         contentPane.add(centerPanel);
         contentPane.add(rightFiller);
 
+    }
+
+    private void createMenu() {
+        menuBar = new JMenuBar();
+        gameMenu = new JMenu();
+        optionsMenu = new JMenu();
+        jMenuItem1 = new JMenuItem();
+
+        gameMenu.setText("Game");
+
+        jMenuItem1.setText("jMenuItem1");
+        gameMenu.add(jMenuItem1);
+
+        optionsMenu.setText("Options");
+
+        menuBar.add(gameMenu);
+        menuBar.add(optionsMenu);
     }
 
     private void createCenterPanel() {
