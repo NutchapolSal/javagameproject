@@ -43,9 +43,6 @@ public class PlayfieldPanel extends MinoPanel {
                 layout.createSequentialGroup()
                         .addGap(PREF_H / 6)
                         .addComponent(callout));
-
-        callout.startAnimation("WOOOOOWW!!!");
-
     }
 
     @Override
@@ -75,5 +72,13 @@ public class PlayfieldPanel extends MinoPanel {
                 paintMinoBlock(g, x + pdr.x, y + pdr.y, MinoColor.Gray, playerLockProgress * 0.75);
             }
         }
+    }
+
+    public void startAnimation(String s, boolean isFadeOut) {
+        callout.startAnimation(s, isFadeOut);
+    }
+
+    public void startAnimation(String s) {
+        callout.startAnimation(s);
     }
 }

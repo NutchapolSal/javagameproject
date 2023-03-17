@@ -65,6 +65,7 @@ public class Gui {
 
     private long lastFrameTime = System.nanoTime();
     private int lastB2B = 0;
+    private int lastCombo = 0;
 
     private static double roundToZero(double in) {
         if (in < 0) {
@@ -80,7 +81,7 @@ public class Gui {
         if (gds != null) {
 
             if (gds.spinName != null) {
-                spinLabel.startAnimation((gds.spinMini ? "mini " : "") + gds.spinName + " spin");
+                spinLabel.startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName + "-SPIN");
             }
             if (gds.calloutLines != 0) {
                 String calloutLinesStr = "";
@@ -96,8 +97,8 @@ public class Gui {
                     calloutLinesStr = "";
                 }
                 lineCalloutLabel.startAnimation(calloutLinesStr);
+                playfield.startAnimation(calloutLinesStr);
             }
-            // lineCalloutLabel.setText(String.format("%s", col.startAnimation()));
             if (gds.b2bCount != lastB2B) {
                 if (gds.b2bCount != 0) {
                     b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount), false);
@@ -107,7 +108,10 @@ public class Gui {
                     lastB2B = gds.b2bCount;
                 }
             }
-            // comboLabel.setText(String.format("%d", gds.calloutLines));
+            if (gds.comboCount != lastCombo && 0 < gds.comboCount) {
+                comboLabel.startAnimation(String.format("%d COMBO", gds.comboCount));
+            }
+            lastCombo = gds.comboCount;
 
             timeCountText.setText(
                     String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
