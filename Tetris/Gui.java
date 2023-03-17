@@ -1,11 +1,12 @@
 package Tetris;
 
 import java.awt.event.ActionListener;
-
+import java.awt.event.InputEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -62,16 +63,23 @@ public class Gui {
     private CalloutLabel b2bLabel;
 
     private KeyboardHandler kbh;
-    private JMenu gameMenu;
-    private JMenu optionsMenu;
     private JMenuBar menuBar;
-    private JMenuItem dasMenuItem;
-    private JMenuItem arrMenuItem;
-    private JMenuItem sonicDropMenuItem;
-    private JMenuItem ctrlSchemeMenuItem;
-    private JMenuItem classicMenuItem;
-    private JMenuItem WASDMenuItem;
-    private JMenuItem slashBracketMenuItem;
+    private JMenu gameMenu;
+    private JMenuItem newGameMenuItem;
+    private JMenu selectModeMenuItem;
+    private JRadioButtonMenuItem marathonModeMenuItem;
+    private JRadioButtonMenuItem sprintModeMenuItem;
+    private JRadioButtonMenuItem ultraModeMenuItem;
+    private JRadioButtonMenuItem zenModeMenuItem;
+    private JMenu optionsMenu;
+    private JMenu controlSchemeMenu;
+    private JRadioButtonMenuItem wasdSchemeMenuItem;
+    private JRadioButtonMenuItem classicSchemeMenuItem;
+    private JRadioButtonMenuItem slashBracketSchemeMenuItem;
+    private JMenu handlingMenu;
+    private JRadioButtonMenuItem defaultHandlingMenuItem;
+    private JRadioButtonMenuItem fastHandlingMenuItem;
+    private JCheckBoxMenuItem sonicDropMenuItem;
 
     private double windowDeltaX;
     private double windowDeltaY;
@@ -213,38 +221,102 @@ public class Gui {
 
     private void createMenu() {
         menuBar = new JMenuBar();
-        gameMenu = new JMenu();
-        optionsMenu = new JMenu();
-        dasMenuItem = new JMenuItem();
-        arrMenuItem = new JMenuItem();
-        sonicDropMenuItem = new JMenuItem();
-        ctrlSchemeMenuItem = new JMenuItem();
-        classicMenuItem = new JMenuItem();
-        WASDMenuItem = new JMenuItem();
-        slashBracketMenuItem = new JMenuItem();
 
-        dasMenuItem.setText("DAS");
-        arrMenuItem.setText("ARR");
-        sonicDropMenuItem.setText("SonicDrop");
-        ctrlSchemeMenuItem.setText("ControlScheme");
-        classicMenuItem.setText("Classic");
-        WASDMenuItem.setText("WASD");
-        slashBracketMenuItem.setText("SlashBracket");
+        createGameMenu();
+        createOptionsMenu();
 
         menuBar.add(gameMenu);
         menuBar.add(optionsMenu);
+    }
 
-        gameMenu.setText("Game");
-        gameMenu.add(dasMenuItem);
-        gameMenu.add(arrMenuItem);
-        gameMenu.add(sonicDropMenuItem);
-        gameMenu.add(ctrlSchemeMenuItem);
+    private void createOptionsMenu() {
+        optionsMenu = new JMenu();
+        controlSchemeMenu = new JMenu();
+        wasdSchemeMenuItem = new JRadioButtonMenuItem();
+        classicSchemeMenuItem = new JRadioButtonMenuItem();
+        slashBracketSchemeMenuItem = new JRadioButtonMenuItem();
+        handlingMenu = new JMenu();
+        defaultHandlingMenuItem = new JRadioButtonMenuItem();
+        fastHandlingMenuItem = new JRadioButtonMenuItem();
+        sonicDropMenuItem = new JCheckBoxMenuItem();
+
+        wasdSchemeMenuItem.setSelected(true);
+        wasdSchemeMenuItem.setText("WASD");
+
+        classicSchemeMenuItem.setText("Classic");
+
+        slashBracketSchemeMenuItem.setText("SlashBracket");
+
+        defaultHandlingMenuItem.setSelected(true);
+        defaultHandlingMenuItem.setText("Default");
+
+        fastHandlingMenuItem.setText("Fast");
+
+        sonicDropMenuItem.setText("Sonic Drop");
+
+        controlSchemeMenu.setText("Control Scheme");
+        controlSchemeMenu.add(wasdSchemeMenuItem);
+        controlSchemeMenu.add(classicSchemeMenuItem);
+        controlSchemeMenu.add(slashBracketSchemeMenuItem);
+        ButtonGroup controlSchemeGroup = new ButtonGroup();
+        controlSchemeGroup.add(wasdSchemeMenuItem);
+        controlSchemeGroup.add(classicSchemeMenuItem);
+        controlSchemeGroup.add(slashBracketSchemeMenuItem);
+
+        handlingMenu.setText("Handling");
+        handlingMenu.add(defaultHandlingMenuItem);
+        handlingMenu.add(fastHandlingMenuItem);
+        ButtonGroup handlingGroup = new ButtonGroup();
+        handlingGroup.add(defaultHandlingMenuItem);
+        handlingGroup.add(fastHandlingMenuItem);
 
         optionsMenu.setText("Options");
-        optionsMenu.add(classicMenuItem);
-        optionsMenu.add(WASDMenuItem);
-        optionsMenu.add(slashBracketMenuItem);
+        optionsMenu.add(controlSchemeMenu);
+        optionsMenu.add(handlingMenu);
+        optionsMenu.add(sonicDropMenuItem);
+    }
 
+    private void createGameMenu() {
+        gameMenu = new JMenu();
+        newGameMenuItem = new JMenuItem();
+        selectModeMenuItem = new JMenu();
+        marathonModeMenuItem = new JRadioButtonMenuItem();
+        sprintModeMenuItem = new JRadioButtonMenuItem();
+        ultraModeMenuItem = new JRadioButtonMenuItem();
+        zenModeMenuItem = new JRadioButtonMenuItem();
+
+        newGameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+                InputEvent.CTRL_DOWN_MASK));
+        newGameMenuItem.setText("New Game");
+        newGameMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                System.out.println("new!");
+            }
+        });
+
+        marathonModeMenuItem.setSelected(true);
+        marathonModeMenuItem.setText("150 Lines Marathon");
+
+        sprintModeMenuItem.setText("40 Lines Sprint");
+
+        ultraModeMenuItem.setText("3 Minutes Ultra");
+
+        zenModeMenuItem.setText("Zen");
+
+        selectModeMenuItem.setText("Select Mode");
+        selectModeMenuItem.add(marathonModeMenuItem);
+        selectModeMenuItem.add(sprintModeMenuItem);
+        selectModeMenuItem.add(ultraModeMenuItem);
+        selectModeMenuItem.add(zenModeMenuItem);
+        ButtonGroup selectModeGroup = new ButtonGroup();
+        selectModeGroup.add(marathonModeMenuItem);
+        selectModeGroup.add(sprintModeMenuItem);
+        selectModeGroup.add(ultraModeMenuItem);
+        selectModeGroup.add(zenModeMenuItem);
+
+        gameMenu.setText("Game");
+        gameMenu.add(newGameMenuItem);
+        gameMenu.add(selectModeMenuItem);
     }
 
     private void createCenterPanel() {
