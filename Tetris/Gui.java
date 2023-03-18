@@ -92,6 +92,9 @@ public class Gui {
     private int lastB2B = 0;
     private int lastCombo = 0;
 
+    private ControlScheme controlScheme;
+    private boolean controlSchemeSonicDrop;
+
     private static double roundToZero(double in) {
         if (in < 0) {
             return Math.ceil(in);
@@ -671,24 +674,50 @@ public class Gui {
     }
 
     public void setControlScheme(ControlScheme cs) {
-        String newControlText = "";
-
         switch (cs) {
             case WASD:
-                newControlText = "<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold";
                 getKeyboardHandler().setupWASD();
                 break;
 
             case Classic:
-                newControlText = "<html>\n⬅/➡ - Move<br>\n⬇ - Soft Drop<br>\n⬆ - Hard Drop<br>\nZ - Rotate CCW<br>\nX - Rotate CW<br>\nC - Hold";
                 getKeyboardHandler().setupClassic();
                 break;
             case SlashBracket:
-                newControlText = "<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
                 getKeyboardHandler().setupSlashBracket();
                 break;
         }
 
+        controlScheme = cs;
+        updateControlSchemeText();
+    }
+
+    private void updateControlSchemeText() {
+        String newControlText = "";
+        switch (controlScheme) {
+            case WASD:
+                newControlText = "<html>\nA D - Move<br>\nS - ";
+                break;
+
+            case Classic:
+                newControlText = "<html>\n⬅ ➡ - Move<br>\n⬇ - ";
+                break;
+            case SlashBracket:
+                newControlText = "<html>\nA D - Move<br>\nS - ";
+                break;
+        }
+        newControlText += controlSchemeSonicDrop ? "Sonic" : "Soft";
+        switch (controlScheme) {
+            case WASD:
+                newControlText += " Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold";
+                break;
+
+            case Classic:
+                newControlText += " Drop<br>\n⬆ - Hard Drop<br>\nZ - Rotate CCW<br>\nX - Rotate CW<br>\nC - Hold";
+                break;
+            case SlashBracket:
+                newControlText += " Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
+                break;
+        }
         controlsText.setText(newControlText);
     }
 
@@ -699,6 +728,17 @@ public class Gui {
     public Consumer<Object> getControlSchemeReceiver() {
         return x -> {
             setControlScheme((ControlScheme) x);
+        };
+    }
+
+    /**
+     * @return {@code Consumer<Object>} but the {@code Object} is casted to
+     *         {@code boolean}
+     */
+    public Consumer<Object> getSonicDropReceiver() {
+        return x -> {
+            controlSchemeSonicDrop = (Boolean) x;
+            updateControlSchemeText();
         };
     }
 
