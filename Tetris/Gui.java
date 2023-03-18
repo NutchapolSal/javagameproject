@@ -291,11 +291,6 @@ public class Gui {
         newGameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
                 InputEvent.CTRL_DOWN_MASK));
         newGameMenuItem.setText("New Game");
-        newGameMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                System.out.println("new!");
-            }
-        });
 
         marathonModeMenuItem.setSelected(true);
         marathonModeMenuItem.setText("150 Lines Marathon");
@@ -669,6 +664,7 @@ public class Gui {
 
     public void setNewGameAction(ActionListener a) {
         newGameButton.addActionListener(a);
+        newGameMenuItem.addActionListener(a);
     }
 
     public void setControlScheme(ControlScheme cs) {
