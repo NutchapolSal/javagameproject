@@ -89,6 +89,8 @@ public class Gameplay {
     private String spinName;
     private boolean spinMini;
 
+    private boolean zenMode;
+
     private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
     private PlayerRenderData pdr;
     private double playerLockProgress;
@@ -128,6 +130,9 @@ public class Gameplay {
         lockResetCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
         hardDropLock = false;
+
+        zenMode = goal instanceof NoGoal;
+        level = zenMode ? 2 : level;
 
         pdr = playfield.getPlayerRenderData();
         playerLockProgress = 0;
@@ -276,7 +281,9 @@ public class Gameplay {
         }
 
         calloutLines = lines;
-        level = 1 + (linesCleared / 10);
+        if (!zenMode) {
+            level = 1 + (linesCleared / 10);
+        }
         lockResetCount = 0;
         lockDelayFrames = 0;
         hardDropLock = false;
