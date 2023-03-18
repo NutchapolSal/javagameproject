@@ -256,7 +256,7 @@ public class Gameplay {
     }
 
     private void processPieceLock() {
-        playfield.lockPlayerMino();
+        boolean inField = playfield.lockPlayerMino();
         int lines = playfield.clearLines();
         linesCleared += lines;
 

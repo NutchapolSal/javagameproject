@@ -158,14 +158,31 @@ public class Playfield {
         return true;
     }
 
-    public void lockPlayerMino() {
+    /**
+     * @return true if locked inside playfield, false if did not lock inside
+     *         playfield
+     */
+    public boolean lockPlayerMino() {
         writeShapeToColorGrid(
                 blocks,
                 playerMinoRotateData,
                 playerMinoX + playerMinoRotateData.xOffset,
                 playerMinoY + playerMinoRotateData.yOffset,
                 playerMino.color);
+
+        boolean output = false;
+        int yOffset = playerMinoY + playerMinoRotateData.yOffset;
+        outerLoop: for (int y = 0; y < playerMinoRotateData.getHeight(); y++) {
+            for (int x = 0; x < playerMinoRotateData.getWidth(); x++) {
+                if (playerMinoRotateData.getAtPos(x, y) && yOffset + y < FIELD_HEIGHT) {
+                    output = true;
+                    break outerLoop;
+                }
+            }
+        }
+
         playerMino = null;
+        return output;
     }
 
     private int getShadowYPos() {
