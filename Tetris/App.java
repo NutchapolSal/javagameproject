@@ -6,9 +6,18 @@ import java.awt.event.ActionEvent;
 public class App {
 
     public App() {
+        Settings settings = new Settings();
         Gui gui = new Gui();
+        gui.bindToSettings(settings);
         Gameplay gameplay = new Gameplay();
         gameplay.setRawInputSource(gui.getKeyboardHandler());
+
+        settings.bindReceiver(SettingKey.DasChargeFrames, gameplay.getDASReceiver());
+        settings.bindReceiver(SettingKey.AutoRepeatFrames, gameplay.getARRReceiver());
+        settings.bindReceiver(SettingKey.SonicDrop, gameplay.getSonicDropReceiver());
+        settings.bindReceiver(SettingKey.ControlScheme, gui.getControlSchemeReceiver());
+        settings.bindReceiver(SettingKey.GameplayMode, gameplay.getGameplayModeReceiver());
+        settings.loadSettingsToReceivers();
 
         gameplay.startGame();
 

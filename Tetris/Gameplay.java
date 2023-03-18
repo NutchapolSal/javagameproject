@@ -5,6 +5,7 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Gameplay {
@@ -358,5 +359,45 @@ public class Gameplay {
 
     private static double getGravityFromLevel(int level) {
         return level > 19 ? levelTable[18] : levelTable[level - 1];
+    }
+
+    /**
+     * @return {@code Consumer<Object>} but the {@code Object} is casted to
+     *         {@code boolean} inside
+     */
+    public Consumer<Object> getSonicDropReceiver() {
+        return x -> {
+            sonicDrop = (boolean) x;
+        };
+    }
+
+    /**
+     * @return {@code Consumer<Object>} but the {@code Object} is casted to
+     *         {@code int} inside
+     */
+    public Consumer<Object> getDASReceiver() {
+        return x -> {
+            pi.setDAS((int) x);
+        };
+    }
+
+    /**
+     * @return {@code Consumer<Object>} but the {@code Object} is casted to
+     *         {@code int} inside
+     */
+    public Consumer<Object> getARRReceiver() {
+        return x -> {
+            pi.setARR((int) x);
+        };
+    }
+
+    /**
+     * @return {@code Consumer<Object>} but the {@code Object} is casted to
+     *         {@code GameplayMode} inside
+     */
+    public Consumer<Object> getGameplayModeReceiver() {
+        return x -> {
+            System.out.println((GameplayMode) x);
+        };
     }
 }

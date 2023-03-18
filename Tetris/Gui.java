@@ -2,6 +2,8 @@ package Tetris;
 
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
@@ -26,7 +28,7 @@ import java.awt.event.KeyEvent;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.awt.Container;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -690,4 +692,149 @@ public class Gui {
 
         controlsText.setText(newControlText);
     }
+
+    /**
+     * @return {@code Consumer<Object>} but the {@code Object} is casted to
+     *         {@code ControlScheme}
+     */
+    public Consumer<Object> getControlSchemeReceiver() {
+        return x -> {
+            setControlScheme((ControlScheme) x);
+        };
+    }
+
+    public void bindToSettings(Settings s) {
+        updateGuiToSettings(s);
+
+        bindSelectModeMenuItems(s);
+
+        bindControlSchemeMenuItems(s);
+        bindHandlingMenuItems(s);
+        sonicDropMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+    }
+
+    private void updateGuiToSettings(Settings s) {
+        switch (s.getGameplayMode()) {
+            case Marathon:
+                marathonModeMenuItem.setSelected(true);
+                break;
+            case Sprint:
+                sprintModeMenuItem.setSelected(true);
+                break;
+            case Ultra:
+                ultraModeMenuItem.setSelected(true);
+                break;
+            case Zen:
+                zenModeMenuItem.setSelected(true);
+                break;
+        }
+        switch (s.getControlScheme()) {
+            case WASD:
+                wasdSchemeMenuItem.setSelected(true);
+                break;
+            case Classic:
+                classicSchemeMenuItem.setSelected(true);
+                break;
+            case SlashBracket:
+                slashBracketSchemeMenuItem.setSelected(true);
+                break;
+        }
+        switch (s.getHandlingPreset()) {
+            case Default:
+                defaultHandlingMenuItem.setSelected(true);
+                break;
+            case Fast:
+                fastHandlingMenuItem.setSelected(true);
+                break;
+            default:
+                break;
+        }
+        sonicDropMenuItem.setSelected(s.getSonicDrop());
+    }
+
+    private void bindSelectModeMenuItems(Settings s) {
+        marathonModeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setGameplayMode(GameplayMode.Marathon);
+            }
+        });
+        sprintModeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setGameplayMode(GameplayMode.Sprint);
+            }
+        });
+        ultraModeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setGameplayMode(GameplayMode.Ultra);
+            }
+        });
+        zenModeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setGameplayMode(GameplayMode.Zen);
+            }
+        });
+    }
+
+    private void bindControlSchemeMenuItems(Settings s) {
+        wasdSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.WASD);
+            }
+        });
+        classicSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.Classic);
+            }
+        });
+        slashBracketSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.SlashBracket);
+            }
+        });
+    }
+
+    private void bindHandlingMenuItems(Settings s) {
+        defaultHandlingMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setHandlingPreset(HandlingPreset.Default);
+            }
+        });
+        fastHandlingMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setHandlingPreset(HandlingPreset.Fast);
+            }
+        });
+    }
+
 }

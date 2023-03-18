@@ -157,4 +157,15 @@ public class PlayerInput {
     public boolean getHold() {
         return hold;
     }
+
+    public void setDAS(int das) {
+        this.DAS_CHARGE_FRAMES = das;
+        this.dasChargeLeft = DAS_CHARGE_FRAMES;
+        this.dasChargeRight = DAS_CHARGE_FRAMES;
+    }
+
+    public void setARR(int arr) {
+        this.AUTO_REPEAT_FRAMES = arr;
+        this.autoRepeatFrame = AUTO_REPEAT_FRAMES;
+    }
 }
