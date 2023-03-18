@@ -4,9 +4,7 @@ import javax.swing.JLabel;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
