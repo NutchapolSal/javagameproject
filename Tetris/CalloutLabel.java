@@ -13,13 +13,15 @@ import java.util.concurrent.TimeUnit;
 import java.awt.font.TextAttribute;
 
 public class CalloutLabel extends JLabel {
-    private static final boolean twCenAvailable = getTwCenAvailable();
+    private static final String customFontName = "Tw Cen MT";
+    private static final int customFontPlusSize = 3;
+    private static final boolean customFontAvailable = getCustomFontAvailable();
     private static long animDuration = TimeUnit.SECONDS.toNanos(3);
 
-    private static boolean getTwCenAvailable() {
+    private static boolean getCustomFontAvailable() {
         String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         for (String name : fontFamilyNames) {
-            if (name.equals("Tw Cen MT")) {
+            if (name.equals(customFontName)) {
                 return true;
             }
         }
@@ -33,10 +35,10 @@ public class CalloutLabel extends JLabel {
         setText(" ");
         startTime = System.nanoTime() - animDuration;
 
-        if (twCenAvailable) {
+        if (customFontAvailable) {
             Map<java.awt.font.TextAttribute, Object> deriveMap = new java.util.HashMap<>();
-            deriveMap.put(java.awt.font.TextAttribute.FAMILY, "Tw Cen MT");
-            deriveMap.put(java.awt.font.TextAttribute.SIZE, getFont().getSize() + 3);
+            deriveMap.put(java.awt.font.TextAttribute.FAMILY, customFontName);
+            deriveMap.put(java.awt.font.TextAttribute.SIZE, getFont().getSize() + customFontPlusSize);
             this.setFont(getFont().deriveFont(deriveMap));
         }
     }
