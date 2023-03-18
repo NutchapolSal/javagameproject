@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,19 @@ import java.util.concurrent.TimeUnit;
 import java.awt.font.TextAttribute;
 
 public class CalloutLabel extends JLabel {
+    private static final boolean twCenAvailable = getTwCenAvailable();
     private static long animDuration = TimeUnit.SECONDS.toNanos(3);
+
+    private static boolean getTwCenAvailable() {
+        String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        for (String name : fontFamilyNames) {
+            if (name.equals("Tw Cen MT")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private long startTime;
     private boolean isFadeOut = true;
 
@@ -20,10 +33,12 @@ public class CalloutLabel extends JLabel {
         setText(" ");
         startTime = System.nanoTime() - animDuration;
 
-        Map<java.awt.font.TextAttribute, Object> deriveMap = new java.util.HashMap<>();
-        deriveMap.put(java.awt.font.TextAttribute.FAMILY, "Tw Cen MT");
-        deriveMap.put(java.awt.font.TextAttribute.SIZE, getFont().getSize() + 3);
-        this.setFont(getFont().deriveFont(deriveMap));
+        if (twCenAvailable) {
+            Map<java.awt.font.TextAttribute, Object> deriveMap = new java.util.HashMap<>();
+            deriveMap.put(java.awt.font.TextAttribute.FAMILY, "Tw Cen MT");
+            deriveMap.put(java.awt.font.TextAttribute.SIZE, getFont().getSize() + 3);
+            this.setFont(getFont().deriveFont(deriveMap));
+        }
     }
 
     @Override
