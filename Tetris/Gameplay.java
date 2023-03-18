@@ -43,6 +43,7 @@ public class Gameplay {
     private Mino[] nextQueueGuiData = new Mino[6];
     private int calloutLines;
     private String spinNameGui;
+    private boolean allCleared;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -79,6 +80,7 @@ public class Gameplay {
         calloutLines = 0;
         spinName = null;
         spinMini = false;
+        allCleared = false;
 
         fillNextQueue();
         playfield.spawnPlayerMino(getNextMino());
@@ -266,6 +268,7 @@ public class Gameplay {
             spinNameGui = spinName;
         }
         spinName = null;
+        allCleared = playfield.isClear();
 
         windowNudgeY += 4;
         windowNudgeY *= (lines * 0.25) + 1;
@@ -297,7 +300,8 @@ public class Gameplay {
                 nextQueueGuiData,
                 calloutLines,
                 spinNameGui,
-                spinMini));
+                spinMini,
+                allCleared));
         if (offerResult) {
             renderBlocks = null;
             nextQueueGuiData = null;
@@ -305,6 +309,7 @@ public class Gameplay {
             calloutLines = 0;
             windowNudgeX = 0;
             windowNudgeY = 0;
+            allCleared = false;
         }
     }
 

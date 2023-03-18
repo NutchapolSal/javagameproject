@@ -26,12 +26,14 @@ public class GuiData {
      */
     public final String spinName;
     public final boolean spinMini;
+    public final boolean allClear;
 
     /**
      * @param renderBlocks if null, will keep using old data
      * @param nextQueue    if null, will keep using old data
      * @param calloutLines if not 0, will start animation for line clear callout
      * @param spinName     if not null, will start animation for spin callout
+     * @param allClear     if true, will start animation for all clear callout
      */
     public GuiData(long timeMillis,
             int linesCleared,
@@ -48,7 +50,8 @@ public class GuiData {
             Mino[] nextQueue,
             int calloutLines,
             String spinName,
-            boolean spinMini) {
+            boolean spinMini,
+            boolean allClear) {
         this.timeMillis = timeMillis;
         this.linesCleared = linesCleared;
         this.level = level;
@@ -65,5 +68,6 @@ public class GuiData {
         this.calloutLines = calloutLines;
         this.spinName = spinName;
         this.spinMini = spinMini;
+        this.allClear = allClear;
     }
 }
