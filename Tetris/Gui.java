@@ -122,7 +122,6 @@ public class Gui {
                     calloutLinesStr = "";
                 }
                 lineCalloutLabel.startAnimation(calloutLinesStr);
-                playfield.startAnimation(calloutLinesStr);
             }
             if (gds.b2bCount != lastB2B) {
                 if (gds.b2bCount != 0) {
@@ -158,6 +157,10 @@ public class Gui {
                 }
             }
             playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
+
+            if (gds.allClear) {
+                playfield.startAnimation("ALL CLEAR");
+            }
             f.repaint();
 
             windowDeltaX += gds.windowNudgeX;

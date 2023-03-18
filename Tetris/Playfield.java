@@ -334,4 +334,15 @@ public class Playfield {
     public Direction getPlayerMinoDirection() {
         return playerMinoDirection;
     }
+
+    public boolean isClear() {
+        for (int y = 0; y < blocks.getHeight(); y++) {
+            for (int x = 0; x < blocks.getWidth(); x++) {
+                if (blocks.getAtPos(x, y) != null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
