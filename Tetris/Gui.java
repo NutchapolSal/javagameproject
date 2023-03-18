@@ -1,11 +1,14 @@
 package Tetris;
 
 import java.awt.event.ActionListener;
-
+import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -25,8 +28,13 @@ import java.awt.event.KeyEvent;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.awt.Container;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 
 public class Gui {
     private JFrame f;
@@ -57,6 +65,23 @@ public class Gui {
     private CalloutLabel b2bLabel;
 
     private KeyboardHandler kbh;
+    private JMenuBar menuBar;
+    private JMenu gameMenu;
+    private JMenuItem newGameMenuItem;
+    private JMenu selectModeMenuItem;
+    private JRadioButtonMenuItem marathonModeMenuItem;
+    private JRadioButtonMenuItem sprintModeMenuItem;
+    private JRadioButtonMenuItem ultraModeMenuItem;
+    private JRadioButtonMenuItem zenModeMenuItem;
+    private JMenu optionsMenu;
+    private JMenu controlSchemeMenu;
+    private JRadioButtonMenuItem wasdSchemeMenuItem;
+    private JRadioButtonMenuItem classicSchemeMenuItem;
+    private JRadioButtonMenuItem slashBracketSchemeMenuItem;
+    private JMenu handlingMenu;
+    private JRadioButtonMenuItem defaultHandlingMenuItem;
+    private JRadioButtonMenuItem fastHandlingMenuItem;
+    private JCheckBoxMenuItem sonicDropMenuItem;
 
     private double windowDeltaX;
     private double windowDeltaY;
@@ -162,6 +187,7 @@ public class Gui {
         f.setSize(500, 500);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
+        setControlScheme(ControlScheme.SlashBracket);
         f.setLocationRelativeTo(null);
         f.setVisible(true);
     }
@@ -175,6 +201,9 @@ public class Gui {
     }
 
     private void detailComponents() {
+        createMenu();
+        f.setJMenuBar(menuBar);
+
         leftFiller = new Box.Filler(
                 new Dimension(0, 0),
                 new Dimension(0, 0),
@@ -191,6 +220,101 @@ public class Gui {
         contentPane.add(centerPanel);
         contentPane.add(rightFiller);
 
+    }
+
+    private void createMenu() {
+        menuBar = new JMenuBar();
+
+        createGameMenu();
+        createOptionsMenu();
+
+        menuBar.add(gameMenu);
+        menuBar.add(optionsMenu);
+    }
+
+    private void createOptionsMenu() {
+        optionsMenu = new JMenu();
+        controlSchemeMenu = new JMenu();
+        wasdSchemeMenuItem = new JRadioButtonMenuItem();
+        classicSchemeMenuItem = new JRadioButtonMenuItem();
+        slashBracketSchemeMenuItem = new JRadioButtonMenuItem();
+        handlingMenu = new JMenu();
+        defaultHandlingMenuItem = new JRadioButtonMenuItem();
+        fastHandlingMenuItem = new JRadioButtonMenuItem();
+        sonicDropMenuItem = new JCheckBoxMenuItem();
+
+        wasdSchemeMenuItem.setSelected(true);
+        wasdSchemeMenuItem.setText("WASD");
+
+        classicSchemeMenuItem.setText("Classic");
+
+        slashBracketSchemeMenuItem.setText("SlashBracket");
+
+        defaultHandlingMenuItem.setSelected(true);
+        defaultHandlingMenuItem.setText("Default");
+
+        fastHandlingMenuItem.setText("Fast");
+
+        sonicDropMenuItem.setText("Sonic Drop");
+
+        controlSchemeMenu.setText("Control Scheme");
+        controlSchemeMenu.add(wasdSchemeMenuItem);
+        controlSchemeMenu.add(classicSchemeMenuItem);
+        controlSchemeMenu.add(slashBracketSchemeMenuItem);
+        ButtonGroup controlSchemeGroup = new ButtonGroup();
+        controlSchemeGroup.add(wasdSchemeMenuItem);
+        controlSchemeGroup.add(classicSchemeMenuItem);
+        controlSchemeGroup.add(slashBracketSchemeMenuItem);
+
+        handlingMenu.setText("Handling");
+        handlingMenu.add(defaultHandlingMenuItem);
+        handlingMenu.add(fastHandlingMenuItem);
+        ButtonGroup handlingGroup = new ButtonGroup();
+        handlingGroup.add(defaultHandlingMenuItem);
+        handlingGroup.add(fastHandlingMenuItem);
+
+        optionsMenu.setText("Options");
+        optionsMenu.add(controlSchemeMenu);
+        optionsMenu.add(handlingMenu);
+        optionsMenu.add(sonicDropMenuItem);
+    }
+
+    private void createGameMenu() {
+        gameMenu = new JMenu();
+        newGameMenuItem = new JMenuItem();
+        selectModeMenuItem = new JMenu();
+        marathonModeMenuItem = new JRadioButtonMenuItem();
+        sprintModeMenuItem = new JRadioButtonMenuItem();
+        ultraModeMenuItem = new JRadioButtonMenuItem();
+        zenModeMenuItem = new JRadioButtonMenuItem();
+
+        newGameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+                InputEvent.CTRL_DOWN_MASK));
+        newGameMenuItem.setText("New Game");
+
+        marathonModeMenuItem.setSelected(true);
+        marathonModeMenuItem.setText("150 Lines Marathon");
+
+        sprintModeMenuItem.setText("40 Lines Sprint");
+
+        ultraModeMenuItem.setText("3 Minutes Ultra");
+
+        zenModeMenuItem.setText("Zen");
+
+        selectModeMenuItem.setText("Select Mode");
+        selectModeMenuItem.add(marathonModeMenuItem);
+        selectModeMenuItem.add(sprintModeMenuItem);
+        selectModeMenuItem.add(ultraModeMenuItem);
+        selectModeMenuItem.add(zenModeMenuItem);
+        ButtonGroup selectModeGroup = new ButtonGroup();
+        selectModeGroup.add(marathonModeMenuItem);
+        selectModeGroup.add(sprintModeMenuItem);
+        selectModeGroup.add(ultraModeMenuItem);
+        selectModeGroup.add(zenModeMenuItem);
+
+        gameMenu.setText("Game");
+        gameMenu.add(newGameMenuItem);
+        gameMenu.add(selectModeMenuItem);
     }
 
     private void createCenterPanel() {
@@ -304,7 +428,7 @@ public class Gui {
         newGameButton.setFocusable(false);
 
         newGameButton.setText("New Game");
-        controlsText.setText("<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold");
+        controlsText.setText("");
         controlsText.setVerticalAlignment(SwingConstants.TOP);
         controlsText.setPreferredSize(new Dimension(80, 1));
 
@@ -415,8 +539,16 @@ public class Gui {
         private Map<GameplayButton, Boolean> freshInput = new EnumMap<>(GameplayButton.class);
         private Map<GameplayButton, Boolean> lockInput = new EnumMap<>(GameplayButton.class);
 
+        private final InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
+
+        private void setupKeyAction(GameplayButton gb, int keyCode) {
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), gb.name() + PRESSED);
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, true), gb.name() + RELEASED);
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, KeyEvent.SHIFT_DOWN_MASK, false), gb.name() + PRESSED);
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, KeyEvent.SHIFT_DOWN_MASK, true), gb.name() + RELEASED);
+        }
+
         private KeyboardHandler() {
-            InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
             ActionMap actionMap = Gui.this.f.getRootPane().getActionMap();
 
             for (var v : GameplayButton.values()) {
@@ -428,26 +560,43 @@ public class Gui {
                 actionMap.put(gb.name() + PRESSED, new ButtonAction(gb, false));
                 actionMap.put(gb.name() + RELEASED, new ButtonAction(gb, true));
             }
+        }
 
-            BiConsumer<GameplayButton, Integer> setupKeyAction = (gb, keyCode) -> {
-                inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), gb.name() + PRESSED);
-                inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, true), gb.name() + RELEASED);
-            };
+        private void setupWASD() {
+            inputMap.clear();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_A);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_D);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_W);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_S);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_F);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_R);
+        }
 
-            setupKeyAction.accept(GameplayButton.Left, KeyEvent.VK_A);
-            setupKeyAction.accept(GameplayButton.Right, KeyEvent.VK_D);
-            setupKeyAction.accept(GameplayButton.HardDrop, KeyEvent.VK_W);
-            setupKeyAction.accept(GameplayButton.SoftDrop, KeyEvent.VK_S);
-            setupKeyAction.accept(GameplayButton.Hold, KeyEvent.VK_F);
-            setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_R);
-            setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_T);
-            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_Y);
+        private void setupClassic() {
+            inputMap.clear();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_LEFT);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_RIGHT);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_UP);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_DOWN);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_C);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_Z);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_X);
+        }
 
-            setupKeyAction.accept(GameplayButton.Hold, KeyEvent.VK_CAPS_LOCK);
-            setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_SLASH);
-            setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_OPEN_BRACKET);
-            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_CLOSE_BRACKET);
+        private void setupSlashBracket() {
+            inputMap.clear();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_A);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_D);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_W);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_S);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_SHIFT);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_R);
+            setupKeyAction(GameplayButton.RotateFlip, KeyEvent.VK_T);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_Y);
 
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_SLASH);
+            setupKeyAction(GameplayButton.RotateFlip, KeyEvent.VK_OPEN_BRACKET);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_CLOSE_BRACKET);
         }
 
         class ButtonAction extends AbstractAction {
@@ -515,5 +664,173 @@ public class Gui {
 
     public void setNewGameAction(ActionListener a) {
         newGameButton.addActionListener(a);
+        newGameMenuItem.addActionListener(a);
     }
+
+    public void setControlScheme(ControlScheme cs) {
+        String newControlText = "";
+
+        switch (cs) {
+            case WASD:
+                newControlText = "<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold";
+                getKeyboardHandler().setupWASD();
+                break;
+
+            case Classic:
+                newControlText = "<html>\n⬅/➡ - Move<br>\n⬇ - Soft Drop<br>\n⬆ - Hard Drop<br>\nZ - Rotate CCW<br>\nX - Rotate CW<br>\nC - Hold";
+                getKeyboardHandler().setupClassic();
+                break;
+            case SlashBracket:
+                newControlText = "<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
+                getKeyboardHandler().setupSlashBracket();
+                break;
+        }
+
+        controlsText.setText(newControlText);
+    }
+
+    /**
+     * @return {@code Consumer<Object>} but the {@code Object} is casted to
+     *         {@code ControlScheme}
+     */
+    public Consumer<Object> getControlSchemeReceiver() {
+        return x -> {
+            setControlScheme((ControlScheme) x);
+        };
+    }
+
+    public void bindToSettings(Settings s) {
+        updateGuiToSettings(s);
+
+        bindSelectModeMenuItems(s);
+
+        bindControlSchemeMenuItems(s);
+        bindHandlingMenuItems(s);
+        sonicDropMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+    }
+
+    private void updateGuiToSettings(Settings s) {
+        switch (s.getGameplayMode()) {
+            case Marathon:
+                marathonModeMenuItem.setSelected(true);
+                break;
+            case Sprint:
+                sprintModeMenuItem.setSelected(true);
+                break;
+            case Ultra:
+                ultraModeMenuItem.setSelected(true);
+                break;
+            case Zen:
+                zenModeMenuItem.setSelected(true);
+                break;
+        }
+        switch (s.getControlScheme()) {
+            case WASD:
+                wasdSchemeMenuItem.setSelected(true);
+                break;
+            case Classic:
+                classicSchemeMenuItem.setSelected(true);
+                break;
+            case SlashBracket:
+                slashBracketSchemeMenuItem.setSelected(true);
+                break;
+        }
+        switch (s.getHandlingPreset()) {
+            case Default:
+                defaultHandlingMenuItem.setSelected(true);
+                break;
+            case Fast:
+                fastHandlingMenuItem.setSelected(true);
+                break;
+            default:
+                break;
+        }
+        sonicDropMenuItem.setSelected(s.getSonicDrop());
+    }
+
+    private void bindSelectModeMenuItems(Settings s) {
+        marathonModeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setGameplayMode(GameplayMode.Marathon);
+            }
+        });
+        sprintModeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setGameplayMode(GameplayMode.Sprint);
+            }
+        });
+        ultraModeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setGameplayMode(GameplayMode.Ultra);
+            }
+        });
+        zenModeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setGameplayMode(GameplayMode.Zen);
+            }
+        });
+    }
+
+    private void bindControlSchemeMenuItems(Settings s) {
+        wasdSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.WASD);
+            }
+        });
+        classicSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.Classic);
+            }
+        });
+        slashBracketSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.SlashBracket);
+            }
+        });
+    }
+
+    private void bindHandlingMenuItems(Settings s) {
+        defaultHandlingMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setHandlingPreset(HandlingPreset.Default);
+            }
+        });
+        fastHandlingMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setHandlingPreset(HandlingPreset.Fast);
+            }
+        });
+    }
+
 }
