@@ -3,7 +3,7 @@ package Tetris;
 public class NoGoal extends Goal {
 
     @Override
-    protected GoalState calculate(int timeMillis, int lines) {
+    protected GoalState calculate(long timeMillis, int lines) {
         return GoalState.NONE;
     }
 

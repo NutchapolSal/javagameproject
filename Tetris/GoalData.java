@@ -5,7 +5,7 @@ public class GoalData {
     private boolean linesGoal = false;
     private boolean timesGoal = false;
     private int linesCount;
-    private int timeMillisLength;
+    private long timeMillisLength;
 
     public GoalData() {
     }
@@ -15,7 +15,7 @@ public class GoalData {
         this.linesGoal = true;
     }
 
-    public void setTimesGoal(int timeMillisLength) {
+    public void setTimesGoal(long timeMillisLength) {
         this.timeMillisLength = timeMillisLength;
         this.timesGoal = true;
     }
@@ -32,7 +32,7 @@ public class GoalData {
         return linesCount;
     }
 
-    public int getTimeMillisLength() {
+    public long getTimeMillisLength() {
         return timeMillisLength;
     }
 }

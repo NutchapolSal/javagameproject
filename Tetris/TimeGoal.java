@@ -2,16 +2,16 @@ package Tetris;
 
 public class TimeGoal extends Goal {
     private GoalState goalState = GoalState.NONE;
-    private int goalTime;
+    private long goalTime;
     private int lines;
-    private int timeMillis;
+    private long timeMillis;
 
-    public TimeGoal(int goalTime) {
+    public TimeGoal(long goalTime) {
         this.goalTime = goalTime;
     }
 
     @Override
-    protected GoalState calculate(int timeMillis, int lines) {
+    protected GoalState calculate(long timeMillis, int lines) {
         this.timeMillis = timeMillis;
         this.lines = lines;
 
@@ -25,7 +25,7 @@ public class TimeGoal extends Goal {
     @Override
     public GoalData getGoalData() {
         GoalData gdt = new GoalData();
-        gdt.setLinesGoal(goalTime);
+        gdt.setTimesGoal(goalTime);
         return gdt;
     }
 }
