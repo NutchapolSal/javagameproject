@@ -7,15 +7,15 @@ import java.util.prefs.Preferences;
 public class Settings {
     private Preferences prefs = Preferences.userNodeForPackage(Settings.class);
 
+    private HandlingPreset handlingPreset;
     private EnumMap<SettingKey, Consumer<Object>> receivers = new EnumMap<>(SettingKey.class);
 
     public Settings() {
-        processHandlingPreset();
+        interpretHandlingPreset();
     }
 
     public HandlingPreset getHandlingPreset() {
-        return HandlingPreset
-                .valueOf(prefs.get(SettingKey.HandlingPreset.name(), HandlingPreset.Default.name()));
+        return handlingPreset;
     }
 
     public boolean getSonicDrop() {
@@ -36,10 +36,6 @@ public class Settings {
 
     public GameplayMode getGameplayMode() {
         return GameplayMode.valueOf(prefs.get(SettingKey.GameplayMode.name(), GameplayMode.Marathon.name()));
-    }
-
-    private void saveHandlingPreset(HandlingPreset in) {
-        prefs.put(SettingKey.HandlingPreset.name(), in.name());
     }
 
     private void saveDasChargeFrames(int in) {
@@ -66,19 +62,17 @@ public class Settings {
         receivers.put(sk, receiver);
     }
 
-    private void processHandlingPreset() {
-        switch (getHandlingPreset()) {
-            case Default:
-                saveDasChargeFrames(9);
-                saveAutoRepeatFrames(2);
-                break;
-            case Fast:
-                saveDasChargeFrames(4);
-                saveAutoRepeatFrames(2);
-                break;
-            default:
-                break;
+    private void interpretHandlingPreset() {
+        if (getDasChargeFrames() == 9 && getAutoRepeatFrames() == 2) {
+            handlingPreset = HandlingPreset.Default;
+            return;
         }
+        if (getDasChargeFrames() == 4 && getAutoRepeatFrames() == 2) {
+            handlingPreset = HandlingPreset.Fast;
+            return;
+        }
+
+        handlingPreset = HandlingPreset.Custom;
     }
 
     public void loadSettingsToReceivers() {
@@ -90,10 +84,19 @@ public class Settings {
     }
 
     public void setHandlingPreset(HandlingPreset handlingPreset) {
-        saveHandlingPreset(handlingPreset);
-        processHandlingPreset();
-        receivers.get(SettingKey.DasChargeFrames).accept(getDasChargeFrames());
-        receivers.get(SettingKey.AutoRepeatFrames).accept(getAutoRepeatFrames());
+        switch (handlingPreset) {
+            case Default:
+                setDasChargeFrames(9);
+                setAutoRepeatFrames(2);
+                break;
+            case Fast:
+                setDasChargeFrames(4);
+                setAutoRepeatFrames(2);
+                break;
+            default:
+                break;
+        }
+        this.handlingPreset = handlingPreset;
     }
 
     public void setDasChargeFrames(int dasChargeFrames) {
