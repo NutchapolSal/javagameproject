@@ -60,6 +60,7 @@ public class Gameplay {
     private static long FRAME_DELAY = 16_666_666;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
+    private boolean sonicDrop = false;
 
     private PlayerInput pi = new PlayerInput();
     private Timer timer = new Timer();
@@ -214,7 +215,14 @@ public class Gameplay {
     }
 
     private void processSoftDrop() {
-        gravityCount += getGravityFromLevel(level) * 6;
+        if (sonicDrop) {
+            boolean moved = playfield.sonicDropPlayerMino();
+            if (moved) {
+                resetLockCount();
+            }
+        } else {
+            gravityCount += getGravityFromLevel(level) * 6;
+        }
     }
 
     private void processGravity() {
