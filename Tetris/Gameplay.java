@@ -18,8 +18,11 @@ public class Gameplay {
             }
             lastFrame += FRAME_DELAY;
             timeMillis = TimeUnit.NANOSECONDS.toMillis(nowFrame - startTime);
-            if (goal.calculate(timeMillis, linesCleared) != GoalState.NONE) {
+            goalState = goal.calculate(timeMillis, linesCleared);
+            if (goalState != GoalState.NONE) {
                 this.cancel();
+                renderEnd();
+                return;
             }
 
             pi.tick();
@@ -101,6 +104,8 @@ public class Gameplay {
     private int calloutLines;
     private String spinNameGui;
     private boolean allCleared;
+    private GoalData goalData;
+    private GoalState goalState;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -138,11 +143,13 @@ public class Gameplay {
         playerLockProgress = 0;
         windowNudgeX = 0;
         windowNudgeY = 0;
+        goalState = GoalState.NONE;
         renderBlocks = playfield.getRenderBlocks();
         calloutLines = 0;
         spinName = null;
         spinMini = false;
         allCleared = false;
+        goalData = goal.getGoalData();
 
         fillNextQueue();
         playfield.spawnPlayerMino(getNextMino());
@@ -301,11 +308,17 @@ public class Gameplay {
     private void processPieceSpawn() {
         boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
         if (!spawnSuccess) {
-            timer.cancel();
+            gameLoop.cancel();
+            goalState = GoalState.LOSE;
         }
         lockHold = false;
         gravityCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
+    }
+
+    private void renderEnd() {
+        timeMillis = goal.getGoalData().isTimesGoal() ? goal.getGoalData().getTimeMillisLength() : timeMillis;
+        renderFrame();
     }
 
     private void renderFrame() {
@@ -320,12 +333,14 @@ public class Gameplay {
                 windowNudgeY,
                 Math.max(0, comboCount - 1),
                 Math.max(0, b2bCount - 1),
+                goalState,
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
                 spinNameGui,
                 spinMini,
-                allCleared));
+                allCleared,
+                goalData));
         if (offerResult) {
             renderBlocks = null;
             nextQueueGuiData = null;
@@ -334,6 +349,7 @@ public class Gameplay {
             windowNudgeX = 0;
             windowNudgeY = 0;
             allCleared = false;
+            goalData = null;
         }
     }
 

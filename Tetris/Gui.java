@@ -89,8 +89,11 @@ public class Gui {
     private double windowLastDeltaY;
 
     private long lastFrameTime = System.nanoTime();
+    private long frameTimeAccumulator = 0;
     private int lastB2B = 0;
     private int lastCombo = 0;
+    private GoalData goalData = new GoalData();
+    private GoalState lastGoalState = GoalState.NONE;
 
     private static double roundToZero(double in) {
         if (in < 0) {
@@ -103,8 +106,9 @@ public class Gui {
     public void update(GuiData gds) {
         long currFrameTime = System.nanoTime();
         long deltaFrameTime = currFrameTime - lastFrameTime;
+        frameTimeAccumulator += deltaFrameTime;
         if (gds != null) {
-
+            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
             if (gds.spinName != null) {
                 spinLabel.startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName + "-SPIN");
             }
@@ -137,10 +141,26 @@ public class Gui {
             }
             lastCombo = gds.comboCount;
 
+            if (gds.goalData != null) {
+                goalData = gds.goalData;
+            }
+
+            long showMillis;
+            if (goalData.isTimesGoal()) {
+                showMillis = goalData.getTimeMillisLength() - gds.timeMillis;
+            } else {
+                showMillis = gds.timeMillis;
+            }
+
             timeCountText.setText(
-                    String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
-                            (gds.timeMillis / 1000d) % 60));
-            linesCountText.setText(String.format("%d", gds.linesCleared));
+                    String.format("%.0f:%05.2f", Math.floor(showMillis / (1000d * 60)),
+                            (showMillis / 1000d) % 60));
+
+            String linesGoalPart = "";
+            if (goalData.isLinesGoal()) {
+                linesGoalPart = String.format(" / %d", goalData.getLinesCount());
+            }
+            linesCountText.setText(String.format("%d%s", gds.linesCleared, linesGoalPart));
             levelCountText.setText(String.format("%d", gds.level));
             if (gds.lockHold) {
                 holdMino.setMino(gds.hold, MinoColor.Gray);
@@ -161,10 +181,33 @@ public class Gui {
             if (gds.allClear) {
                 playfield.startAnimation("ALL CLEAR");
             }
-            f.repaint();
+            if (gds.goalState != lastGoalState) {
+                switch (gds.goalState) {
+                    case WIN:
+                        playfield.startAnimation("FINISH");
+                        playfield.setPlayerOverrideColor(MinoColor.Gray);
+                        b2bLabel.doFadeOut();
+                        lastB2B = 0;
+                        break;
+                    case LOSE:
+                        playfield.startAnimation("GAME OVER");
+                        playfield.setPlayerOverrideColor(MinoColor.Gray);
+                        b2bLabel.doFadeOut();
+                        lastB2B = 0;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            lastGoalState = gds.goalState;
 
             windowDeltaX += gds.windowNudgeX;
             windowDeltaY += gds.windowNudgeY;
+        }
+
+        if (gds != null || TimeUnit.NANOSECONDS.toMillis(33) < frameTimeAccumulator) {
+            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
+            f.repaint();
         }
 
         windowDeltaX *= Math.pow(11.0 / 12.0, deltaFrameTime / TimeUnit.MILLISECONDS.toNanos(10));
