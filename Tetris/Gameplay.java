@@ -8,12 +8,63 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Gameplay {
+    private final class GameLoopTask extends TimerTask {
+        public void run() {
+            long nowFrame = System.nanoTime();
+            if (nowFrame - lastFrame < FRAME_DELAY) {
+                return;
+            }
+            lastFrame += FRAME_DELAY;
+            timeMillis = TimeUnit.NANOSECONDS.toMillis(endTime - System.nanoTime());
+            if (timeMillis <= 0) {
+                timeMillis = 0;
+                this.cancel();
+            }
+
+            pi.tick();
+
+            if (pi.getHold() && !lockHold) {
+                processHold();
+            }
+
+            if (pi.getXMove() != 0) {
+                processXMove();
+            }
+
+            if (pi.getRotation() != Rotation.None) {
+                processRotation();
+            }
+
+            if (pi.getHardDrop()) {
+                processHardDrop();
+            }
+            if (pi.getSoftDrop()) {
+                processSoftDrop();
+            }
+
+            processGravity();
+
+            processLockDelay();
+
+            playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
+            pdr = playfield.getPlayerRenderData();
+
+            if (!playfield.hasPlayerMino()) {
+                processPieceSpawn();
+            }
+
+            renderFrame();
+        }
+    }
+
     private static long FRAME_DELAY = 16_666_666;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
 
     private PlayerInput pi = new PlayerInput();
-    private Timer timer;
+    private Timer timer = new Timer();
+    private TimerTask gameLoop;
+    private long endTime;
     private long lastFrame;
     private long timeMillis;
     private Playfield playfield;
@@ -49,10 +100,11 @@ public class Gameplay {
     }
 
     public void startGame() {
-        if (timer != null)
-            timer.cancel();
+        if (gameLoop != null) {
+            gameLoop.cancel();
+        }
 
-        timer = new Timer();
+        gameLoop = new GameLoopTask();
         lastFrame = System.nanoTime();
         timeMillis = 0;
         playfield = new Playfield();
@@ -84,56 +136,9 @@ public class Gameplay {
         playfield.spawnPlayerMino(getNextMino());
         renderFrame();
 
-        long endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
+        endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                long nowFrame = System.nanoTime();
-                if (nowFrame - lastFrame < FRAME_DELAY) {
-                    return;
-                }
-                lastFrame += FRAME_DELAY;
-                timeMillis = TimeUnit.NANOSECONDS.toMillis(endTime - System.nanoTime());
-                if (timeMillis <= 0) {
-                    timeMillis = 0;
-                    timer.cancel();
-                }
-
-                pi.tick();
-
-                if (pi.getHold() && !lockHold) {
-                    processHold();
-                }
-
-                if (pi.getXMove() != 0) {
-                    processXMove();
-                }
-
-                if (pi.getRotation() != Rotation.None) {
-                    processRotation();
-                }
-
-                if (pi.getHardDrop()) {
-                    processHardDrop();
-                }
-                if (pi.getSoftDrop()) {
-                    processSoftDrop();
-                }
-
-                processGravity();
-
-                processLockDelay();
-
-                playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
-                pdr = playfield.getPlayerRenderData();
-
-                if (!playfield.hasPlayerMino()) {
-                    processPieceSpawn();
-                }
-
-                renderFrame();
-            }
-        }, 0, 3);
+        timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
 
     private void processHold() {
