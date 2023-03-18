@@ -1,5 +1,6 @@
 package Tetris;
 
+import java.sql.Time;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Timer;
@@ -16,9 +17,8 @@ public class Gameplay {
                 return;
             }
             lastFrame += FRAME_DELAY;
-            timeMillis = TimeUnit.NANOSECONDS.toMillis(endTime - System.nanoTime());
-            if (timeMillis <= 0) {
-                timeMillis = 0;
+            timeMillis = TimeUnit.NANOSECONDS.toMillis(nowFrame - startTime);
+            if (goal.calculate(timeMillis, linesCleared) != GoalState.NONE) {
                 this.cancel();
             }
 
@@ -66,7 +66,9 @@ public class Gameplay {
     private PlayerInput pi = new PlayerInput();
     private Timer timer = new Timer();
     private TimerTask gameLoop;
-    private long endTime;
+    private Goal goal;
+    private Queue<Goal> newGoal = new ArrayBlockingQueue<>(1);
+    private long startTime;
     private long lastFrame;
     private long timeMillis;
     private Playfield playfield;
@@ -108,6 +110,7 @@ public class Gameplay {
         }
 
         gameLoop = new GameLoopTask();
+        goal = newGoal.peek() != null ? newGoal.poll() : goal;
         lastFrame = System.nanoTime();
         timeMillis = 0;
         playfield = new Playfield();
@@ -140,7 +143,7 @@ public class Gameplay {
         playfield.spawnPlayerMino(getNextMino());
         renderFrame();
 
-        endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
+        startTime = System.nanoTime();
 
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
@@ -402,7 +405,21 @@ public class Gameplay {
      */
     public Consumer<Object> getGameplayModeReceiver() {
         return x -> {
-            System.out.println((GameplayMode) x);
+            newGoal.poll();
+            switch ((GameplayMode) x) {
+                case Marathon:
+                    newGoal.offer(new LineGoal(150));
+                    break;
+                case Sprint:
+                    newGoal.offer(new LineGoal(40));
+                    break;
+                case Ultra:
+                    newGoal.offer(new TimeGoal(TimeUnit.MINUTES.toMillis(3)));
+                    break;
+                case Zen:
+                    newGoal.offer(new NoGoal());
+                    break;
+            }
         };
     }
 }
