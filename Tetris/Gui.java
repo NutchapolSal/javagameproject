@@ -703,7 +703,7 @@ public class Gui {
     }
 
     public void bindToSettings(Settings s) {
-        updateGuiToSettings(s);
+        updateMenusToSettings(s);
 
         bindSelectModeMenuItems(s);
 
@@ -716,7 +716,7 @@ public class Gui {
         });
     }
 
-    private void updateGuiToSettings(Settings s) {
+    private void updateMenusToSettings(Settings s) {
         switch (s.getGameplayMode()) {
             case Marathon:
                 marathonModeMenuItem.setSelected(true);
