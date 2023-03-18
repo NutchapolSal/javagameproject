@@ -16,10 +16,10 @@ public class TimeGoal extends Goal {
         this.lines = lines;
 
         if (goalTime < timeMillis) {
-            goalState = GoalState.WIN;
+            return GoalState.WIN;
         }
 
-        return goalState;
+        return GoalState.NONE;
     }
 
     @Override

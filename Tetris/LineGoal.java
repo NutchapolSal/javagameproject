@@ -16,10 +16,10 @@ public class LineGoal extends Goal {
         this.lines = lines;
 
         if (lines >= goalLines) {
-            goalState = GoalState.WIN;
+            return GoalState.WIN;
         }
 
-        return goalState;
+        return GoalState.NONE;
     }
 
     @Override
