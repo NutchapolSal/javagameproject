@@ -15,10 +15,8 @@ public class TimeGoal extends Goal {
         this.timeMillis = timeMillis;
         this.lines = lines;
 
-        if (timeMillis < goalTime) {
+        if (goalTime < timeMillis) {
             goalState = GoalState.WIN;
-        } else if (timeMillis <= 0) {
-            goalState = GoalState.LOSE;
         }
 
         return goalState;
