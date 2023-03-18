@@ -36,9 +36,9 @@ public class CalloutLabel extends JLabel {
         startTime = System.nanoTime() - animDuration;
 
         if (customFontAvailable) {
-            Map<java.awt.font.TextAttribute, Object> deriveMap = new java.util.HashMap<>();
-            deriveMap.put(java.awt.font.TextAttribute.FAMILY, customFontName);
-            deriveMap.put(java.awt.font.TextAttribute.SIZE, getFont().getSize() + customFontPlusSize);
+            Map<TextAttribute, Object> deriveMap = new HashMap<>();
+            deriveMap.put(TextAttribute.FAMILY, customFontName);
+            deriveMap.put(TextAttribute.SIZE, getFont().getSize() + customFontPlusSize);
             this.setFont(getFont().deriveFont(deriveMap));
         }
     }
