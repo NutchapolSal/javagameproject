@@ -10,7 +10,7 @@ public class Settings {
     private Preferences prefs = Preferences.userNodeForPackage(Settings.class);
 
     private int dasChargeFrames = prefs.getInt(KEY_DAS_CHARGE_FRAMES, 9);
-    private int autoRepeatFrames = prefs.getInt(KEY_AUTO_REPEAT_FRAMES, 3);
+    private int autoRepeatFrames = prefs.getInt(KEY_AUTO_REPEAT_FRAMES, 2);
     private boolean sonicDrop = prefs.getBoolean(KEY_SONIC_DROP, false);
     private String controlScheme = prefs.get(KEY_CONTROL_SCHEME, ControlScheme.WASD.name());
 
