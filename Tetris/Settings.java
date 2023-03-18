@@ -7,33 +7,59 @@ import java.util.prefs.Preferences;
 public class Settings {
     private Preferences prefs = Preferences.userNodeForPackage(Settings.class);
 
-    private HandlingPreset handlingPreset;
-    private int dasChargeFrames;
-    private int autoRepeatFrames;
-    private boolean sonicDrop;
-    private ControlScheme controlScheme;
-    private GameplayMode gameplayMode;
-
     private EnumMap<SettingKey, Consumer<Object>> receivers = new EnumMap<>(SettingKey.class);
 
     public Settings() {
-        load();
+        processHandlingPreset();
     }
 
     public HandlingPreset getHandlingPreset() {
-        return handlingPreset;
+        return HandlingPreset
+                .valueOf(prefs.get(SettingKey.HandlingPreset.name(), HandlingPreset.Default.name()));
     }
 
     public boolean getSonicDrop() {
-        return sonicDrop;
+        return prefs.getBoolean(SettingKey.SonicDrop.name(), false);
+    }
+
+    public int getDasChargeFrames() {
+        return prefs.getInt(SettingKey.DasChargeFrames.name(), 9);
+    }
+
+    public int getAutoRepeatFrames() {
+        return prefs.getInt(SettingKey.AutoRepeatFrames.name(), 2);
     }
 
     public ControlScheme getControlScheme() {
-        return controlScheme;
+        return ControlScheme.valueOf(prefs.get(SettingKey.ControlScheme.name(), ControlScheme.WASD.name()));
     }
 
     public GameplayMode getGameplayMode() {
-        return gameplayMode;
+        return GameplayMode.valueOf(prefs.get(SettingKey.GameplayMode.name(), GameplayMode.Marathon.name()));
+    }
+
+    private void saveHandlingPreset(HandlingPreset in) {
+        prefs.put(SettingKey.HandlingPreset.name(), in.name());
+    }
+
+    private void saveDasChargeFrames(int in) {
+        prefs.putInt(SettingKey.DasChargeFrames.name(), in);
+    }
+
+    private void saveAutoRepeatFrames(int in) {
+        prefs.putInt(SettingKey.AutoRepeatFrames.name(), in);
+    }
+
+    private void saveSonicDrop(Boolean in) {
+        prefs.putBoolean(SettingKey.SonicDrop.name(), in);
+    }
+
+    private void saveControlScheme(ControlScheme in) {
+        prefs.put(SettingKey.ControlScheme.name(), in.name());
+    }
+
+    private void saveGameplayMode(GameplayMode in) {
+        prefs.put(SettingKey.GameplayMode.name(), in.name());
     }
 
     public void bindReceiver(SettingKey sk, Consumer<Object> receiver) {
@@ -41,14 +67,14 @@ public class Settings {
     }
 
     private void processHandlingPreset() {
-        switch (handlingPreset) {
+        switch (getHandlingPreset()) {
             case Default:
-                dasChargeFrames = 9;
-                autoRepeatFrames = 2;
+                saveDasChargeFrames(9);
+                saveAutoRepeatFrames(2);
                 break;
             case Fast:
-                dasChargeFrames = 4;
-                autoRepeatFrames = 2;
+                saveDasChargeFrames(4);
+                saveAutoRepeatFrames(2);
                 break;
             default:
                 break;
@@ -56,86 +82,42 @@ public class Settings {
     }
 
     public void loadSettingsToReceivers() {
-        receivers.get(SettingKey.DasChargeFrames).accept(this.dasChargeFrames);
-        receivers.get(SettingKey.AutoRepeatFrames).accept(this.autoRepeatFrames);
-        receivers.get(SettingKey.SonicDrop).accept(this.sonicDrop);
-        receivers.get(SettingKey.ControlScheme).accept(this.controlScheme);
-        receivers.get(SettingKey.GameplayMode).accept(this.gameplayMode);
+        receivers.get(SettingKey.DasChargeFrames).accept(getDasChargeFrames());
+        receivers.get(SettingKey.AutoRepeatFrames).accept(getAutoRepeatFrames());
+        receivers.get(SettingKey.SonicDrop).accept(getSonicDrop());
+        receivers.get(SettingKey.ControlScheme).accept(getControlScheme());
+        receivers.get(SettingKey.GameplayMode).accept(getGameplayMode());
     }
 
     public void setHandlingPreset(HandlingPreset handlingPreset) {
-        this.handlingPreset = handlingPreset;
+        saveHandlingPreset(handlingPreset);
         processHandlingPreset();
-        save(SettingKey.HandlingPreset);
-        save(SettingKey.DasChargeFrames);
-        save(SettingKey.AutoRepeatFrames);
-        receivers.get(SettingKey.DasChargeFrames).accept(this.dasChargeFrames);
-        receivers.get(SettingKey.AutoRepeatFrames).accept(this.autoRepeatFrames);
+        receivers.get(SettingKey.DasChargeFrames).accept(getDasChargeFrames());
+        receivers.get(SettingKey.AutoRepeatFrames).accept(getAutoRepeatFrames());
     }
 
     public void setDasChargeFrames(int dasChargeFrames) {
-        this.dasChargeFrames = dasChargeFrames;
-        save(SettingKey.DasChargeFrames);
-        receivers.get(SettingKey.DasChargeFrames).accept(this.dasChargeFrames);
+        saveDasChargeFrames(dasChargeFrames);
+        receivers.get(SettingKey.DasChargeFrames).accept(getDasChargeFrames());
     }
 
     public void setAutoRepeatFrames(int autoRepeatFrames) {
-        this.autoRepeatFrames = autoRepeatFrames;
-        save(SettingKey.AutoRepeatFrames);
-        receivers.get(SettingKey.AutoRepeatFrames).accept(this.autoRepeatFrames);
+        saveAutoRepeatFrames(autoRepeatFrames);
+        receivers.get(SettingKey.AutoRepeatFrames).accept(getAutoRepeatFrames());
     }
 
     public void setSonicDrop(boolean sonicDrop) {
-        this.sonicDrop = sonicDrop;
-        save(SettingKey.SonicDrop);
-        receivers.get(SettingKey.SonicDrop).accept(this.sonicDrop);
+        saveSonicDrop(sonicDrop);
+        receivers.get(SettingKey.SonicDrop).accept(getSonicDrop());
     }
 
     public void setControlScheme(ControlScheme controlScheme) {
-        this.controlScheme = controlScheme;
-        save(SettingKey.ControlScheme);
-        receivers.get(SettingKey.ControlScheme).accept(this.controlScheme);
+        saveControlScheme(controlScheme);
+        receivers.get(SettingKey.ControlScheme).accept(getControlScheme());
     }
 
     public void setGameplayMode(GameplayMode gameplayMode) {
-        this.gameplayMode = gameplayMode;
-        save(SettingKey.GameplayMode);
-        receivers.get(SettingKey.GameplayMode).accept(this.gameplayMode);
+        saveGameplayMode(gameplayMode);
+        receivers.get(SettingKey.GameplayMode).accept(getGameplayMode());
     }
-
-    private void save(SettingKey sk) {
-        switch (sk) {
-            case HandlingPreset:
-                prefs.put(sk.name(), this.handlingPreset.name());
-                break;
-            case DasChargeFrames:
-                prefs.putInt(sk.name(), this.dasChargeFrames);
-                break;
-            case AutoRepeatFrames:
-                prefs.putInt(sk.name(), this.autoRepeatFrames);
-                break;
-            case SonicDrop:
-                prefs.putBoolean(sk.name(), this.sonicDrop);
-                break;
-            case ControlScheme:
-                prefs.put(sk.name(), this.controlScheme.name());
-                break;
-            case GameplayMode:
-                prefs.put(sk.name(), this.gameplayMode.name());
-                break;
-        }
-    }
-
-    private void load() {
-        handlingPreset = HandlingPreset
-                .valueOf(prefs.get(SettingKey.HandlingPreset.name(), HandlingPreset.Default.name()));
-        dasChargeFrames = prefs.getInt(SettingKey.DasChargeFrames.name(), 9);
-        autoRepeatFrames = prefs.getInt(SettingKey.AutoRepeatFrames.name(), 2);
-        sonicDrop = prefs.getBoolean(SettingKey.SonicDrop.name(), false);
-        controlScheme = ControlScheme.valueOf(prefs.get(SettingKey.ControlScheme.name(), ControlScheme.WASD.name()));
-        gameplayMode = GameplayMode.valueOf(prefs.get(SettingKey.GameplayMode.name(), GameplayMode.Marathon.name()));
-
-        processHandlingPreset();
-    }
-
 }
