@@ -185,6 +185,7 @@ public class Gui {
         f.setSize(500, 500);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
+        setControlScheme(ControlScheme.SlashBracket);
         f.setLocationRelativeTo(null);
         f.setVisible(true);
     }
@@ -430,7 +431,7 @@ public class Gui {
         newGameButton.setFocusable(false);
 
         newGameButton.setText("New Game");
-        controlsText.setText("<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold");
+        controlsText.setText("");
         controlsText.setVerticalAlignment(SwingConstants.TOP);
         controlsText.setPreferredSize(new Dimension(80, 1));
 
@@ -541,8 +542,16 @@ public class Gui {
         private Map<GameplayButton, Boolean> freshInput = new EnumMap<>(GameplayButton.class);
         private Map<GameplayButton, Boolean> lockInput = new EnumMap<>(GameplayButton.class);
 
+        private final InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
+
+        private void setupKeyAction(GameplayButton gb, int keyCode) {
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), gb.name() + PRESSED);
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, true), gb.name() + RELEASED);
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, KeyEvent.SHIFT_DOWN_MASK, false), gb.name() + PRESSED);
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, KeyEvent.SHIFT_DOWN_MASK, true), gb.name() + RELEASED);
+        }
+
         private KeyboardHandler() {
-            InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
             ActionMap actionMap = Gui.this.f.getRootPane().getActionMap();
 
             for (var v : GameplayButton.values()) {
@@ -554,26 +563,43 @@ public class Gui {
                 actionMap.put(gb.name() + PRESSED, new ButtonAction(gb, false));
                 actionMap.put(gb.name() + RELEASED, new ButtonAction(gb, true));
             }
+        }
 
-            BiConsumer<GameplayButton, Integer> setupKeyAction = (gb, keyCode) -> {
-                inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), gb.name() + PRESSED);
-                inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, true), gb.name() + RELEASED);
-            };
+        private void setupWASD() {
+            inputMap.clear();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_A);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_D);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_W);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_S);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_F);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_R);
+        }
 
-            setupKeyAction.accept(GameplayButton.Left, KeyEvent.VK_A);
-            setupKeyAction.accept(GameplayButton.Right, KeyEvent.VK_D);
-            setupKeyAction.accept(GameplayButton.HardDrop, KeyEvent.VK_W);
-            setupKeyAction.accept(GameplayButton.SoftDrop, KeyEvent.VK_S);
-            setupKeyAction.accept(GameplayButton.Hold, KeyEvent.VK_F);
-            setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_R);
-            setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_T);
-            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_Y);
+        private void setupClassic() {
+            inputMap.clear();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_LEFT);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_RIGHT);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_UP);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_DOWN);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_C);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_Z);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_X);
+        }
 
-            setupKeyAction.accept(GameplayButton.Hold, KeyEvent.VK_CAPS_LOCK);
-            setupKeyAction.accept(GameplayButton.RotateCCW, KeyEvent.VK_SLASH);
-            setupKeyAction.accept(GameplayButton.RotateFlip, KeyEvent.VK_OPEN_BRACKET);
-            setupKeyAction.accept(GameplayButton.RotateCW, KeyEvent.VK_CLOSE_BRACKET);
+        private void setupSlashBracket() {
+            inputMap.clear();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_A);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_D);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_W);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_S);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_SHIFT);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_R);
+            setupKeyAction(GameplayButton.RotateFlip, KeyEvent.VK_T);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_Y);
 
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_SLASH);
+            setupKeyAction(GameplayButton.RotateFlip, KeyEvent.VK_OPEN_BRACKET);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_CLOSE_BRACKET);
         }
 
         class ButtonAction extends AbstractAction {
@@ -641,5 +667,27 @@ public class Gui {
 
     public void setNewGameAction(ActionListener a) {
         newGameButton.addActionListener(a);
+    }
+
+    public void setControlScheme(ControlScheme cs) {
+        String newControlText = "";
+
+        switch (cs) {
+            case WASD:
+                newControlText = "<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold";
+                getKeyboardHandler().setupWASD();
+                break;
+
+            case Classic:
+                newControlText = "<html>\n⬅/➡ - Move<br>\n⬇ - Soft Drop<br>\n⬆ - Hard Drop<br>\nZ - Rotate CCW<br>\nX - Rotate CW<br>\nC - Hold";
+                getKeyboardHandler().setupClassic();
+                break;
+            case SlashBracket:
+                newControlText = "<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
+                getKeyboardHandler().setupSlashBracket();
+                break;
+        }
+
+        controlsText.setText(newControlText);
     }
 }
