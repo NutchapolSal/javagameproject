@@ -31,6 +31,7 @@ public class PlayfieldPanel extends MinoPanel {
         callout.setHorizontalAlignment(SwingConstants.CENTER);
         callout.setFont(callout.getFont().deriveFont(callout.getFont().getStyle() | Font.BOLD,
                 callout.getFont().getSize() + 6));
+        callout.setHorizontalAlignment(SwingConstants.CENTER);
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
