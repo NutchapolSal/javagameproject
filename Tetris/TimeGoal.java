@@ -3,8 +3,6 @@ package Tetris;
 public class TimeGoal extends Goal {
     private GoalState goalState = GoalState.NONE;
     private int goalTime;
-    private int lines;
-    private int timeMillis;
 
     public TimeGoal(int goalTime) {
         this.goalTime = goalTime;
@@ -12,9 +10,6 @@ public class TimeGoal extends Goal {
 
     @Override
     protected GoalState calculate(int timeMillis, int lines) {
-        this.timeMillis = timeMillis;
-        this.lines = lines;
-
         if (goalTime < timeMillis) {
             goalState = GoalState.WIN;
         }
