@@ -226,7 +226,7 @@ public class Gui {
         }
 
         if (gds != null || TimeUnit.NANOSECONDS.toMillis(33) < frameTimeAccumulator) {
-            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
+            frameTimeAccumulator = 0;
             f.repaint();
         }
 
