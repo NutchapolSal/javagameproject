@@ -128,6 +128,9 @@ public class Gameplay {
     }
 
     public void startGame() {
+        if (countdownTask != null) {
+            countdownTask.cancel();
+        }
         if (gameLoop != null) {
             gameLoop.cancel();
         }
