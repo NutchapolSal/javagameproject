@@ -1,6 +1,5 @@
 package Tetris;
 
-import java.sql.Time;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Timer;

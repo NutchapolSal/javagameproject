@@ -1,7 +1,6 @@
 package Tetris;
 
 public class TimeGoal extends Goal {
-    private GoalState goalState = GoalState.NONE;
     private long goalTime;
 
     public TimeGoal(long goalTime) {
