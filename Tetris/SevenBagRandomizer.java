@@ -1,16 +1,12 @@
 package Tetris;
 
-import java.util.Random;
-
 public class SevenBagRandomizer extends MinoRandomizer {
 
     private final Mino[] bag = new Mino[7];
     private int bagIndex;
-    private final Random random;
 
     public SevenBagRandomizer(long seed) {
         super(seed);
-        random = new Random(seed);
         fillBag();
         shuffleMinoInBag();
     }

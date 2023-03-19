@@ -111,7 +111,7 @@ public class Gameplay {
         lastFrame = System.nanoTime();
         timeMillis = 0;
         playfield = new Playfield();
-        minoRandomizer = new SevenBagRandomizer(1234); // TODO: actually use random seed
+        minoRandomizer = new SevenBagRandomizer(System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5));
         nextQueue = new ArrayDeque<>();
         hold = null;
         lockHold = false;

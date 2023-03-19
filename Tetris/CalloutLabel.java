@@ -4,9 +4,7 @@ import javax.swing.JLabel;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -36,19 +34,15 @@ public class CalloutLabel extends JLabel {
         startTime = System.nanoTime() - animDuration;
 
         if (customFontAvailable) {
-            Map<java.awt.font.TextAttribute, Object> deriveMap = new java.util.HashMap<>();
-            deriveMap.put(java.awt.font.TextAttribute.FAMILY, customFontName);
-            deriveMap.put(java.awt.font.TextAttribute.SIZE, getFont().getSize() + customFontPlusSize);
+            Map<TextAttribute, Object> deriveMap = new HashMap<>();
+            deriveMap.put(TextAttribute.FAMILY, customFontName);
+            deriveMap.put(TextAttribute.SIZE, getFont().getSize() + customFontPlusSize);
             this.setFont(getFont().deriveFont(deriveMap));
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-
         long timeSinceStart = System.nanoTime() - startTime;
         double rawAnimProgress = (double) timeSinceStart / animDuration;
         rawAnimProgress = Math.min(1, rawAnimProgress);

@@ -10,7 +10,6 @@ public class Playfield {
     private int playerMinoY;
     private Direction playerMinoDirection;
     private ObjectDataGrid<MinoColor> blocks = new ObjectDataGrid<>(FIELD_WIDTH, FIELD_HEIGHT + FIELD_HEIGHT_BUFFER);
-    private boolean gameOver;
 
     public boolean hasPlayerMino() {
         return playerMino != null;
@@ -210,8 +209,6 @@ public class Playfield {
                 FIELD_HEIGHT + 1);
         if (spawnSuccess) {
             movePlayerMino(0, -1);
-        } else {
-            gameOver = true;
         }
         return spawnSuccess;
     }
