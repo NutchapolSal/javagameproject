@@ -172,7 +172,7 @@ public class Gameplay {
         playfield.spawnPlayerMino(getNextMino());
         renderFrame();
 
-        timer.scheduleAtFixedRate(countdownTask, 0, 500);
+        timer.scheduleAtFixedRate(countdownTask, 0, 750);
     }
 
     private void startGameLoop() {
