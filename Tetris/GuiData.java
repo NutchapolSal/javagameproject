@@ -4,6 +4,7 @@ public class GuiData {
     public final long timeMillis;
     public final int linesCleared;
     public final int level;
+    public final int score;
     public final Mino hold;
     public final boolean lockHold;
     public final PlayerRenderData playerRenderData;
@@ -44,6 +45,7 @@ public class GuiData {
     public GuiData(long timeMillis,
             int linesCleared,
             int level,
+            int score,
             Mino hold,
             boolean lockHold,
             PlayerRenderData playerRenderData,
@@ -65,6 +67,7 @@ public class GuiData {
         this.timeMillis = timeMillis;
         this.linesCleared = linesCleared;
         this.level = level;
+        this.score = score;
         this.nextQueue = nextQueue;
         this.hold = hold;
         this.lockHold = lockHold;

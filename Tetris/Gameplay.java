@@ -41,7 +41,8 @@ public class Gameplay {
             if (pi.getHardDrop()) {
                 processHardDrop();
             }
-            if (pi.getSoftDrop()) {
+            softDropping = pi.getSoftDrop();
+            if (softDropping) {
                 processSoftDrop();
             }
 
@@ -104,6 +105,7 @@ public class Gameplay {
     private boolean lockHold;
     private int linesCleared;
     private int level;
+    private int score;
     private int b2bCount;
     private int comboCount;
     private boolean lastMoveTSpin;
@@ -115,6 +117,7 @@ public class Gameplay {
     private String spinName;
     private boolean spinMini;
     private int countdown;
+    private boolean softDropping = true;
 
     private boolean zenMode;
 
@@ -157,6 +160,7 @@ public class Gameplay {
         lockHold = false;
         linesCleared = 0;
         level = 1;
+        score = 0;
         b2bCount = 0;
         comboCount = 0;
         lastMoveTSpin = false;
@@ -258,22 +262,25 @@ public class Gameplay {
     }
 
     private void processHardDrop() {
-        boolean moved = playfield.sonicDropPlayerMino();
-        if (moved) {
+        int blocksMoved = playfield.sonicDropPlayerMino();
+        if (blocksMoved != 0) {
             lastMoveTSpin = false;
         }
         hardDropLock = true;
         windowNudgeY += 6;
+        score += 2 * blocksMoved;
     }
 
     private void processSoftDrop() {
         if (sonicDrop) {
-            boolean moved = playfield.sonicDropPlayerMino();
-            if (moved) {
+            int blocksMoved = playfield.sonicDropPlayerMino();
+            if (blocksMoved != 0) {
                 resetLockCount();
             }
+            score += blocksMoved;
         } else {
             gravityCount += getGravityFromLevel(level) * 6;
+            softDropping = true;
         }
     }
 
@@ -289,6 +296,9 @@ public class Gameplay {
             }
         }
         gravityCount -= dropCount;
+        if (softDropping) {
+            score += dropCount;
+        }
     }
 
     /**
@@ -342,6 +352,9 @@ public class Gameplay {
         spinName = null;
         allCleared = playfield.isClear();
 
+        score += calculateLockScore(lines, lastMoveTSpin, spinMini) * level * (1 < b2bCount ? 1.5 : 1);
+        score += 50 * (1 < comboCount ? comboCount - 1 : 0) * level;
+
         windowNudgeY += 4;
         windowNudgeY *= (lines * 0.25) + 1;
         if (!inField) {
@@ -349,6 +362,49 @@ public class Gameplay {
             return false;
         }
         return true;
+    }
+
+    private int calculateLockScore(int lines, boolean tSpin, boolean spinMini) {
+        if (lines < 0) {
+            return 0;
+        }
+        if (!tSpin) {
+            switch (lines) {
+                case 0:
+                    return 0;
+                case 1:
+                    return 100;
+                case 2:
+                    return 300;
+                case 3:
+                    return 500;
+                default:
+                    return 800;
+            }
+        }
+
+        if (spinMini) {
+            switch (lines) {
+                case 0:
+                    return 100;
+                case 1:
+                    return 200;
+                default:
+                    return 1200;
+            }
+        }
+
+        switch (lines) {
+            case 0:
+                return 400;
+            case 1:
+                return 800;
+            case 2:
+                return 1200;
+            default:
+                return 1600;
+        }
+
     }
 
     /**
@@ -370,6 +426,7 @@ public class Gameplay {
         boolean offerResult = renderQueue.offer(new GuiData(timeMillis,
                 linesCleared,
                 level,
+                score,
                 hold,
                 lockHold,
                 pdr,
