@@ -130,7 +130,7 @@ public class Gui {
                 } else if (gds.calloutLines == 4) {
                     calloutLinesStr = "QUAD";
                 } else {
-                    calloutLinesStr = "";
+                    calloutLinesStr = String.format("%d LINES", gds.calloutLines);
                 }
                 lineCalloutLabel.startAnimation(calloutLinesStr);
             }
