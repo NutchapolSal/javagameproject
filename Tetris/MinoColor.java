@@ -38,7 +38,6 @@ public enum MinoColor {
         try {
             image = ImageIO.read(new File(filepath()));
         } catch (IOException e) {
-            e.printStackTrace();
             BufferedImage bi = new BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB);
             Graphics g = bi.createGraphics();
             g.setColor(Color.RED);
