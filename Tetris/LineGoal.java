@@ -1,7 +1,6 @@
 package Tetris;
 
 public class LineGoal extends Goal {
-    private GoalState goalState = GoalState.NONE;
     private int goalLines;
 
     public LineGoal(int goalLines) {

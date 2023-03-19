@@ -1,6 +1,5 @@
 package Tetris;
 
-import java.sql.Time;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Timer;
@@ -20,7 +19,8 @@ public class Gameplay {
             timeMillis = TimeUnit.NANOSECONDS.toMillis(nowFrame - startTime);
             goalState = goal.calculate(timeMillis, linesCleared);
             if (goalState != GoalState.NONE) {
-                endGameLoop();
+                gameLoop.cancel();
+                renderFrame();
                 return;
             }
 
@@ -47,13 +47,23 @@ public class Gameplay {
 
             processGravity();
 
-            processLockDelay();
+            boolean loopContinueFromLock = processLockDelay();
+            if (!loopContinueFromLock) {
+                gameLoop.cancel();
+                renderFrame();
+                return;
+            }
 
             playerLockProgress = (double) lockDelayFrames / lockDelayMaxFrames;
             pdr = playfield.getPlayerRenderData();
 
             if (!playfield.hasPlayerMino()) {
-                processPieceSpawn();
+                boolean loopContinueFromSpawn = processPieceSpawn();
+                if (!loopContinueFromSpawn) {
+                    gameLoop.cancel();
+                    renderFrame();
+                    return;
+                }
             }
 
             renderFrame();
@@ -216,11 +226,10 @@ public class Gameplay {
                 // fallthrough
             case SuccessTSpin:
                 lastMoveTSpin = true;
-                // fallthrough
-            case SuccessTwist:
                 spinName = playfield.getPlayerMinoName();
                 windowNudgeX += calculateRotationNudge();
                 // fallthrough
+            case SuccessTwist:
             case Success:
                 resetLockDelay();
                 // fallthrough
@@ -282,20 +291,27 @@ public class Gameplay {
         gravityCount -= dropCount;
     }
 
-    private void processLockDelay() {
+    /**
+     * @return true if gameloop should not end, false if should end
+     */
+    private boolean processLockDelay() {
         if (playfield.getPlayerMinoGrounded()) {
             lockDelayFrames++;
             if (hardDropLock ||
                     lockResetMaxCount <= lockResetCount ||
                     lockDelayMaxFrames <= lockDelayFrames) {
-                processPieceLock();
+                return processPieceLock();
             }
         } else {
             lockDelayFrames = 0;
         }
+        return true;
     }
 
-    private void processPieceLock() {
+    /**
+     * @return true if gameloop should not end, false if should end
+     */
+    private boolean processPieceLock() {
         boolean inField = playfield.lockPlayerMino();
         int lines = playfield.clearLines();
         linesCleared += lines;
@@ -330,24 +346,24 @@ public class Gameplay {
         windowNudgeY *= (lines * 0.25) + 1;
         if (!inField) {
             goalState = GoalState.LOSE;
-            endGameLoop();
+            return false;
         }
+        return true;
     }
 
-    private void processPieceSpawn() {
+    /**
+     * @return true if gameloop should not end, false if should end
+     */
+    private boolean processPieceSpawn() {
         boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
         if (!spawnSuccess) {
             goalState = GoalState.LOSE;
-            endGameLoop();
+            return false;
         }
         lockHold = false;
         gravityCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
-    }
-
-    private void endGameLoop() {
-        gameLoop.cancel();
-        renderFrame();
+        return true;
     }
 
     private void renderFrame() {

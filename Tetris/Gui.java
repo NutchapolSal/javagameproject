@@ -130,7 +130,7 @@ public class Gui {
                 } else if (gds.calloutLines == 4) {
                     calloutLinesStr = "QUAD";
                 } else {
-                    calloutLinesStr = "";
+                    calloutLinesStr = String.format("%d LINES", gds.calloutLines);
                 }
                 lineCalloutLabel.startAnimation(calloutLinesStr);
             }
@@ -226,7 +226,7 @@ public class Gui {
         }
 
         if (gds != null || TimeUnit.NANOSECONDS.toMillis(33) < frameTimeAccumulator) {
-            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
+            frameTimeAccumulator = 0;
             f.repaint();
         }
 
