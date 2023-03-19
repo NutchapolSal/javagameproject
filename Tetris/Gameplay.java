@@ -60,6 +60,19 @@ public class Gameplay {
         }
     }
 
+    private final class CountdownTask extends TimerTask {
+        public void run() {
+            countdownGui = countdown;
+            renderFrame();
+            if (countdown == 0) {
+                startGameLoop();
+                countdownTask.cancel();
+                return;
+            }
+            countdown--;
+        }
+    }
+
     private static long FRAME_DELAY = 16_666_666;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
@@ -68,6 +81,7 @@ public class Gameplay {
     private PlayerInput pi = new PlayerInput();
     private Timer timer = new Timer();
     private TimerTask gameLoop;
+    private TimerTask countdownTask;
     private Goal goal;
     private Queue<Goal> newGoal = new ArrayBlockingQueue<>(1);
     private long startTime;
@@ -90,6 +104,7 @@ public class Gameplay {
     private boolean hardDropLock;
     private String spinName;
     private boolean spinMini;
+    private int countdown;
 
     private boolean zenMode;
 
@@ -105,6 +120,7 @@ public class Gameplay {
     private boolean allCleared;
     private GoalData goalData;
     private GoalState goalState;
+    private int countdownGui;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -116,6 +132,7 @@ public class Gameplay {
         }
 
         gameLoop = new GameLoopTask();
+        countdownTask = new CountdownTask();
         goal = newGoal.peek() != null ? newGoal.poll() : goal;
         lastFrame = System.nanoTime();
         timeMillis = 0;
@@ -134,6 +151,7 @@ public class Gameplay {
         lockResetCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
         hardDropLock = false;
+        countdown = 3;
 
         zenMode = goal instanceof NoGoal;
         level = zenMode ? 2 : level;
@@ -154,8 +172,11 @@ public class Gameplay {
         playfield.spawnPlayerMino(getNextMino());
         renderFrame();
 
-        startTime = System.nanoTime();
+        timer.scheduleAtFixedRate(countdownTask, 0, 500);
+    }
 
+    private void startGameLoop() {
+        startTime = System.nanoTime();
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
 
@@ -343,7 +364,8 @@ public class Gameplay {
                 spinNameGui,
                 spinMini,
                 allCleared,
-                goalData));
+                goalData,
+                countdownGui));
         if (offerResult) {
             renderBlocks = null;
             nextQueueGuiData = null;
@@ -353,6 +375,7 @@ public class Gameplay {
             windowNudgeY = 0;
             allCleared = false;
             goalData = null;
+            countdownGui = -1;
         }
     }
 

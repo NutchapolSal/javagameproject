@@ -184,6 +184,13 @@ public class Gui {
             }
             playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
 
+            if (gds.countdown != -1) {
+                if (gds.countdown == 0) {
+                    playfield.startAnimation("GO!");
+                } else {
+                    playfield.startAnimation(String.format("%s", gds.countdown));
+                }
+            }
             if (gds.allClear) {
                 playfield.startAnimation("ALL CLEAR");
             }
