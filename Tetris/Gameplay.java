@@ -177,6 +177,7 @@ public class Gameplay {
 
     private void startGameLoop() {
         startTime = System.nanoTime();
+        lastFrame = System.nanoTime();
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
 
