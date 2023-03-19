@@ -20,8 +20,7 @@ public class Gameplay {
             timeMillis = TimeUnit.NANOSECONDS.toMillis(nowFrame - startTime);
             goalState = goal.calculate(timeMillis, linesCleared);
             if (goalState != GoalState.NONE) {
-                this.cancel();
-                renderEnd();
+                endGameLoop();
                 return;
             }
 
@@ -303,21 +302,25 @@ public class Gameplay {
 
         windowNudgeY += 4;
         windowNudgeY *= (lines * 0.25) + 1;
+        if (!inField) {
+            goalState = GoalState.LOSE;
+            endGameLoop();
+        }
     }
 
     private void processPieceSpawn() {
         boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
         if (!spawnSuccess) {
-            gameLoop.cancel();
             goalState = GoalState.LOSE;
+            endGameLoop();
         }
         lockHold = false;
         gravityCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
     }
 
-    private void renderEnd() {
-        timeMillis = goal.getGoalData().isTimesGoal() ? goal.getGoalData().getTimeMillisLength() : timeMillis;
+    private void endGameLoop() {
+        gameLoop.cancel();
         renderFrame();
     }
 
