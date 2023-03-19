@@ -13,6 +13,7 @@ public class GuiData {
     public final int comboCount;
     public final int b2bCount;
     public final GoalState goalState;
+    public final String gamemodeName;
     /**
      * may be null
      */
@@ -52,6 +53,7 @@ public class GuiData {
             int comboCount,
             int b2bCount,
             GoalState goalState,
+            String gamemodeName,
             ObjectDataGrid<MinoColor> renderBlocks,
             Mino[] nextQueue,
             int calloutLines,
@@ -73,6 +75,7 @@ public class GuiData {
         this.comboCount = comboCount;
         this.b2bCount = b2bCount;
         this.goalState = goalState;
+        this.gamemodeName = gamemodeName;
         this.renderBlocks = renderBlocks;
         this.calloutLines = calloutLines;
         this.spinName = spinName;

@@ -121,6 +121,7 @@ public class Gameplay {
     private GoalData goalData;
     private GoalState goalState;
     private int countdownGui;
+    private String gamemodeName = "";
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -359,6 +360,7 @@ public class Gameplay {
                 Math.max(0, comboCount - 1),
                 Math.max(0, b2bCount - 1),
                 goalState,
+                gamemodeName,
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
@@ -459,15 +461,19 @@ public class Gameplay {
             switch ((GameplayMode) x) {
                 case Marathon:
                     newGoal.offer(new LineGoal(150));
+                    gamemodeName = "Marathon";
                     break;
                 case Sprint:
                     newGoal.offer(new LineGoal(40));
+                    gamemodeName = "Sprint";
                     break;
                 case Ultra:
                     newGoal.offer(new TimeGoal(TimeUnit.MINUTES.toMillis(3)));
+                    gamemodeName = "Ultra";
                     break;
                 case Zen:
                     newGoal.offer(new NoGoal());
+                    gamemodeName = "Zen";
                     break;
             }
         };

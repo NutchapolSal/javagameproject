@@ -97,7 +97,7 @@ public class Gui {
     private int lastCombo = 0;
     private GoalData goalData = new GoalData();
     private GoalState lastGoalState = GoalState.NONE;
-
+    private String lastGamemodeName = "";
     private ControlScheme controlScheme;
     private boolean controlSchemeSonicDrop;
 
@@ -186,11 +186,17 @@ public class Gui {
 
             if (gds.countdown != -1) {
                 if (gds.countdown == 0) {
-                    playfield.startAnimation("GO!");
+                    lineCalloutLabel.startAnimation("GO!");
                 } else {
-                    playfield.startAnimation(String.format("%s", gds.countdown));
+                    lineCalloutLabel.startAnimation(String.format("%s", gds.countdown));
                 }
             }
+
+            if (lastGamemodeName != gds.gamemodeName) {
+                playfield.startAnimation(gds.gamemodeName.toUpperCase());
+            }
+            lastGamemodeName = gds.gamemodeName;
+
             if (gds.allClear) {
                 playfield.startAnimation("ALL CLEAR");
             }
