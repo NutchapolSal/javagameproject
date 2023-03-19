@@ -60,6 +60,19 @@ public class Gameplay {
         }
     }
 
+    private final class CountdownTask extends TimerTask {
+        public void run() {
+            countdownGui = countdown;
+            renderFrame();
+            if (countdown == 0) {
+                startGameLoop();
+                countdownTask.cancel();
+                return;
+            }
+            countdown--;
+        }
+    }
+
     private static long FRAME_DELAY = 16_666_666;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
@@ -68,6 +81,7 @@ public class Gameplay {
     private PlayerInput pi = new PlayerInput();
     private Timer timer = new Timer();
     private TimerTask gameLoop;
+    private TimerTask countdownTask;
     private Goal goal;
     private Queue<Goal> newGoal = new ArrayBlockingQueue<>(1);
     private long startTime;
@@ -90,6 +104,7 @@ public class Gameplay {
     private boolean hardDropLock;
     private String spinName;
     private boolean spinMini;
+    private int countdown;
 
     private boolean zenMode;
 
@@ -105,17 +120,23 @@ public class Gameplay {
     private boolean allCleared;
     private GoalData goalData;
     private GoalState goalState;
+    private int countdownGui;
+    private String gamemodeName = "";
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
     }
 
     public void startGame() {
+        if (countdownTask != null) {
+            countdownTask.cancel();
+        }
         if (gameLoop != null) {
             gameLoop.cancel();
         }
 
         gameLoop = new GameLoopTask();
+        countdownTask = new CountdownTask();
         goal = newGoal.peek() != null ? newGoal.poll() : goal;
         lastFrame = System.nanoTime();
         timeMillis = 0;
@@ -134,6 +155,7 @@ public class Gameplay {
         lockResetCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
         hardDropLock = false;
+        countdown = 3;
 
         zenMode = goal instanceof NoGoal;
         level = zenMode ? 2 : level;
@@ -154,8 +176,12 @@ public class Gameplay {
         playfield.spawnPlayerMino(getNextMino());
         renderFrame();
 
-        startTime = System.nanoTime();
+        timer.scheduleAtFixedRate(countdownTask, 0, 750);
+    }
 
+    private void startGameLoop() {
+        startTime = System.nanoTime();
+        lastFrame = System.nanoTime();
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
 
@@ -337,13 +363,15 @@ public class Gameplay {
                 Math.max(0, comboCount - 1),
                 Math.max(0, b2bCount - 1),
                 goalState,
+                gamemodeName,
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
                 spinNameGui,
                 spinMini,
                 allCleared,
-                goalData));
+                goalData,
+                countdownGui));
         if (offerResult) {
             renderBlocks = null;
             nextQueueGuiData = null;
@@ -353,6 +381,7 @@ public class Gameplay {
             windowNudgeY = 0;
             allCleared = false;
             goalData = null;
+            countdownGui = -1;
         }
     }
 
@@ -435,15 +464,19 @@ public class Gameplay {
             switch ((GameplayMode) x) {
                 case Marathon:
                     newGoal.offer(new LineGoal(150));
+                    gamemodeName = "Marathon";
                     break;
                 case Sprint:
                     newGoal.offer(new LineGoal(40));
+                    gamemodeName = "Sprint";
                     break;
                 case Ultra:
                     newGoal.offer(new TimeGoal(TimeUnit.MINUTES.toMillis(3)));
+                    gamemodeName = "Ultra";
                     break;
                 case Zen:
                     newGoal.offer(new NoGoal());
+                    gamemodeName = "Zen";
                     break;
             }
         };
