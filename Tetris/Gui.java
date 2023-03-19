@@ -6,12 +6,14 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,6 +31,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.awt.Color;
 import java.awt.Container;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -836,4 +839,20 @@ public class Gui {
         });
     }
 
+    private void debugWithBorder() {
+        recurseAddBorders(f.getContentPane());
+    }
+
+    private void recurseAddBorders(Container c) {
+        for (var v : c.getComponents()) {
+            try {
+                ((JComponent) v).setBorder(BorderFactory.createLineBorder(Color.RED));
+            } catch (ClassCastException e) {
+            }
+            try {
+                recurseAddBorders((Container) v);
+            } catch (ClassCastException e) {
+            }
+        }
+    }
 }
