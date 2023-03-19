@@ -40,6 +40,10 @@ public class Settings {
         return GameplayMode.valueOf(prefs.get(SettingKey.GameplayMode.name(), GameplayMode.Marathon.name()));
     }
 
+    public String getBlockSkin() {
+        return prefs.get(SettingKey.BlockSkin.name(), "Default");
+    }
+
     private void saveDasChargeFrames(int in) {
         prefs.putInt(SettingKey.DasChargeFrames.name(), in);
     }
@@ -58,6 +62,10 @@ public class Settings {
 
     private void saveGameplayMode(GameplayMode in) {
         prefs.put(SettingKey.GameplayMode.name(), in.name());
+    }
+
+    private void saveBlockSkin(String in) {
+        prefs.put(SettingKey.BlockSkin.name(), in);
     }
 
     public void bindReceiver(SettingKey sk, Consumer<Object> receiver) {
@@ -89,6 +97,7 @@ public class Settings {
         iterateOverReceivers(SettingKey.SonicDrop, getSonicDrop());
         iterateOverReceivers(SettingKey.ControlScheme, getControlScheme());
         iterateOverReceivers(SettingKey.GameplayMode, getGameplayMode());
+        iterateOverReceivers(SettingKey.BlockSkin, getBlockSkin());
     }
 
     private void iterateOverReceivers(SettingKey sk, Object input) {
@@ -136,5 +145,10 @@ public class Settings {
     public void setGameplayMode(GameplayMode gameplayMode) {
         saveGameplayMode(gameplayMode);
         iterateOverReceivers(SettingKey.GameplayMode, getGameplayMode());
+    }
+
+    public void setBlockSkin(String blockSkin) {
+        saveBlockSkin(blockSkin);
+        iterateOverReceivers(SettingKey.BlockSkin, getBlockSkin());
     }
 }

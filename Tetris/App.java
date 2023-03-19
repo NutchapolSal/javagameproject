@@ -19,6 +19,7 @@ public class App {
         settings.bindReceiver(SettingKey.ControlScheme, gui.getControlSchemeReceiver());
         settings.bindReceiver(SettingKey.ControlScheme, gui.getKeyboardHandler().getControlSchemeReceiver());
         settings.bindReceiver(SettingKey.GameplayMode, gameplay.getGameplayModeReceiver());
+        settings.bindReceiver(SettingKey.BlockSkin, MinoColor.getBlockSkinReceiver());
         settings.loadSettingsToReceivers();
 
         ActionListener guiUpdater = new ActionListener() {
@@ -30,6 +31,7 @@ public class App {
         ActionListener newGameAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gameplay.startGame();
+                settings.setBlockSkin("java");
             }
         };
 

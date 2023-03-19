@@ -24,5 +24,9 @@ public enum SettingKey {
     /**
      * consumes {@code GameplayMode}
      */
-    GameplayMode
+    GameplayMode,
+    /**
+     * consumes {@code String}
+     */
+    BlockSkin
 }

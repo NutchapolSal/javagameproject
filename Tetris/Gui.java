@@ -11,6 +11,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -24,6 +25,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -85,6 +87,8 @@ public class Gui {
     private JRadioButtonMenuItem defaultHandlingMenuItem;
     private JRadioButtonMenuItem fastHandlingMenuItem;
     private JCheckBoxMenuItem sonicDropMenuItem;
+    private JMenu blockSkinMenu;
+    private JRadioButtonMenuItem[] blockSkinMenuItems;
     private ActionListener newGameAction;
 
     private double windowDeltaX;
@@ -312,6 +316,8 @@ public class Gui {
         defaultHandlingMenuItem = new JRadioButtonMenuItem();
         fastHandlingMenuItem = new JRadioButtonMenuItem();
         sonicDropMenuItem = new JCheckBoxMenuItem();
+        blockSkinMenu = new JMenu();
+        blockSkinMenuItems = new JRadioButtonMenuItem[MinoColor.getBlockSkinFolders().length];
 
         wasdSchemeMenuItem.setSelected(true);
         wasdSchemeMenuItem.setText("WASD");
@@ -343,10 +349,28 @@ public class Gui {
         handlingGroup.add(defaultHandlingMenuItem);
         handlingGroup.add(fastHandlingMenuItem);
 
+        blockSkinMenu.setText("Block Skin");
+        ButtonGroup blockSkinGroup = new ButtonGroup();
+        String[] blockSkinFolders = MinoColor.getBlockSkinFolders();
+        for (int i = 0; i < blockSkinMenuItems.length; i++) {
+            blockSkinMenuItems[i] = new JRadioButtonMenuItem();
+            Image scaledImage = MinoColor.Red.image(blockSkinFolders[i]).getScaledInstance(20, 20, Image.SCALE_DEFAULT);
+            blockSkinMenuItems[i].setText(blockSkinFolders[i]);
+            blockSkinMenuItems[i].setIcon(new ImageIcon(scaledImage));
+            blockSkinMenu.add(blockSkinMenuItems[i]);
+            blockSkinGroup.add(blockSkinMenuItems[i]);
+            if (i == 0) {
+                blockSkinMenuItems[i].setSelected(true);
+            }
+        }
+
         optionsMenu.setText("Options");
         optionsMenu.add(controlSchemeMenu);
         optionsMenu.add(handlingMenu);
         optionsMenu.add(sonicDropMenuItem);
+        optionsMenu.addSeparator();
+        optionsMenu.add(blockSkinMenu);
+
     }
 
     private void createGameMenu() {
@@ -823,6 +847,22 @@ public class Gui {
                 s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED);
             }
         });
+
+        bindBlockSkinMenuItems(s);
+    }
+
+    private void bindBlockSkinMenuItems(Settings s) {
+        for (int i = 0; i < blockSkinMenuItems.length; i++) {
+            final String yourFolder = MinoColor.getBlockSkinFolders()[i];
+            blockSkinMenuItems[i].addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent evt) {
+                    if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                        return;
+                    }
+                    s.setBlockSkin(yourFolder);
+                }
+            });
+        }
     }
 
     private void updateMenusToSettings(Settings s) {
@@ -862,6 +902,13 @@ public class Gui {
                 break;
         }
         sonicDropMenuItem.setSelected(s.getSonicDrop());
+        String selectedSkin = s.getBlockSkin();
+        for (JRadioButtonMenuItem v : blockSkinMenuItems) {
+            if (v.getText().equals(selectedSkin)) {
+                v.setSelected(true);
+                break;
+            }
+        }
     }
 
     private void bindSelectModeMenuItems(Settings s) {
