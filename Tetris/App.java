@@ -15,6 +15,7 @@ public class App {
         settings.bindReceiver(SettingKey.DasChargeFrames, gameplay.getDASReceiver());
         settings.bindReceiver(SettingKey.AutoRepeatFrames, gameplay.getARRReceiver());
         settings.bindReceiver(SettingKey.SonicDrop, gameplay.getSonicDropReceiver());
+        settings.bindReceiver(SettingKey.SonicDrop, gui.getSonicDropReceiver());
         settings.bindReceiver(SettingKey.ControlScheme, gui.getControlSchemeReceiver());
         settings.bindReceiver(SettingKey.GameplayMode, gameplay.getGameplayModeReceiver());
         settings.loadSettingsToReceivers();
