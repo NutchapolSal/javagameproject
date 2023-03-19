@@ -226,11 +226,10 @@ public class Gameplay {
                 // fallthrough
             case SuccessTSpin:
                 lastMoveTSpin = true;
-                // fallthrough
-            case SuccessTwist:
                 spinName = playfield.getPlayerMinoName();
                 windowNudgeX += calculateRotationNudge();
                 // fallthrough
+            case SuccessTwist:
             case Success:
                 resetLockDelay();
                 // fallthrough
