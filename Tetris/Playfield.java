@@ -146,15 +146,16 @@ public class Playfield {
     }
 
     /**
-     * @return true if player mino moved, false if player mino did not move
+     * @return amount of blocks player moved
      */
-    public boolean sonicDropPlayerMino() {
+    public int sonicDropPlayerMino() {
         int shadowYPos = getShadowYPos();
         if (shadowYPos == playerMinoY) {
-            return false;
+            return 0;
         }
+        int blocksMoved = playerMinoY - shadowYPos;
         setPlayerMinoPos(playerMinoX, shadowYPos);
-        return true;
+        return blocksMoved;
     }
 
     /**

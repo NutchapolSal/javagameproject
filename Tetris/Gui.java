@@ -50,6 +50,8 @@ public class Gui {
     private JLabel holdText;
     private JPanel statsPanel;
     private Box.Filler leftFiller;
+    private JLabel scoreCountText;
+    private JLabel scoreText;
     private JLabel levelCountText;
     private JLabel levelText;
     private JLabel linesCountText;
@@ -167,6 +169,7 @@ public class Gui {
                     String.format("%.0f:%05.2f", Math.floor(showMillis / (1000d * 60)),
                             (showMillis / 1000d) % 60));
 
+            scoreCountText.setText(String.format("%d", gds.score));
             String linesGoalPart = "";
             if (goalData.isLinesGoal()) {
                 linesGoalPart = String.format(" / %d", goalData.getLinesCount());
@@ -575,6 +578,8 @@ public class Gui {
         statsPanel.setLayout(statsPanelLayout);
         statsPanelLayout.setHorizontalGroup(
                 statsPanelLayout.createParallelGroup(Alignment.TRAILING)
+                        .addComponent(scoreText)
+                        .addComponent(scoreCountText)
                         .addComponent(levelText)
                         .addComponent(levelCountText)
                         .addComponent(linesText)
@@ -582,6 +587,9 @@ public class Gui {
                         .addComponent(timeText)
                         .addComponent(timeCountText));
         statsPanelLayout.setVerticalGroup(statsPanelLayout.createSequentialGroup()
+                .addComponent(scoreText)
+                .addComponent(scoreCountText)
+                .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(levelText)
                 .addComponent(levelCountText)
                 .addPreferredGap(ComponentPlacement.RELATED)
@@ -593,12 +601,19 @@ public class Gui {
     }
 
     private void createStatsLabels() {
+        scoreText = new JLabel();
+        scoreCountText = new JLabel();
         levelText = new JLabel();
         levelCountText = new JLabel();
         linesText = new JLabel();
         linesCountText = new JLabel();
         timeText = new JLabel();
         timeCountText = new JLabel();
+
+        scoreText.setText("Score");
+        scoreCountText.setFont(scoreCountText.getFont().deriveFont(
+                scoreCountText.getFont().getStyle() | Font.BOLD, scoreCountText.getFont().getSize() + 7));
+        scoreCountText.setText("0");
 
         levelText.setText("Level");
 
