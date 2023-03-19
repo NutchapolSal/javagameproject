@@ -85,6 +85,7 @@ public class Gui {
     private JRadioButtonMenuItem defaultHandlingMenuItem;
     private JRadioButtonMenuItem fastHandlingMenuItem;
     private JCheckBoxMenuItem sonicDropMenuItem;
+    private ActionListener newGameAction;
 
     private double windowDeltaX;
     private double windowDeltaY;
@@ -116,7 +117,7 @@ public class Gui {
         if (gds != null) {
             frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
             if (gds.spinName != null) {
-                spinLabel.startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName + "-SPIN");
+                spinLabel.startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName.toUpperCase() + "-SPIN");
             }
             if (gds.calloutLines != 0) {
                 String calloutLinesStr = "";
@@ -717,6 +718,7 @@ public class Gui {
     public void setNewGameAction(ActionListener a) {
         newGameButton.addActionListener(a);
         newGameMenuItem.addActionListener(a);
+        newGameAction = a;
     }
 
     public void setControlScheme(ControlScheme cs) {
@@ -848,6 +850,7 @@ public class Gui {
                     return;
                 }
                 s.setGameplayMode(GameplayMode.Marathon);
+                newGameAction.actionPerformed(null);
             }
         });
         sprintModeMenuItem.addItemListener(new ItemListener() {
@@ -856,6 +859,7 @@ public class Gui {
                     return;
                 }
                 s.setGameplayMode(GameplayMode.Sprint);
+                newGameAction.actionPerformed(null);
             }
         });
         ultraModeMenuItem.addItemListener(new ItemListener() {
@@ -864,6 +868,7 @@ public class Gui {
                     return;
                 }
                 s.setGameplayMode(GameplayMode.Ultra);
+                newGameAction.actionPerformed(null);
             }
         });
         zenModeMenuItem.addItemListener(new ItemListener() {
@@ -872,6 +877,7 @@ public class Gui {
                     return;
                 }
                 s.setGameplayMode(GameplayMode.Zen);
+                newGameAction.actionPerformed(null);
             }
         });
     }

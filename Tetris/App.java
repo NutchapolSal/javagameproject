@@ -20,8 +20,6 @@ public class App {
         settings.bindReceiver(SettingKey.GameplayMode, gameplay.getGameplayModeReceiver());
         settings.loadSettingsToReceivers();
 
-        gameplay.startGame();
-
         ActionListener guiUpdater = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gui.update(gameplay.getGuiData());
