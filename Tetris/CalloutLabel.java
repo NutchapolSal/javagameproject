@@ -124,8 +124,10 @@ public class CalloutLabel extends JLabel {
     }
 
     public void doFadeOut() {
-        startTime = System.nanoTime() - (animDuration / 3);
-        this.isFadeOut = true;
+        if (!this.isFadeOut) {
+            startTime = System.nanoTime() - (animDuration / 3);
+            this.isFadeOut = true;
+        }
     }
 
 }
