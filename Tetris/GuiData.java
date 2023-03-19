@@ -12,6 +12,7 @@ public class GuiData {
     public final double windowNudgeY;
     public final int comboCount;
     public final int b2bCount;
+    public final GoalState goalState;
     /**
      * may be null
      */
@@ -27,6 +28,7 @@ public class GuiData {
     public final String spinName;
     public final boolean spinMini;
     public final boolean allClear;
+    public final GoalData goalData;
 
     /**
      * @param renderBlocks if null, will keep using old data
@@ -34,6 +36,7 @@ public class GuiData {
      * @param calloutLines if not 0, will start animation for line clear callout
      * @param spinName     if not null, will start animation for spin callout
      * @param allClear     if true, will start animation for all clear callout
+     * @param goalData     if null, will keep using old data
      */
     public GuiData(long timeMillis,
             int linesCleared,
@@ -46,12 +49,14 @@ public class GuiData {
             double windowNudgeY,
             int comboCount,
             int b2bCount,
+            GoalState goalState,
             ObjectDataGrid<MinoColor> renderBlocks,
             Mino[] nextQueue,
             int calloutLines,
             String spinName,
             boolean spinMini,
-            boolean allClear) {
+            boolean allClear,
+            GoalData goalData) {
         this.timeMillis = timeMillis;
         this.linesCleared = linesCleared;
         this.level = level;
@@ -64,10 +69,12 @@ public class GuiData {
         this.windowNudgeY = windowNudgeY;
         this.comboCount = comboCount;
         this.b2bCount = b2bCount;
+        this.goalState = goalState;
         this.renderBlocks = renderBlocks;
         this.calloutLines = calloutLines;
         this.spinName = spinName;
         this.spinMini = spinMini;
         this.allClear = allClear;
+        this.goalData = goalData;
     }
 }

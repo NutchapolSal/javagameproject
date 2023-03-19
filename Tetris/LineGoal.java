@@ -3,23 +3,18 @@ package Tetris;
 public class LineGoal extends Goal {
     private GoalState goalState = GoalState.NONE;
     private int goalLines;
-    private int lines;
-    private int timeMillis;
 
     public LineGoal(int goalLines) {
         this.goalLines = goalLines;
     }
 
     @Override
-    protected GoalState calculate(int timeMillis, int lines) {
-        this.timeMillis = timeMillis;
-        this.lines = lines;
-
+    protected GoalState calculate(long timeMillis, int lines) {
         if (lines >= goalLines) {
-            goalState = GoalState.WIN;
+            return GoalState.WIN;
         }
 
-        return goalState;
+        return GoalState.NONE;
     }
 
     @Override

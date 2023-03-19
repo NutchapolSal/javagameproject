@@ -13,6 +13,7 @@ public class PlayfieldPanel extends MinoPanel {
     private PlayerRenderData pdr = null;
     private double playerLockProgress;
     private CalloutLabel callout;
+    private MinoColor playerOverrideColor;
 
     public void setRenderBlocks(ObjectDataGrid<MinoColor> renderBlocks) {
         this.renderBlocks = renderBlocks;
@@ -21,6 +22,12 @@ public class PlayfieldPanel extends MinoPanel {
     public void setPlayerRenderData(PlayerRenderData pdr, double playerLockProgress) {
         this.pdr = pdr;
         this.playerLockProgress = playerLockProgress;
+        this.playerOverrideColor = null;
+
+    }
+
+    public void setPlayerOverrideColor(MinoColor playerOverrideColor) {
+        this.playerOverrideColor = playerOverrideColor;
     }
 
     public PlayfieldPanel() {
@@ -67,6 +74,9 @@ public class PlayfieldPanel extends MinoPanel {
                 MinoColor currColor = pdr.blocks.getAtPos(x, y);
                 if (currColor == null) {
                     continue;
+                }
+                if (playerOverrideColor != null) {
+                    currColor = playerOverrideColor;
                 }
                 paintMinoBlock(g, x + pdr.x, y + pdr.y, currColor);
                 paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, currColor, 0.3);

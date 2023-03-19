@@ -6,12 +6,14 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,6 +31,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.awt.Color;
 import java.awt.Container;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -89,8 +92,14 @@ public class Gui {
     private double windowLastDeltaY;
 
     private long lastFrameTime = System.nanoTime();
+    private long frameTimeAccumulator = 0;
     private int lastB2B = 0;
     private int lastCombo = 0;
+    private GoalData goalData = new GoalData();
+    private GoalState lastGoalState = GoalState.NONE;
+
+    private ControlScheme controlScheme;
+    private boolean controlSchemeSonicDrop;
 
     private static double roundToZero(double in) {
         if (in < 0) {
@@ -103,8 +112,9 @@ public class Gui {
     public void update(GuiData gds) {
         long currFrameTime = System.nanoTime();
         long deltaFrameTime = currFrameTime - lastFrameTime;
+        frameTimeAccumulator += deltaFrameTime;
         if (gds != null) {
-
+            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
             if (gds.spinName != null) {
                 spinLabel.startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName + "-SPIN");
             }
@@ -137,10 +147,26 @@ public class Gui {
             }
             lastCombo = gds.comboCount;
 
+            if (gds.goalData != null) {
+                goalData = gds.goalData;
+            }
+
+            long showMillis;
+            if (goalData.isTimesGoal()) {
+                showMillis = goalData.getTimeMillisLength() - gds.timeMillis;
+            } else {
+                showMillis = gds.timeMillis;
+            }
+
             timeCountText.setText(
-                    String.format("%.0f:%05.2f", Math.floor(gds.timeMillis / (1000d * 60)),
-                            (gds.timeMillis / 1000d) % 60));
-            linesCountText.setText(String.format("%d", gds.linesCleared));
+                    String.format("%.0f:%05.2f", Math.floor(showMillis / (1000d * 60)),
+                            (showMillis / 1000d) % 60));
+
+            String linesGoalPart = "";
+            if (goalData.isLinesGoal()) {
+                linesGoalPart = String.format(" / %d", goalData.getLinesCount());
+            }
+            linesCountText.setText(String.format("%d%s", gds.linesCleared, linesGoalPart));
             levelCountText.setText(String.format("%d", gds.level));
             if (gds.lockHold) {
                 holdMino.setMino(gds.hold, MinoColor.Gray);
@@ -161,10 +187,33 @@ public class Gui {
             if (gds.allClear) {
                 playfield.startAnimation("ALL CLEAR");
             }
-            f.repaint();
+            if (gds.goalState != lastGoalState) {
+                switch (gds.goalState) {
+                    case WIN:
+                        playfield.startAnimation("FINISH");
+                        playfield.setPlayerOverrideColor(MinoColor.Gray);
+                        b2bLabel.doFadeOut();
+                        lastB2B = 0;
+                        break;
+                    case LOSE:
+                        playfield.startAnimation("GAME OVER");
+                        playfield.setPlayerOverrideColor(MinoColor.Gray);
+                        b2bLabel.doFadeOut();
+                        lastB2B = 0;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            lastGoalState = gds.goalState;
 
             windowDeltaX += gds.windowNudgeX;
             windowDeltaY += gds.windowNudgeY;
+        }
+
+        if (gds != null || TimeUnit.NANOSECONDS.toMillis(33) < frameTimeAccumulator) {
+            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
+            f.repaint();
         }
 
         windowDeltaX *= Math.pow(11.0 / 12.0, deltaFrameTime / TimeUnit.MILLISECONDS.toNanos(10));
@@ -671,24 +720,50 @@ public class Gui {
     }
 
     public void setControlScheme(ControlScheme cs) {
-        String newControlText = "";
-
         switch (cs) {
             case WASD:
-                newControlText = "<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold";
                 getKeyboardHandler().setupWASD();
                 break;
 
             case Classic:
-                newControlText = "<html>\n⬅/➡ - Move<br>\n⬇ - Soft Drop<br>\n⬆ - Hard Drop<br>\nZ - Rotate CCW<br>\nX - Rotate CW<br>\nC - Hold";
                 getKeyboardHandler().setupClassic();
                 break;
             case SlashBracket:
-                newControlText = "<html>\nA/D - Move<br>\nS - Soft Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
                 getKeyboardHandler().setupSlashBracket();
                 break;
         }
 
+        controlScheme = cs;
+        updateControlSchemeText();
+    }
+
+    private void updateControlSchemeText() {
+        String newControlText = "";
+        switch (controlScheme) {
+            case WASD:
+                newControlText = "<html>\nA D - Move<br>\nS - ";
+                break;
+
+            case Classic:
+                newControlText = "<html>\n⬅ ➡ - Move<br>\n⬇ - ";
+                break;
+            case SlashBracket:
+                newControlText = "<html>\nA D - Move<br>\nS - ";
+                break;
+        }
+        newControlText += controlSchemeSonicDrop ? "Sonic" : "Soft";
+        switch (controlScheme) {
+            case WASD:
+                newControlText += " Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold";
+                break;
+
+            case Classic:
+                newControlText += " Drop<br>\n⬆ - Hard Drop<br>\nZ - Rotate CCW<br>\nX - Rotate CW<br>\nC - Hold";
+                break;
+            case SlashBracket:
+                newControlText += " Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
+                break;
+        }
         controlsText.setText(newControlText);
     }
 
@@ -702,8 +777,19 @@ public class Gui {
         };
     }
 
+    /**
+     * @return {@code Consumer<Object>} but the {@code Object} is casted to
+     *         {@code boolean}
+     */
+    public Consumer<Object> getSonicDropReceiver() {
+        return x -> {
+            controlSchemeSonicDrop = (Boolean) x;
+            updateControlSchemeText();
+        };
+    }
+
     public void bindToSettings(Settings s) {
-        updateGuiToSettings(s);
+        updateMenusToSettings(s);
 
         bindSelectModeMenuItems(s);
 
@@ -716,7 +802,7 @@ public class Gui {
         });
     }
 
-    private void updateGuiToSettings(Settings s) {
+    private void updateMenusToSettings(Settings s) {
         switch (s.getGameplayMode()) {
             case Marathon:
                 marathonModeMenuItem.setSelected(true);
@@ -836,4 +922,20 @@ public class Gui {
         });
     }
 
+    private void debugWithBorder() {
+        recurseAddBorders(f.getContentPane());
+    }
+
+    private void recurseAddBorders(Container c) {
+        for (var v : c.getComponents()) {
+            try {
+                ((JComponent) v).setBorder(BorderFactory.createLineBorder(Color.RED));
+            } catch (ClassCastException e) {
+            }
+            try {
+                recurseAddBorders((Container) v);
+            } catch (ClassCastException e) {
+            }
+        }
+    }
 }

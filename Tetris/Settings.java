@@ -1,6 +1,8 @@
 package Tetris;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 
@@ -8,7 +10,7 @@ public class Settings {
     private Preferences prefs = Preferences.userNodeForPackage(Settings.class);
 
     private HandlingPreset handlingPreset;
-    private EnumMap<SettingKey, Consumer<Object>> receivers = new EnumMap<>(SettingKey.class);
+    private EnumMap<SettingKey, List<Consumer<Object>>> receivers = new EnumMap<>(SettingKey.class);
 
     public Settings() {
         interpretHandlingPreset();
@@ -59,7 +61,13 @@ public class Settings {
     }
 
     public void bindReceiver(SettingKey sk, Consumer<Object> receiver) {
-        receivers.put(sk, receiver);
+        receivers.putIfAbsent(sk, new ArrayList<>());
+        receivers.get(sk).add(receiver);
+    }
+
+    public void clearReceivers(SettingKey sk) {
+        receivers.putIfAbsent(sk, new ArrayList<>());
+        receivers.get(sk).clear();
     }
 
     private void interpretHandlingPreset() {
@@ -76,11 +84,17 @@ public class Settings {
     }
 
     public void loadSettingsToReceivers() {
-        receivers.get(SettingKey.DasChargeFrames).accept(getDasChargeFrames());
-        receivers.get(SettingKey.AutoRepeatFrames).accept(getAutoRepeatFrames());
-        receivers.get(SettingKey.SonicDrop).accept(getSonicDrop());
-        receivers.get(SettingKey.ControlScheme).accept(getControlScheme());
-        receivers.get(SettingKey.GameplayMode).accept(getGameplayMode());
+        iterateOverReceivers(SettingKey.DasChargeFrames, getDasChargeFrames());
+        iterateOverReceivers(SettingKey.AutoRepeatFrames, getAutoRepeatFrames());
+        iterateOverReceivers(SettingKey.SonicDrop, getSonicDrop());
+        iterateOverReceivers(SettingKey.ControlScheme, getControlScheme());
+        iterateOverReceivers(SettingKey.GameplayMode, getGameplayMode());
+    }
+
+    private void iterateOverReceivers(SettingKey sk, Object input) {
+        for (var v : receivers.get(sk)) {
+            v.accept(input);
+        }
     }
 
     public void setHandlingPreset(HandlingPreset handlingPreset) {
@@ -101,26 +115,26 @@ public class Settings {
 
     public void setDasChargeFrames(int dasChargeFrames) {
         saveDasChargeFrames(dasChargeFrames);
-        receivers.get(SettingKey.DasChargeFrames).accept(getDasChargeFrames());
+        iterateOverReceivers(SettingKey.DasChargeFrames, getDasChargeFrames());
     }
 
     public void setAutoRepeatFrames(int autoRepeatFrames) {
         saveAutoRepeatFrames(autoRepeatFrames);
-        receivers.get(SettingKey.AutoRepeatFrames).accept(getAutoRepeatFrames());
+        iterateOverReceivers(SettingKey.AutoRepeatFrames, getAutoRepeatFrames());
     }
 
     public void setSonicDrop(boolean sonicDrop) {
         saveSonicDrop(sonicDrop);
-        receivers.get(SettingKey.SonicDrop).accept(getSonicDrop());
+        iterateOverReceivers(SettingKey.SonicDrop, getSonicDrop());
     }
 
     public void setControlScheme(ControlScheme controlScheme) {
         saveControlScheme(controlScheme);
-        receivers.get(SettingKey.ControlScheme).accept(getControlScheme());
+        iterateOverReceivers(SettingKey.ControlScheme, getControlScheme());
     }
 
     public void setGameplayMode(GameplayMode gameplayMode) {
         saveGameplayMode(gameplayMode);
-        receivers.get(SettingKey.GameplayMode).accept(getGameplayMode());
+        iterateOverReceivers(SettingKey.GameplayMode, getGameplayMode());
     }
 }

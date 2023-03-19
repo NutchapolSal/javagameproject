@@ -2,30 +2,25 @@ package Tetris;
 
 public class TimeGoal extends Goal {
     private GoalState goalState = GoalState.NONE;
-    private int goalTime;
-    private int lines;
-    private int timeMillis;
+    private long goalTime;
 
-    public TimeGoal(int goalTime) {
+    public TimeGoal(long goalTime) {
         this.goalTime = goalTime;
     }
 
     @Override
-    protected GoalState calculate(int timeMillis, int lines) {
-        this.timeMillis = timeMillis;
-        this.lines = lines;
-
+    protected GoalState calculate(long timeMillis, int lines) {
         if (goalTime < timeMillis) {
-            goalState = GoalState.WIN;
+            return GoalState.WIN;
         }
 
-        return goalState;
+        return GoalState.NONE;
     }
 
     @Override
     public GoalData getGoalData() {
         GoalData gdt = new GoalData();
-        gdt.setLinesGoal(goalTime);
+        gdt.setTimesGoal(goalTime);
         return gdt;
     }
 }
