@@ -253,7 +253,11 @@ public class Gui {
         f.setSize(500, 500);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
-        setControlScheme(ControlScheme.SlashBracket);
+
+        controlScheme = ControlScheme.WASD;
+        getKeyboardHandler().setupWASD();
+        updateControlSchemeText();
+
         f.setLocationRelativeTo(null);
         f.setVisible(true);
     }
@@ -726,30 +730,33 @@ public class Gui {
             lockInput.putAll(freshInput);
         }
 
+        /**
+         * @return {@code Consumer<Object>} but the {@code Object} is casted to
+         *         {@code ControlScheme}
+         */
+        public Consumer<Object> getControlSchemeReceiver() {
+            return x -> {
+                switch ((ControlScheme) x) {
+                    case WASD:
+                        getKeyboardHandler().setupWASD();
+                        break;
+
+                    case Classic:
+                        getKeyboardHandler().setupClassic();
+                        break;
+                    case SlashBracket:
+                        getKeyboardHandler().setupSlashBracket();
+                        break;
+                }
+            };
+        }
+
     }
 
     public void setNewGameAction(ActionListener a) {
         newGameButton.addActionListener(a);
         newGameMenuItem.addActionListener(a);
         newGameAction = a;
-    }
-
-    public void setControlScheme(ControlScheme cs) {
-        switch (cs) {
-            case WASD:
-                getKeyboardHandler().setupWASD();
-                break;
-
-            case Classic:
-                getKeyboardHandler().setupClassic();
-                break;
-            case SlashBracket:
-                getKeyboardHandler().setupSlashBracket();
-                break;
-        }
-
-        controlScheme = cs;
-        updateControlSchemeText();
     }
 
     private void updateControlSchemeText() {
@@ -788,7 +795,8 @@ public class Gui {
      */
     public Consumer<Object> getControlSchemeReceiver() {
         return x -> {
-            setControlScheme((ControlScheme) x);
+            controlScheme = (ControlScheme) x;
+            updateControlSchemeText();
         };
     }
 
