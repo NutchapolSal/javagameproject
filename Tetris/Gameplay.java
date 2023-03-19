@@ -1,5 +1,6 @@
 package Tetris;
 
+import java.sql.Time;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Timer;
@@ -16,10 +17,12 @@ public class Gameplay {
                 return;
             }
             lastFrame += FRAME_DELAY;
-            timeMillis = TimeUnit.NANOSECONDS.toMillis(endTime - System.nanoTime());
-            if (timeMillis <= 0) {
-                timeMillis = 0;
+            timeMillis = TimeUnit.NANOSECONDS.toMillis(nowFrame - startTime);
+            goalState = goal.calculate(timeMillis, linesCleared);
+            if (goalState != GoalState.NONE) {
                 this.cancel();
+                renderEnd();
+                return;
             }
 
             pi.tick();
@@ -66,7 +69,9 @@ public class Gameplay {
     private PlayerInput pi = new PlayerInput();
     private Timer timer = new Timer();
     private TimerTask gameLoop;
-    private long endTime;
+    private Goal goal;
+    private Queue<Goal> newGoal = new ArrayBlockingQueue<>(1);
+    private long startTime;
     private long lastFrame;
     private long timeMillis;
     private Playfield playfield;
@@ -87,6 +92,8 @@ public class Gameplay {
     private String spinName;
     private boolean spinMini;
 
+    private boolean zenMode;
+
     private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
     private PlayerRenderData pdr;
     private double playerLockProgress;
@@ -97,6 +104,8 @@ public class Gameplay {
     private int calloutLines;
     private String spinNameGui;
     private boolean allCleared;
+    private GoalData goalData;
+    private GoalState goalState;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -108,6 +117,7 @@ public class Gameplay {
         }
 
         gameLoop = new GameLoopTask();
+        goal = newGoal.peek() != null ? newGoal.poll() : goal;
         lastFrame = System.nanoTime();
         timeMillis = 0;
         playfield = new Playfield();
@@ -126,21 +136,26 @@ public class Gameplay {
         lowestPlayerY = playfield.getPlayerMinoY();
         hardDropLock = false;
 
+        zenMode = goal instanceof NoGoal;
+        level = zenMode ? 2 : level;
+
         pdr = playfield.getPlayerRenderData();
         playerLockProgress = 0;
         windowNudgeX = 0;
         windowNudgeY = 0;
+        goalState = GoalState.NONE;
         renderBlocks = playfield.getRenderBlocks();
         calloutLines = 0;
         spinName = null;
         spinMini = false;
         allCleared = false;
+        goalData = goal.getGoalData();
 
         fillNextQueue();
         playfield.spawnPlayerMino(getNextMino());
         renderFrame();
 
-        endTime = System.nanoTime() + TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(0);
+        startTime = System.nanoTime();
 
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
@@ -273,7 +288,9 @@ public class Gameplay {
         }
 
         calloutLines = lines;
-        level = 1 + (linesCleared / 10);
+        if (!zenMode) {
+            level = 1 + (linesCleared / 10);
+        }
         lockResetCount = 0;
         lockDelayFrames = 0;
         hardDropLock = false;
@@ -291,11 +308,17 @@ public class Gameplay {
     private void processPieceSpawn() {
         boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
         if (!spawnSuccess) {
-            timer.cancel();
+            gameLoop.cancel();
+            goalState = GoalState.LOSE;
         }
         lockHold = false;
         gravityCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
+    }
+
+    private void renderEnd() {
+        timeMillis = goal.getGoalData().isTimesGoal() ? goal.getGoalData().getTimeMillisLength() : timeMillis;
+        renderFrame();
     }
 
     private void renderFrame() {
@@ -310,12 +333,14 @@ public class Gameplay {
                 windowNudgeY,
                 Math.max(0, comboCount - 1),
                 Math.max(0, b2bCount - 1),
+                goalState,
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
                 spinNameGui,
                 spinMini,
-                allCleared));
+                allCleared,
+                goalData));
         if (offerResult) {
             renderBlocks = null;
             nextQueueGuiData = null;
@@ -324,6 +349,7 @@ public class Gameplay {
             windowNudgeX = 0;
             windowNudgeY = 0;
             allCleared = false;
+            goalData = null;
         }
     }
 
@@ -402,7 +428,21 @@ public class Gameplay {
      */
     public Consumer<Object> getGameplayModeReceiver() {
         return x -> {
-            System.out.println((GameplayMode) x);
+            newGoal.poll();
+            switch ((GameplayMode) x) {
+                case Marathon:
+                    newGoal.offer(new LineGoal(150));
+                    break;
+                case Sprint:
+                    newGoal.offer(new LineGoal(40));
+                    break;
+                case Ultra:
+                    newGoal.offer(new TimeGoal(TimeUnit.MINUTES.toMillis(3)));
+                    break;
+                case Zen:
+                    newGoal.offer(new NoGoal());
+                    break;
+            }
         };
     }
 }

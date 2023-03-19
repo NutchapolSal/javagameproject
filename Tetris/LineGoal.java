@@ -9,12 +9,12 @@ public class LineGoal extends Goal {
     }
 
     @Override
-    protected GoalState calculate(int timeMillis, int lines) {
+    protected GoalState calculate(long timeMillis, int lines) {
         if (lines >= goalLines) {
-            goalState = GoalState.WIN;
+            return GoalState.WIN;
         }
 
-        return goalState;
+        return GoalState.NONE;
     }
 
     @Override
