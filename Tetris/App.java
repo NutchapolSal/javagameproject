@@ -31,7 +31,6 @@ public class App {
         ActionListener newGameAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gameplay.startGame();
-                settings.setBlockSkin("java");
             }
         };
 
