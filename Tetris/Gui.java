@@ -354,9 +354,8 @@ public class Gui {
         String[] blockSkinFolders = MinoColor.getBlockSkinFolders();
         for (int i = 0; i < blockSkinMenuItems.length; i++) {
             blockSkinMenuItems[i] = new JRadioButtonMenuItem();
-            Image scaledImage = MinoColor.Red.image(blockSkinFolders[i]).getScaledInstance(20, 20, Image.SCALE_DEFAULT);
             blockSkinMenuItems[i].setText(blockSkinFolders[i]);
-            blockSkinMenuItems[i].setIcon(new ImageIcon(scaledImage));
+            blockSkinMenuItems[i].setIcon(new ImageIcon(MinoColor.Red.image(blockSkinFolders[i])));
             blockSkinMenu.add(blockSkinMenuItems[i]);
             blockSkinGroup.add(blockSkinMenuItems[i]);
             if (i == 0) {

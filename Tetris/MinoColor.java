@@ -52,15 +52,17 @@ public enum MinoColor {
     Image image(String folderName) {
         Image currImage;
         try {
-            currImage = ImageIO.read(new File(filepath(folderName)));
+            currImage = ImageIO.read(new File(filepath(folderName))).getScaledInstance(MinoPanel.BLOCK_WIDTH,
+                    MinoPanel.BLOCK_HEIGHT, Image.SCALE_REPLICATE);
         } catch (IOException e) {
             e.printStackTrace();
-            BufferedImage bi = new BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB);
+            BufferedImage bi = new BufferedImage(MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT,
+                    BufferedImage.TYPE_INT_RGB);
             Graphics g = bi.createGraphics();
             g.setColor(Color.RED);
-            g.fillRect(0, 0, 20, 20);
+            g.fillRect(0, 0, MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT);
             g.setColor(Color.WHITE);
-            g.drawString(filename, 0, 15);
+            g.drawString(filename, 0, MinoPanel.BLOCK_HEIGHT - 5);
             g.dispose();
             currImage = bi;
         }
