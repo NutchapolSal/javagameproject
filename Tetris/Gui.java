@@ -187,7 +187,6 @@ public class Gui {
         contentPane.add(centerPanel);
         contentPane.add(rightFiller);
 
-        debugWithBorder();
     }
 
     private void createCenterPanel() {
