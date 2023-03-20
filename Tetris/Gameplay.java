@@ -4,9 +4,9 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class Gameplay {
     private final class GameLoopTask extends TimerTask {

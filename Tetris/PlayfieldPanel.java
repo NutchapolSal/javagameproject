@@ -1,12 +1,12 @@
 package Tetris;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
-import javax.swing.SwingConstants;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class PlayfieldPanel extends MinoPanel {
     private ObjectDataGrid<MinoColor> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS, PANEL_HEIGHT_BLOCKS);

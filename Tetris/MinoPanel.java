@@ -1,12 +1,11 @@
 package Tetris;
 
+import java.awt.AlphaComposite;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import javax.swing.JPanel;
-import java.awt.AlphaComposite;
-
-import java.awt.Dimension;
 import java.awt.Image;
+import javax.swing.JPanel;
 
 public abstract class MinoPanel extends JPanel {
     protected static final int BLOCK_WIDTH = 20;

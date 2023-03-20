@@ -1,14 +1,13 @@
 package Tetris;
 
-import javax.swing.JLabel;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
+import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.awt.font.TextAttribute;
+import javax.swing.JLabel;
 
 public class CalloutLabel extends JLabel {
     private static final String customFontName = "Tw Cen MT";
