@@ -39,7 +39,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-public class Gui {
+public class SwingTetrisGui implements TetrisGui, SendSettings {
     private JFrame f;
     private JPanel centerPanel;
     private JLabel controlsText;
@@ -252,7 +252,7 @@ public class Gui {
         lastFrameTime = currFrameTime;
     }
 
-    public Gui() {
+    public SwingTetrisGui() {
         setLookAndFeel();
         f = new JFrame("Tetris");
         f.setSize(500, 500);
@@ -645,7 +645,7 @@ public class Gui {
         private Map<GameplayButton, Boolean> freshInput = new EnumMap<>(GameplayButton.class);
         private Map<GameplayButton, Boolean> lockInput = new EnumMap<>(GameplayButton.class);
 
-        private final InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
+        private final InputMap inputMap = SwingTetrisGui.this.f.getRootPane().getInputMap();
 
         private void setupKeyAction(GameplayButton gb, int keyCode) {
             inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), gb.name() + PRESSED);
@@ -655,7 +655,7 @@ public class Gui {
         }
 
         private KeyboardHandler() {
-            ActionMap actionMap = Gui.this.f.getRootPane().getActionMap();
+            ActionMap actionMap = SwingTetrisGui.this.f.getRootPane().getActionMap();
 
             for (var v : GameplayButton.values()) {
                 freshInput.put(v, false);

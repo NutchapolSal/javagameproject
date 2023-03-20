@@ -7,7 +7,7 @@ public class App {
 
     public App() {
         Settings settings = new Settings();
-        Gui gui = new Gui();
+        SwingTetrisGui gui = new SwingTetrisGui();
         gui.bindToSettings(settings);
         Gameplay gameplay = new Gameplay();
         gameplay.setRawInputSource(gui.getKeyboardHandler());
