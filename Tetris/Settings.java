@@ -73,6 +73,13 @@ public class Settings {
         receivers.get(sk).add(receiver);
     }
 
+    public void bindReceivers(ReceiveSettings rs) {
+        for (var entry : rs.getReceivers().entrySet()) {
+            receivers.putIfAbsent(entry.getKey(), new ArrayList<>());
+            receivers.get(entry.getKey()).add(entry.getValue());
+        }
+    }
+
     public void clearReceivers(SettingKey sk) {
         receivers.putIfAbsent(sk, new ArrayList<>());
         receivers.get(sk).clear();

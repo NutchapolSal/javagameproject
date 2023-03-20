@@ -5,13 +5,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public enum MinoColor {
+public enum MinoColor implements ReceiveSettings {
     Blue("blue"),
     Cyan("cyan"),
     Gray("gray"),
@@ -68,13 +70,19 @@ public enum MinoColor {
         return currImage;
     }
 
-    public static Consumer<Object> getBlockSkinReceiver() {
-        return x -> {
+    private static Map<SettingKey, Consumer<Object>> getRealReceivers() {
+        Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
+        receiversMap.put(SettingKey.BlockSkin, x -> {
             folderName = (String) x;
             for (MinoColor mc : values()) {
                 mc.image = null;
             }
-        };
+        });
+        return receiversMap;
+    }
+
+    public Map<SettingKey, Consumer<Object>> getReceivers() {
+        return getRealReceivers();
     }
 
     private static String[] findBlockSkinFolders() {

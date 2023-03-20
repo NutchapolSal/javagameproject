@@ -39,7 +39,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-public class Gui {
+public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings {
     private JFrame f;
     private JPanel centerPanel;
     private JLabel controlsText;
@@ -252,7 +252,7 @@ public class Gui {
         lastFrameTime = currFrameTime;
     }
 
-    public Gui() {
+    public SwingTetrisGui() {
         setLookAndFeel();
         f = new JFrame("Tetris");
         f.setSize(500, 500);
@@ -639,13 +639,13 @@ public class Gui {
         return kbh;
     }
 
-    class KeyboardHandler implements RawInputSource {
+    class KeyboardHandler implements RawInputSource, ReceiveSettings {
         static final String PRESSED = "pressed";
         static final String RELEASED = "released";
         private Map<GameplayButton, Boolean> freshInput = new EnumMap<>(GameplayButton.class);
         private Map<GameplayButton, Boolean> lockInput = new EnumMap<>(GameplayButton.class);
 
-        private final InputMap inputMap = Gui.this.f.getRootPane().getInputMap();
+        private final InputMap inputMap = SwingTetrisGui.this.f.getRootPane().getInputMap();
 
         private void setupKeyAction(GameplayButton gb, int keyCode) {
             inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), gb.name() + PRESSED);
@@ -655,7 +655,7 @@ public class Gui {
         }
 
         private KeyboardHandler() {
-            ActionMap actionMap = Gui.this.f.getRootPane().getActionMap();
+            ActionMap actionMap = SwingTetrisGui.this.f.getRootPane().getActionMap();
 
             for (var v : GameplayButton.values()) {
                 freshInput.put(v, false);
@@ -766,12 +766,9 @@ public class Gui {
             lockInput.putAll(freshInput);
         }
 
-        /**
-         * @return {@code Consumer<Object>} but the {@code Object} is casted to
-         *         {@code ControlScheme}
-         */
-        public Consumer<Object> getControlSchemeReceiver() {
-            return x -> {
+        public Map<SettingKey, Consumer<Object>> getReceivers() {
+            Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
+            receiversMap.put(SettingKey.ControlScheme, x -> {
                 switch ((ControlScheme) x) {
                     case WASD:
                         getKeyboardHandler().setupWASD();
@@ -784,7 +781,8 @@ public class Gui {
                         getKeyboardHandler().setupSlashBracket();
                         break;
                 }
-            };
+            });
+            return receiversMap;
         }
 
     }
@@ -825,26 +823,17 @@ public class Gui {
         controlsText.setText(newControlText);
     }
 
-    /**
-     * @return {@code Consumer<Object>} but the {@code Object} is casted to
-     *         {@code ControlScheme}
-     */
-    public Consumer<Object> getControlSchemeReceiver() {
-        return x -> {
+    public Map<SettingKey, Consumer<Object>> getReceivers() {
+        Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
+        receiversMap.put(SettingKey.ControlScheme, x -> {
             controlScheme = (ControlScheme) x;
             updateControlSchemeText();
-        };
-    }
-
-    /**
-     * @return {@code Consumer<Object>} but the {@code Object} is casted to
-     *         {@code boolean}
-     */
-    public Consumer<Object> getSonicDropReceiver() {
-        return x -> {
+        });
+        receiversMap.put(SettingKey.SonicDrop, x -> {
             controlSchemeSonicDrop = (Boolean) x;
             updateControlSchemeText();
-        };
+        });
+        return receiversMap;
     }
 
     public void bindToSettings(Settings s) {
