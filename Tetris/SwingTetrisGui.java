@@ -39,7 +39,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-public class SwingTetrisGui implements TetrisGui, SendSettings {
+public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings {
     private JFrame f;
     private JPanel centerPanel;
     private JLabel controlsText;
@@ -639,7 +639,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings {
         return kbh;
     }
 
-    class KeyboardHandler implements RawInputSource {
+    class KeyboardHandler implements RawInputSource, ReceiveSettings {
         static final String PRESSED = "pressed";
         static final String RELEASED = "released";
         private Map<GameplayButton, Boolean> freshInput = new EnumMap<>(GameplayButton.class);
@@ -766,12 +766,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings {
             lockInput.putAll(freshInput);
         }
 
-        /**
-         * @return {@code Consumer<Object>} but the {@code Object} is casted to
-         *         {@code ControlScheme}
-         */
-        public Consumer<Object> getControlSchemeReceiver() {
-            return x -> {
+        public Map<SettingKey, Consumer<Object>> getReceivers() {
+            Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
+            receiversMap.put(SettingKey.ControlScheme, x -> {
                 switch ((ControlScheme) x) {
                     case WASD:
                         getKeyboardHandler().setupWASD();
@@ -784,7 +781,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings {
                         getKeyboardHandler().setupSlashBracket();
                         break;
                 }
-            };
+            });
+            return receiversMap;
         }
 
     }
@@ -825,26 +823,17 @@ public class SwingTetrisGui implements TetrisGui, SendSettings {
         controlsText.setText(newControlText);
     }
 
-    /**
-     * @return {@code Consumer<Object>} but the {@code Object} is casted to
-     *         {@code ControlScheme}
-     */
-    public Consumer<Object> getControlSchemeReceiver() {
-        return x -> {
+    public Map<SettingKey, Consumer<Object>> getReceivers() {
+        Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
+        receiversMap.put(SettingKey.ControlScheme, x -> {
             controlScheme = (ControlScheme) x;
             updateControlSchemeText();
-        };
-    }
-
-    /**
-     * @return {@code Consumer<Object>} but the {@code Object} is casted to
-     *         {@code boolean}
-     */
-    public Consumer<Object> getSonicDropReceiver() {
-        return x -> {
+        });
+        receiversMap.put(SettingKey.SonicDrop, x -> {
             controlSchemeSonicDrop = (Boolean) x;
             updateControlSchemeText();
-        };
+        });
+        return receiversMap;
     }
 
     public void bindToSettings(Settings s) {

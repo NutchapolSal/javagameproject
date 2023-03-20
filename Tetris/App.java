@@ -12,14 +12,10 @@ public class App {
         Gameplay gameplay = new Gameplay();
         gameplay.setRawInputSource(gui.getKeyboardHandler());
 
-        settings.bindReceiver(SettingKey.DasChargeFrames, gameplay.getDASReceiver());
-        settings.bindReceiver(SettingKey.AutoRepeatFrames, gameplay.getARRReceiver());
-        settings.bindReceiver(SettingKey.SonicDrop, gameplay.getSonicDropReceiver());
-        settings.bindReceiver(SettingKey.SonicDrop, gui.getSonicDropReceiver());
-        settings.bindReceiver(SettingKey.ControlScheme, gui.getControlSchemeReceiver());
-        settings.bindReceiver(SettingKey.ControlScheme, gui.getKeyboardHandler().getControlSchemeReceiver());
-        settings.bindReceiver(SettingKey.GameplayMode, gameplay.getGameplayModeReceiver());
-        settings.bindReceiver(SettingKey.BlockSkin, MinoColor.getBlockSkinReceiver());
+        settings.bindReceivers(gameplay);
+        settings.bindReceivers(gui);
+        settings.bindReceivers(gui.getKeyboardHandler());
+        settings.bindReceivers(MinoColor.Blue);
         settings.loadSettingsToReceivers();
 
         ActionListener guiUpdater = new ActionListener() {

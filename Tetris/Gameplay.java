@@ -1,6 +1,8 @@
 package Tetris;
 
 import java.util.ArrayDeque;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -8,7 +10,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public class Gameplay {
+public class Gameplay implements ReceiveSettings {
     private final class GameLoopTask extends TimerTask {
         public void run() {
             long nowFrame = System.nanoTime();
@@ -497,42 +499,19 @@ public class Gameplay {
         return level > 19 ? levelTable[18] : levelTable[level - 1];
     }
 
-    /**
-     * @return {@code Consumer<Object>} but the {@code Object} is casted to
-     *         {@code boolean} inside
-     */
-    public Consumer<Object> getSonicDropReceiver() {
-        return x -> {
+    @Override
+    public Map<SettingKey, Consumer<Object>> getReceivers() {
+        Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
+        receiversMap.put(SettingKey.SonicDrop, x -> {
             sonicDrop = (boolean) x;
-        };
-    }
-
-    /**
-     * @return {@code Consumer<Object>} but the {@code Object} is casted to
-     *         {@code int} inside
-     */
-    public Consumer<Object> getDASReceiver() {
-        return x -> {
+        });
+        receiversMap.put(SettingKey.DasChargeFrames, x -> {
             pi.setDAS((int) x);
-        };
-    }
-
-    /**
-     * @return {@code Consumer<Object>} but the {@code Object} is casted to
-     *         {@code int} inside
-     */
-    public Consumer<Object> getARRReceiver() {
-        return x -> {
+        });
+        receiversMap.put(SettingKey.AutoRepeatFrames, x -> {
             pi.setARR((int) x);
-        };
-    }
-
-    /**
-     * @return {@code Consumer<Object>} but the {@code Object} is casted to
-     *         {@code GameplayMode} inside
-     */
-    public Consumer<Object> getGameplayModeReceiver() {
-        return x -> {
+        });
+        receiversMap.put(SettingKey.GameplayMode, x -> {
             newGoal.poll();
             switch ((GameplayMode) x) {
                 case Marathon:
@@ -552,6 +531,7 @@ public class Gameplay {
                     gamemodeName = "Zen";
                     break;
             }
-        };
+        });
+        return receiversMap;
     }
 }
