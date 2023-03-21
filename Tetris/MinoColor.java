@@ -34,6 +34,10 @@ public enum MinoColor implements ReceiveSettings {
         this.filename = filename;
     }
 
+    String filename() {
+        return filename;
+    }
+
     String filepath() {
         return "Tetris/blockImg/" + folderName + "/" + filename + ".png";
     }

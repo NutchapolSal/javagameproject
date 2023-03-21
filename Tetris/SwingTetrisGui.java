@@ -105,6 +105,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private String lastGamemodeName = "";
     private ControlScheme controlScheme;
     private boolean controlSchemeSonicDrop;
+    private BlockSkinManager blockSkinManager = new BlockSkinManager();
 
     private static double roundToZero(double in) {
         if (in < 0) {
