@@ -30,8 +30,8 @@ public class PlayfieldPanel extends MinoPanel {
         this.playerOverrideColor = playerOverrideColor;
     }
 
-    public PlayfieldPanel() {
-        super(10, 20);
+    public PlayfieldPanel(BlockSkinManager blockSkinManager) {
+        super(blockSkinManager, 10, 20);
         setOpaque(false);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         callout = new CalloutLabel();

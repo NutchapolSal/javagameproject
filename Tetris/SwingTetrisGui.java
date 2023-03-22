@@ -455,7 +455,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     private void createHoldPanel() {
         holdPanel = new JPanel();
-        holdMino = new OneMinoPanel();
+        holdMino = new OneMinoPanel(blockSkinManager);
         holdText = new JLabel();
 
         holdText.setText("Hold");
@@ -554,7 +554,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 .addComponent(nextText);
 
         for (int i = 0; i < nextMinos.length; i++) {
-            nextMinos[i] = new OneMinoPanel();
+            nextMinos[i] = new OneMinoPanel(blockSkinManager);
             horizGroup.addComponent(nextMinos[i]);
 
             vertGroup.addPreferredGap(ComponentPlacement.RELATED);
@@ -566,7 +566,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void createPlayfield() {
-        playfield = new PlayfieldPanel();
+        playfield = new PlayfieldPanel(blockSkinManager);
     }
 
     private void createStatsPanel() {
@@ -1013,5 +1013,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             } catch (ClassCastException e) {
             }
         }
+    }
+
+    public BlockSkinManager getBlockSkinManager() {
+        return blockSkinManager;
     }
 }

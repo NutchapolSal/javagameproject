@@ -6,8 +6,8 @@ public class OneMinoPanel extends MinoPanel {
     private Mino mino;
     private MinoColor color;
 
-    public OneMinoPanel() {
-        super(4, 2);
+    public OneMinoPanel(BlockSkinManager blockSkinManager) {
+        super(blockSkinManager, 4, 2);
     }
 
     @Override

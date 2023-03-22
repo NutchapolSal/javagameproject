@@ -15,11 +15,13 @@ public abstract class MinoPanel extends JPanel {
     protected final int PREF_W;
     protected final int PREF_H;
 
+    protected BlockSkinManager blockSkinManager;
     protected int centerOffsetX = 0;
     protected int centerOffsetY = 0;
     protected double opacity = 1;
 
-    protected MinoPanel(int w, int h) {
+    protected MinoPanel(BlockSkinManager blockSkinManager, int w, int h) {
+        this.blockSkinManager = blockSkinManager;
         PANEL_WIDTH_BLOCKS = w;
         PANEL_HEIGHT_BLOCKS = h;
         PREF_W = PANEL_WIDTH_BLOCKS * BLOCK_WIDTH;
@@ -70,7 +72,7 @@ public abstract class MinoPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         int graphicsX = x * BLOCK_WIDTH + centerOffsetX;
         int graphicsY = (PANEL_HEIGHT_BLOCKS - 1 - y) * BLOCK_HEIGHT - centerOffsetY;
-        Image img = BlockSkinManager.get().getImage(mc, up, right, down, left);
+        Image img = blockSkinManager.getImage(mc, up, right, down, left);
 
         if (opacity < 1) {
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));

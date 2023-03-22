@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 public class App {
 
     public App() {
-        BlockSkinManager blockSkinManager = new BlockSkinManager();
         Settings settings = new Settings();
         SwingTetrisGui gui = new SwingTetrisGui();
         gui.bindToSettings(settings);
@@ -17,7 +16,7 @@ public class App {
         settings.bindReceivers(gui);
         settings.bindReceivers(gui.getKeyboardHandler());
         settings.bindReceivers(MinoColor.Blue);
-        settings.bindReceivers(blockSkinManager);
+        settings.bindReceivers(gui.getBlockSkinManager());
         settings.loadSettingsToReceivers();
 
         ActionListener guiUpdater = new ActionListener() {
@@ -35,6 +34,6 @@ public class App {
         gui.setNewGameAction(newGameAction);
         new javax.swing.Timer(8, guiUpdater).start();
 
-        BlockSkinImages.get().getImageFromFolder("Pixel Connected", MinoColor.Blue);
+        // BlockSkinImages.get().getImageFromFolder("Pixel Connected", MinoColor.Blue);
     }
 }
