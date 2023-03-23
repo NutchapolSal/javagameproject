@@ -1,6 +1,7 @@
 package Tetris;
 
-import java.awt.Image;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,10 +12,22 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics;
 
 public class BlockSkinManager implements ReceiveSettings {
+    enum SkinConnection {
+        None, Straight, Diagonal
+    }
+
+    class ReadResult {
+        public final Image image;
+        public final SkinConnection connnection;
+
+        public ReadResult(Image image, SkinConnection connnection) {
+            this.image = image;
+            this.connnection = connnection;
+        }
+    }
+
     private static String[] blockSkinFolders = findBlockSkinFolders();
     private String selectedFolder = "Pixel Connected";
     private Map<MinoColor, Image[]> images = new EnumMap<>(MinoColor.class);
@@ -72,36 +85,18 @@ public class BlockSkinManager implements ReceiveSettings {
 
     public Image[] getImageFromFolder(String folderName, MinoColor mc) {
         Image loadedImage;
-        boolean connected = true;
+        SkinConnection connected = SkinConnection.None;
         try {
-            loadedImage = ImageIO.read(new File(filepath(mc, selectedFolder)));
-            boolean connectedMetadata = new File(folderpath(folderName) + "/isConnected.txt").isFile();
-            if (connectedMetadata && loadedImage.getWidth(null) % 4 != 0) {
-                connected = false;
-                System.err.printf("%s block skin's %s width is not divisible by 4!%n", folderName, mc);
-            }
-            if (connectedMetadata && loadedImage.getHeight(null) % 4 != 0) {
-                connected = false;
-                System.err.printf("%s block skin's %s height is not divisible by 4!%n", folderName, mc);
-            }
-            connected = connected && connectedMetadata;
-
+            ReadResult result = readFromFolder(folderName, mc);
+            loadedImage = result.image;
+            connected = result.connnection;
         } catch (IOException e) {
-            BufferedImage bi = new BufferedImage(MinoPanel.BLOCK_WIDTH,
-                    MinoPanel.BLOCK_HEIGHT,
-                    BufferedImage.TYPE_INT_RGB);
-            Graphics g = bi.createGraphics();
-            g.setColor(Color.RED);
-            g.fillRect(0, 0, MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT);
-            g.setColor(Color.WHITE);
-            g.drawString(mc.filename(), 0, MinoPanel.BLOCK_HEIGHT - 5);
-            g.dispose();
-            loadedImage = bi;
-            connected = false;
+            loadedImage = generateErrorImage(mc);
+            connected = SkinConnection.None;
         }
 
-        Image[] currImages = new Image[16];
-        if (!connected) {
+        Image[] currImages = new Image[55];
+        if (connected == SkinConnection.None) {
             Image scaledImage = loadedImage.getScaledInstance(MinoPanel.BLOCK_WIDTH,
                     MinoPanel.BLOCK_HEIGHT, Image.SCALE_REPLICATE);
             for (int i = 0; i < currImages.length; i++) {
@@ -110,10 +105,61 @@ public class BlockSkinManager implements ReceiveSettings {
             return currImages;
         }
 
-        Image scaledImage = loadedImage.getScaledInstance(MinoPanel.BLOCK_WIDTH * 4,
-                MinoPanel.BLOCK_HEIGHT * 4, Image.SCALE_REPLICATE);
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 4; x++) {
+        return cutImageGrid(loadedImage, 4, 4);
+    }
+
+    private ReadResult readFromFolder(String folder, MinoColor mc) throws IOException {
+        Image loadedImage = ImageIO.read(new File(filepath(mc, folder)));
+        SkinConnection connection = SkinConnection.None;
+        boolean file2Found = new File(folderpath(folder) + "/isConnectedDiagonal.txt").isFile();
+        boolean fileFound = new File(folderpath(folder) + "/isConnected.txt").isFile();
+        boolean throwError = false;
+        if (file2Found) {
+            connection = SkinConnection.Diagonal;
+            if (loadedImage.getWidth(null) % 5 != 0) {
+                System.err.printf("%s block skin's %s width is not divisible by 5%n", folder, mc);
+                throwError = true;
+            }
+            if (loadedImage.getHeight(null) % 11 != 0) {
+                System.err.printf("%s block skin's %s height is not divisible by 11%n", folder, mc);
+                throwError = true;
+            }
+        } else if (fileFound) {
+            connection = SkinConnection.Straight;
+            if (loadedImage.getWidth(null) % 4 != 0) {
+                System.err.printf("%s block skin's %s width is not divisible by 4%n", folder, mc);
+                throwError = true;
+            }
+            if (loadedImage.getHeight(null) % 4 != 0) {
+                System.err.printf("%s block skin's %s height is not divisible by 4%n", folder, mc);
+                throwError = true;
+            }
+        }
+        if (throwError) {
+            throw new IOException();
+        }
+        return new ReadResult(loadedImage, connection);
+    }
+
+    private Image generateErrorImage(MinoColor mc) {
+        BufferedImage bi = new BufferedImage(MinoPanel.BLOCK_WIDTH,
+                MinoPanel.BLOCK_HEIGHT,
+                BufferedImage.TYPE_INT_RGB);
+        Graphics g = bi.createGraphics();
+        g.setColor(Color.RED);
+        g.fillRect(0, 0, MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT);
+        g.setColor(Color.WHITE);
+        g.drawString(mc.filename(), 0, MinoPanel.BLOCK_HEIGHT - 5);
+        g.dispose();
+        return bi;
+    }
+
+    private Image[] cutImageGrid(Image loadedImage, int width, int height) {
+        Image[] currImages = new Image[width * height];
+        Image scaledImage = loadedImage.getScaledInstance(MinoPanel.BLOCK_WIDTH * width,
+                MinoPanel.BLOCK_HEIGHT * height, Image.SCALE_REPLICATE);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 BufferedImage bi = new BufferedImage(MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT,
                         BufferedImage.TYPE_INT_RGB);
                 Graphics g = bi.getGraphics();
@@ -124,10 +170,9 @@ public class BlockSkinManager implements ReceiveSettings {
                         (x + 1) * MinoPanel.BLOCK_WIDTH, (y + 1) * MinoPanel.BLOCK_HEIGHT,
                         null);
                 g.dispose();
-                currImages[x + (4 * y)] = bi;
+                currImages[x + (height * y)] = bi;
             }
         }
-
         return currImages;
     }
 
