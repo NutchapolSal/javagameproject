@@ -89,6 +89,11 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private JCheckBoxMenuItem sonicDropMenuItem;
     private JMenu blockSkinMenu;
     private JRadioButtonMenuItem[] blockSkinMenuItems;
+    private JMenu blockConnectionMenu;
+    private JRadioButtonMenuItem noneConnectionMenuItem;
+    private JRadioButtonMenuItem minoConnectionMenuItem;
+    private JRadioButtonMenuItem colorConnectionMenuItem;
+    private JRadioButtonMenuItem allConnectionMenuItem;
     private ActionListener newGameAction;
 
     private double windowDeltaX;
@@ -320,6 +325,11 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         sonicDropMenuItem = new JCheckBoxMenuItem();
         blockSkinMenu = new JMenu();
         blockSkinMenuItems = new JRadioButtonMenuItem[BlockSkinManager.getBlockSkinFolders().length];
+        blockConnectionMenu = new JMenu();
+        noneConnectionMenuItem = new JRadioButtonMenuItem();
+        minoConnectionMenuItem = new JRadioButtonMenuItem();
+        colorConnectionMenuItem = new JRadioButtonMenuItem();
+        allConnectionMenuItem = new JRadioButtonMenuItem();
 
         wasdSchemeMenuItem.setSelected(true);
         wasdSchemeMenuItem.setText("WASD");
@@ -334,6 +344,11 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         fastHandlingMenuItem.setText("Fast");
 
         sonicDropMenuItem.setText("Sonic Drop");
+
+        noneConnectionMenuItem.setText("None");
+        minoConnectionMenuItem.setText("Mino");
+        colorConnectionMenuItem.setText("Color");
+        allConnectionMenuItem.setText("All");
 
         controlSchemeMenu.setText("Control Scheme");
         controlSchemeMenu.add(wasdSchemeMenuItem);
@@ -366,12 +381,24 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             }
         }
 
+        blockConnectionMenu.setText("Block Connection");
+        blockConnectionMenu.add(noneConnectionMenuItem);
+        blockConnectionMenu.add(minoConnectionMenuItem);
+        blockConnectionMenu.add(colorConnectionMenuItem);
+        blockConnectionMenu.add(allConnectionMenuItem);
+        ButtonGroup blockConnectionGroup = new ButtonGroup();
+        blockConnectionGroup.add(noneConnectionMenuItem);
+        blockConnectionGroup.add(minoConnectionMenuItem);
+        blockConnectionGroup.add(colorConnectionMenuItem);
+        blockConnectionGroup.add(allConnectionMenuItem);
+
         optionsMenu.setText("Options");
         optionsMenu.add(controlSchemeMenu);
         optionsMenu.add(handlingMenu);
         optionsMenu.add(sonicDropMenuItem);
         optionsMenu.addSeparator();
         optionsMenu.add(blockSkinMenu);
+        optionsMenu.add(blockConnectionMenu);
 
     }
 
@@ -852,6 +879,38 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         });
 
         bindBlockSkinMenuItems(s);
+        noneConnectionMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setBlockConnectionMode(BlockConnectionMode.None);
+            }
+        });
+        minoConnectionMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setBlockConnectionMode(BlockConnectionMode.Mino);
+            }
+        });
+        colorConnectionMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setBlockConnectionMode(BlockConnectionMode.Color);
+            }
+        });
+        allConnectionMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setBlockConnectionMode(BlockConnectionMode.All);
+            }
+        });
     }
 
     private void bindBlockSkinMenuItems(Settings s) {
@@ -911,6 +970,22 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 v.setSelected(true);
                 break;
             }
+        }
+        switch (s.getBlockConnectionMode()) {
+            case None:
+                noneConnectionMenuItem.setSelected(true);
+                break;
+            case Mino:
+                minoConnectionMenuItem.setSelected(true);
+                break;
+            case Color:
+                colorConnectionMenuItem.setSelected(true);
+                break;
+            case All:
+                allConnectionMenuItem.setSelected(true);
+                break;
+            default:
+                break;
         }
     }
 
