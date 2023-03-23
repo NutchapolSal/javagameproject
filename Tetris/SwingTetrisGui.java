@@ -319,7 +319,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         fastHandlingMenuItem = new JRadioButtonMenuItem();
         sonicDropMenuItem = new JCheckBoxMenuItem();
         blockSkinMenu = new JMenu();
-        blockSkinMenuItems = new JRadioButtonMenuItem[MinoColor.getBlockSkinFolders().length];
+        blockSkinMenuItems = new JRadioButtonMenuItem[BlockSkinManager.getBlockSkinFolders().length];
 
         wasdSchemeMenuItem.setSelected(true);
         wasdSchemeMenuItem.setText("WASD");
@@ -353,11 +353,12 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
         blockSkinMenu.setText("Block Skin");
         ButtonGroup blockSkinGroup = new ButtonGroup();
-        String[] blockSkinFolders = MinoColor.getBlockSkinFolders();
+        String[] blockSkinFolders = BlockSkinManager.getBlockSkinFolders();
         for (int i = 0; i < blockSkinMenuItems.length; i++) {
             blockSkinMenuItems[i] = new JRadioButtonMenuItem();
             blockSkinMenuItems[i].setText(blockSkinFolders[i]);
-            blockSkinMenuItems[i].setIcon(new ImageIcon(MinoColor.Red.image(blockSkinFolders[i])));
+            blockSkinMenuItems[i].setIcon(
+                    new ImageIcon(blockSkinManager.getImagesFromFolder(blockSkinFolders[i], MinoColor.Red).images[0]));
             blockSkinMenu.add(blockSkinMenuItems[i]);
             blockSkinGroup.add(blockSkinMenuItems[i]);
             if (i == 0) {
@@ -855,7 +856,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     private void bindBlockSkinMenuItems(Settings s) {
         for (int i = 0; i < blockSkinMenuItems.length; i++) {
-            final String yourFolder = MinoColor.getBlockSkinFolders()[i];
+            final String yourFolder = BlockSkinManager.getBlockSkinFolders()[i];
             blockSkinMenuItems[i].addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent evt) {
                     if (evt.getStateChange() == ItemEvent.DESELECTED) {

@@ -15,7 +15,6 @@ public class App {
         settings.bindReceivers(gameplay);
         settings.bindReceivers(gui);
         settings.bindReceivers(gui.getKeyboardHandler());
-        settings.bindReceivers(MinoColor.Blue);
         settings.bindReceivers(gui.getBlockSkinManager());
         settings.loadSettingsToReceivers();
 
