@@ -44,6 +44,11 @@ public class Settings {
         return prefs.get(SettingKey.BlockSkin.name(), "Default");
     }
 
+    public BlockConnectionMode getBlockConnectionMode() {
+        return BlockConnectionMode
+                .valueOf(prefs.get(SettingKey.BlockConnectionMode.name(), BlockConnectionMode.None.name()));
+    }
+
     private void saveDasChargeFrames(int in) {
         prefs.putInt(SettingKey.DasChargeFrames.name(), in);
     }
@@ -66,6 +71,10 @@ public class Settings {
 
     private void saveBlockSkin(String in) {
         prefs.put(SettingKey.BlockSkin.name(), in);
+    }
+
+    private void saveBlockConnectionMode(BlockConnectionMode in) {
+        prefs.put(SettingKey.BlockConnectionMode.name(), in.name());
     }
 
     public void bindReceiver(SettingKey sk, Consumer<Object> receiver) {
@@ -157,5 +166,10 @@ public class Settings {
     public void setBlockSkin(String blockSkin) {
         saveBlockSkin(blockSkin);
         iterateOverReceivers(SettingKey.BlockSkin, getBlockSkin());
+    }
+
+    public void setBlockConnectionMode(BlockConnectionMode blockConnectionMode) {
+        saveBlockConnectionMode(blockConnectionMode);
+        iterateOverReceivers(SettingKey.BlockConnectionMode, getBlockConnectionMode());
     }
 }

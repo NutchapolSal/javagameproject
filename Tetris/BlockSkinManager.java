@@ -1,5 +1,6 @@
 package Tetris;
 
+import Tetris.BlockWithConnection.Dir;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -15,22 +17,134 @@ import javax.imageio.ImageIO;
 
 public class BlockSkinManager implements ReceiveSettings {
     enum SkinConnection {
-        None, Straight, Diagonal
+        None(1, 1, new Dir[0]),
+        Straight(4, 4, Dir.straights()),
+        Diagonal(5, 11, Dir.values());
+
+        private final int width;
+        private final int height;
+        private final int bitMask;
+
+        SkinConnection(int width, int height, Dir[] bitsForMask) {
+            this.width = width;
+            this.height = height;
+
+            int bitMask = 0;
+            for (Dir dir : bitsForMask) {
+                bitMask += dir.bitValue();
+            }
+            this.bitMask = bitMask;
+        }
+
+        int width() {
+            return width;
+        }
+
+        int height() {
+            return height;
+        }
+
+        int bitMask() {
+            return bitMask;
+        }
     }
 
-    class ReadResult {
+    class FileReadResult {
         public final Image image;
         public final SkinConnection connnection;
 
-        public ReadResult(Image image, SkinConnection connnection) {
+        public FileReadResult(Image image, SkinConnection connnection) {
             this.image = image;
             this.connnection = connnection;
         }
     }
 
+    class ReadResult {
+        public final Image[] images;
+        public final SkinConnection connection;
+
+        public ReadResult(Image[] images, SkinConnection connection) {
+            this.images = images;
+            this.connection = connection;
+        }
+    }
+
     private static String[] blockSkinFolders = findBlockSkinFolders();
-    private String selectedFolder = "Pixel Connected";
-    private Map<MinoColor, Image[]> images = new EnumMap<>(MinoColor.class);
+    private String selectedFolder;
+    private BlockConnectionMode blockConnectionMode = BlockConnectionMode.None;
+    private Map<MinoColor, ReadResult> readResults = new EnumMap<>(MinoColor.class);
+    private static Map<Integer, XY> bwcToGridLocation = makeBwcToGridMap();
+
+    private static Map<Integer, XY> makeBwcToGridMap() {
+        HashMap<Integer, XY> map = new HashMap<>();
+        map.put(getBWCValue(false, false, false, false, false, false, false, false), new XY(0, 0));
+        map.put(getBWCValue(false, false, true, false, false, false, false, false), new XY(1, 0));
+        map.put(getBWCValue(false, false, true, false, false, false, true, false), new XY(2, 0));
+        map.put(getBWCValue(false, false, false, false, false, false, true, false), new XY(3, 0));
+        map.put(getBWCValue(false, false, false, false, true, false, false, false), new XY(0, 1));
+        map.put(getBWCValue(true, false, false, false, true, false, false, false), new XY(0, 2));
+        map.put(getBWCValue(true, false, false, false, false, false, false, false), new XY(0, 3));
+        map.put(getBWCValue(false, false, true, false, true, false, false, false), new XY(1, 1));
+        map.put(getBWCValue(false, false, true, false, true, false, true, false), new XY(2, 1));
+        map.put(getBWCValue(false, false, false, false, true, false, true, false), new XY(3, 1));
+        map.put(getBWCValue(true, false, true, false, true, false, false, false), new XY(1, 2));
+        map.put(getBWCValue(true, false, true, false, true, false, true, false), new XY(2, 2));
+        map.put(getBWCValue(true, false, false, false, true, false, true, false), new XY(3, 2));
+        map.put(getBWCValue(true, false, true, false, false, false, false, false), new XY(1, 3));
+        map.put(getBWCValue(true, false, true, false, false, false, true, false), new XY(2, 3));
+        map.put(getBWCValue(true, false, false, false, false, false, true, false), new XY(3, 3));
+        map.put(getBWCValue(false, false, true, true, true, false, false, false), new XY(0, 4));
+        map.put(getBWCValue(false, false, true, true, true, false, true, false), new XY(1, 4));
+        map.put(getBWCValue(false, false, true, true, true, true, true, false), new XY(2, 4));
+        map.put(getBWCValue(false, false, true, false, true, true, true, false), new XY(3, 4));
+        map.put(getBWCValue(false, false, false, false, true, true, true, false), new XY(4, 4));
+        map.put(getBWCValue(true, false, true, true, true, false, false, false), new XY(0, 5));
+        map.put(getBWCValue(true, false, true, true, true, false, true, false), new XY(1, 5));
+        map.put(getBWCValue(true, false, true, true, true, true, true, false), new XY(2, 5));
+        map.put(getBWCValue(true, false, true, false, true, true, true, false), new XY(3, 5));
+        map.put(getBWCValue(true, false, false, false, true, true, true, false), new XY(4, 5));
+        map.put(getBWCValue(true, true, true, true, true, false, false, false), new XY(0, 6));
+        map.put(getBWCValue(true, true, true, true, true, false, true, false), new XY(1, 6));
+        map.put(getBWCValue(true, true, true, true, true, true, true, true), new XY(2, 6));
+        map.put(getBWCValue(true, false, true, false, true, true, true, true), new XY(3, 6));
+        map.put(getBWCValue(true, false, false, false, true, true, true, true), new XY(4, 6));
+        map.put(getBWCValue(true, true, true, false, true, false, false, false), new XY(0, 7));
+        map.put(getBWCValue(true, true, true, false, true, false, true, false), new XY(1, 7));
+        map.put(getBWCValue(true, true, true, false, true, false, true, true), new XY(2, 7));
+        map.put(getBWCValue(true, false, true, false, true, false, true, true), new XY(3, 7));
+        map.put(getBWCValue(true, false, false, false, true, false, true, true), new XY(4, 7));
+        map.put(getBWCValue(true, true, true, false, false, false, false, false), new XY(0, 8));
+        map.put(getBWCValue(true, true, true, false, false, false, true, false), new XY(1, 8));
+        map.put(getBWCValue(true, true, true, false, false, false, true, true), new XY(2, 8));
+        map.put(getBWCValue(true, false, true, false, false, false, true, true), new XY(3, 8));
+        map.put(getBWCValue(true, false, false, false, false, false, true, true), new XY(4, 8));
+        map.put(getBWCValue(true, true, true, false, true, true, true, true), new XY(0, 9));
+        map.put(getBWCValue(true, true, true, true, true, false, true, true), new XY(1, 9));
+        map.put(getBWCValue(true, false, true, true, true, false, true, true), new XY(2, 9));
+        map.put(getBWCValue(true, false, true, true, true, true, true, true), new XY(0, 10));
+        map.put(getBWCValue(true, true, true, true, true, true, true, false), new XY(1, 10));
+        map.put(getBWCValue(true, true, true, false, true, true, true, false), new XY(2, 10));
+        return map;
+    }
+
+    private static int getBWCValue(boolean up, boolean upRight, boolean right, boolean downRight,
+            boolean down, boolean downLeft, boolean left, boolean upLeft) {
+        int out = 0;
+        out += up ? Dir.Up.bitValue() : 0;
+        out += upRight ? Dir.UpRight.bitValue() : 0;
+        out += right ? Dir.Right.bitValue() : 0;
+        out += downRight ? Dir.DownRight.bitValue() : 0;
+        out += down ? Dir.Down.bitValue() : 0;
+        out += downLeft ? Dir.DownLeft.bitValue() : 0;
+        out += left ? Dir.Left.bitValue() : 0;
+        out += upLeft ? Dir.UpLeft.bitValue() : 0;
+        return out;
+    }
+
+    private void setSkinFolder(String folderName) {
+        selectedFolder = folderName;
+        readResults.clear();
+    }
 
     private String filepath(MinoColor mc) {
         return filepath(mc, selectedFolder);
@@ -46,6 +160,7 @@ public class BlockSkinManager implements ReceiveSettings {
 
     private static String[] findBlockSkinFolders() {
         return Stream.of(new File("Tetris/blockImg").listFiles(v -> v.isDirectory()))
+                .filter(v -> !(new File(v.getPath() + "/isHidden.txt").isFile()))
                 .map(v -> v.getName())
                 .toArray(String[]::new);
     }
@@ -55,39 +170,44 @@ public class BlockSkinManager implements ReceiveSettings {
     }
 
     public BlockSkinManager() {
+        setSkinFolder("Default");
     }
 
-    private static int getIndexFromConnetions(boolean up, boolean right, boolean down, boolean left) {
-        int x = right ? 2 : 1;
-        int y = down ? 2 : 1;
-        if (left) {
-            x = -x + 5;
-        }
-        if (up) {
-            y = -y + 5;
-        }
-        return (x - 1) + ((y - 1) * 4);
+    private int getIndexFromBWCValue(SkinConnection sc, int value) {
+        XY gridLoc = bwcToGridLocation.get(value & sc.bitMask());
+        return gridLoc.x + (gridLoc.y) * sc.width();
     }
 
     public Image getImage(MinoColor mc) {
-        return getImage(mc, false, false, false, false);
+        return getImage(mc, 0);
     }
 
-    public Image getImage(MinoColor mc, boolean up, boolean right, boolean down, boolean left) {
-        if (images.containsKey(mc)) {
-            return images.get(mc)[getIndexFromConnetions(up, right, down, left)];
+    private Image getImage(MinoColor mc, int bwcValue) {
+        if (!readResults.containsKey(mc)) {
+            readResults.put(mc, getImagesFromFolder(selectedFolder, mc));
         }
 
-        images.put(mc, getImageFromFolder(selectedFolder, mc));
-
-        return images.get(mc)[getIndexFromConnetions(up, right, down, left)];
+        return readResults.get(mc).images[getIndexFromBWCValue(readResults.get(mc).connection, bwcValue)];
     }
 
-    public Image[] getImageFromFolder(String folderName, MinoColor mc) {
+    public Image getImage(BlockWithConnection bwc) {
+        switch (blockConnectionMode) {
+            case All:
+                return getImage(bwc.getMinoColor(), bwc.getConnectionAll());
+            case Color:
+                return getImage(bwc.getMinoColor(), bwc.getConnectionColor());
+            case Mino:
+                return getImage(bwc.getMinoColor(), bwc.getConnectionMino());
+            default:
+                return getImage(bwc.getMinoColor(), 0);
+        }
+    }
+
+    public ReadResult getImagesFromFolder(String folderName, MinoColor mc) {
         Image loadedImage;
         SkinConnection connected = SkinConnection.None;
         try {
-            ReadResult result = readFromFolder(folderName, mc);
+            FileReadResult result = readFromFolder(folderName, mc);
             loadedImage = result.image;
             connected = result.connnection;
         } catch (IOException e) {
@@ -95,50 +215,37 @@ public class BlockSkinManager implements ReceiveSettings {
             connected = SkinConnection.None;
         }
 
-        Image[] currImages = new Image[55];
-        if (connected == SkinConnection.None) {
-            Image scaledImage = loadedImage.getScaledInstance(MinoPanel.BLOCK_WIDTH,
-                    MinoPanel.BLOCK_HEIGHT, Image.SCALE_REPLICATE);
-            for (int i = 0; i < currImages.length; i++) {
-                currImages[i] = scaledImage;
-            }
-            return currImages;
-        }
-
-        return cutImageGrid(loadedImage, 4, 4);
+        return new ReadResult(cutImageGrid(loadedImage, connected.width(), connected.height()), connected);
     }
 
-    private ReadResult readFromFolder(String folder, MinoColor mc) throws IOException {
+    private FileReadResult readFromFolder(String folder, MinoColor mc) throws IOException {
         Image loadedImage = ImageIO.read(new File(filepath(mc, folder)));
-        SkinConnection connection = SkinConnection.None;
-        boolean file2Found = new File(folderpath(folder) + "/isConnectedDiagonal.txt").isFile();
-        boolean fileFound = new File(folderpath(folder) + "/isConnected.txt").isFile();
+        SkinConnection connection = getSkinConnectionMetadata(folder);
         boolean throwError = false;
-        if (file2Found) {
-            connection = SkinConnection.Diagonal;
-            if (loadedImage.getWidth(null) % 5 != 0) {
-                System.err.printf("%s block skin's %s width is not divisible by 5%n", folder, mc);
-                throwError = true;
-            }
-            if (loadedImage.getHeight(null) % 11 != 0) {
-                System.err.printf("%s block skin's %s height is not divisible by 11%n", folder, mc);
-                throwError = true;
-            }
-        } else if (fileFound) {
-            connection = SkinConnection.Straight;
-            if (loadedImage.getWidth(null) % 4 != 0) {
-                System.err.printf("%s block skin's %s width is not divisible by 4%n", folder, mc);
-                throwError = true;
-            }
-            if (loadedImage.getHeight(null) % 4 != 0) {
-                System.err.printf("%s block skin's %s height is not divisible by 4%n", folder, mc);
-                throwError = true;
-            }
+
+        if (loadedImage.getWidth(null) % connection.width() != 0) {
+            System.err.printf("%s block skin's %s width is not divisible by %s%n", folder, mc, connection.width());
+            throwError = true;
         }
+        if (loadedImage.getHeight(null) % connection.height() != 0) {
+            System.err.printf("%s block skin's %s height is not divisible by %s%n", folder, mc, connection.height());
+            throwError = true;
+        }
+
         if (throwError) {
             throw new IOException();
         }
-        return new ReadResult(loadedImage, connection);
+        return new FileReadResult(loadedImage, connection);
+    }
+
+    private SkinConnection getSkinConnectionMetadata(String folder) {
+        if (new File(folderpath(folder) + "/isConnectedDiagonal.txt").isFile()) {
+            return SkinConnection.Diagonal;
+        }
+        if (new File(folderpath(folder) + "/isConnected.txt").isFile()) {
+            return SkinConnection.Straight;
+        }
+        return SkinConnection.None;
     }
 
     private Image generateErrorImage(MinoColor mc) {
@@ -170,7 +277,7 @@ public class BlockSkinManager implements ReceiveSettings {
                         (x + 1) * MinoPanel.BLOCK_WIDTH, (y + 1) * MinoPanel.BLOCK_HEIGHT,
                         null);
                 g.dispose();
-                currImages[x + (height * y)] = bi;
+                currImages[x + (width * y)] = bi;
             }
         }
         return currImages;
@@ -180,8 +287,10 @@ public class BlockSkinManager implements ReceiveSettings {
     public Map<SettingKey, Consumer<Object>> getReceivers() {
         Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
         receiversMap.put(SettingKey.BlockSkin, x -> {
-            selectedFolder = (String) x;
-            images.clear();
+            setSkinFolder((String) x);
+        });
+        receiversMap.put(SettingKey.BlockConnectionMode, x -> {
+            blockConnectionMode = (BlockConnectionMode) x;
         });
         return receiversMap;
     }

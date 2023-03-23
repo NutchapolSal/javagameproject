@@ -61,18 +61,20 @@ public abstract class MinoPanel extends JPanel {
     }
 
     protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc) {
-        paintMinoBlock(g, x, y, mc, false, false, false, false);
+        paintMinoBlock(g, x, y, blockSkinManager.getImage(mc));
     }
 
-    protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc,
-            boolean up, boolean right, boolean down, boolean left) {
+    protected void paintMinoBlock(Graphics g, int x, int y, BlockWithConnection bwc) {
+        paintMinoBlock(g, x, y, blockSkinManager.getImage(bwc));
+    }
+
+    protected void paintMinoBlock(Graphics g, int x, int y, Image img) {
         if (opacity <= 0) {
             return;
         }
         Graphics2D g2d = (Graphics2D) g;
         int graphicsX = x * BLOCK_WIDTH + centerOffsetX;
         int graphicsY = (PANEL_HEIGHT_BLOCKS - 1 - y) * BLOCK_HEIGHT - centerOffsetY;
-        Image img = blockSkinManager.getImage(mc, up, right, down, left);
 
         if (opacity < 1) {
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));

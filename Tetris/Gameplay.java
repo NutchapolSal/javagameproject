@@ -128,7 +128,7 @@ public class Gameplay implements ReceiveSettings {
     private double playerLockProgress;
     private double windowNudgeX;
     private double windowNudgeY;
-    private ObjectDataGrid<MinoColor> renderBlocks;
+    private ObjectDataGrid<BlockWithConnection> renderBlocks;
     private Mino[] nextQueueGuiData = new Mino[6];
     private int calloutLines;
     private String spinNameGui;

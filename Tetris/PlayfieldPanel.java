@@ -9,13 +9,14 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 
 public class PlayfieldPanel extends MinoPanel {
-    private ObjectDataGrid<MinoColor> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS, PANEL_HEIGHT_BLOCKS);
+    private ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS,
+            PANEL_HEIGHT_BLOCKS);
     private PlayerRenderData pdr = null;
     private double playerLockProgress;
     private CalloutLabel callout;
     private MinoColor playerOverrideColor;
 
-    public void setRenderBlocks(ObjectDataGrid<MinoColor> renderBlocks) {
+    public void setRenderBlocks(ObjectDataGrid<BlockWithConnection> renderBlocks) {
         this.renderBlocks = renderBlocks;
     }
 
@@ -57,15 +58,17 @@ public class PlayfieldPanel extends MinoPanel {
     protected void paintComponent(Graphics g) {
         for (int y = 0; y < PANEL_HEIGHT_BLOCKS; y++) {
             for (int x = 0; x < PANEL_WIDTH_BLOCKS; x++) {
-                MinoColor currColor = renderBlocks.getAtPos(x, y);
-                if (currColor == null) {
+                BlockWithConnection block = renderBlocks.getAtPos(x, y);
+                if (block == null) {
                     continue;
                 }
-                boolean up = y < PANEL_HEIGHT_BLOCKS - 1 && renderBlocks.getAtPos(x, y + 1) != null;
-                boolean right = x < PANEL_WIDTH_BLOCKS - 1 && renderBlocks.getAtPos(x + 1, y) != null;
-                boolean down = 0 < y && renderBlocks.getAtPos(x, y - 1) != null;
-                boolean left = 0 < x && renderBlocks.getAtPos(x - 1, y) != null;
-                paintMinoBlock(g, x, y, currColor, up, right, down, left);
+                // boolean up = y < PANEL_HEIGHT_BLOCKS - 1 && renderBlocks.getAtPos(x, y + 1)
+                // != null;
+                // boolean right = x < PANEL_WIDTH_BLOCKS - 1 && renderBlocks.getAtPos(x + 1, y)
+                // != null;
+                // boolean down = 0 < y && renderBlocks.getAtPos(x, y - 1) != null;
+                // boolean left = 0 < x && renderBlocks.getAtPos(x - 1, y) != null;
+                paintMinoBlock(g, x, y, block);
                 // System.out.printf("%s%s%s%s%n", up ? "u" : " ",
                 // right ? "r" : " ",
                 // down ? "d" : " ",
@@ -79,10 +82,10 @@ public class PlayfieldPanel extends MinoPanel {
 
         for (int y = 0; y < pdr.blocks.getHeight(); y++) {
             for (int x = 0; x < pdr.blocks.getWidth(); x++) {
-                MinoColor currColor = pdr.blocks.getAtPos(x, y);
-                if (currColor == null) {
+                if (pdr.blocks.getAtPos(x, y) == null) {
                     continue;
                 }
+                MinoColor currColor = pdr.blocks.getAtPos(x, y).getMinoColor();
                 if (playerOverrideColor != null) {
                     currColor = playerOverrideColor;
                 }
