@@ -71,7 +71,7 @@ public class BlockSkinManager implements ReceiveSettings {
 
     private static String[] blockSkinFolders = findBlockSkinFolders();
     private String selectedFolder;
-    private BlockConnectionMode blockConnectionMode = BlockConnectionMode.None;
+    private BlockConnectionMode blockConnectionMode = BlockConnectionMode.All;
     private Map<MinoColor, ReadResult> readResults = new EnumMap<>(MinoColor.class);
     private static Map<Integer, XY> bwcToGridLocation = makeBwcToGridMap();
 
@@ -200,6 +200,19 @@ public class BlockSkinManager implements ReceiveSettings {
                 return getImage(bwc.getMinoColor(), bwc.getConnectionMino());
             default:
                 return getImage(bwc.getMinoColor(), 0);
+        }
+    }
+
+    public Image getImage(BlockWithConnection bwc, MinoColor overrideColor) {
+        switch (blockConnectionMode) {
+            case All:
+                return getImage(overrideColor, bwc.getConnectionAll());
+            case Color:
+                return getImage(overrideColor, bwc.getConnectionColor());
+            case Mino:
+                return getImage(overrideColor, bwc.getConnectionMino());
+            default:
+                return getImage(overrideColor, 0);
         }
     }
 

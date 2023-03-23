@@ -278,19 +278,6 @@ public class Playfield {
                     continue;
                 }
                 BlockWithConnection newBlock = new BlockWithConnection(mc);
-                // for (int j = -1; j < 2; j++) {
-                // for (int i = -1; i < 2; i++) {
-                // if (j == 0 && i == 0) {
-                // continue;
-                // }
-                // if (testX + i < w && 0 <= testX + i &&
-                // testY + j < h && 0 <= testY + j &&
-                // shape.getAtPos(testX + i, testY + j)) {
-
-                // }
-
-                // }
-                // }
                 for (var dir : BlockWithConnection.Dir.values()) {
                     if (testX + dir.x() < w && 0 <= testX + dir.x() &&
                             testY + dir.y() < h && 0 <= testY + dir.y() &&

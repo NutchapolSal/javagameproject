@@ -114,6 +114,7 @@ public class Settings {
         iterateOverReceivers(SettingKey.ControlScheme, getControlScheme());
         iterateOverReceivers(SettingKey.GameplayMode, getGameplayMode());
         iterateOverReceivers(SettingKey.BlockSkin, getBlockSkin());
+        iterateOverReceivers(SettingKey.BlockConnectionMode, getBlockConnectionMode());
     }
 
     private void iterateOverReceivers(SettingKey sk, Object input) {

@@ -85,15 +85,16 @@ public class PlayfieldPanel extends MinoPanel {
                 if (pdr.blocks.getAtPos(x, y) == null) {
                     continue;
                 }
-                MinoColor currColor = pdr.blocks.getAtPos(x, y).getMinoColor();
+                BlockWithConnection block = pdr.blocks.getAtPos(x, y);
+                MinoColor mc = block.getMinoColor();
                 if (playerOverrideColor != null) {
-                    currColor = playerOverrideColor;
+                    mc = playerOverrideColor;
                 }
-                paintMinoBlock(g, x + pdr.x, y + pdr.y, currColor);
+                paintMinoBlock(g, x + pdr.x, y + pdr.y, block, mc);
                 setOpacity(0.3);
-                paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, currColor);
+                paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, block, mc);
                 setOpacity(playerLockProgress * 0.75);
-                paintMinoBlock(g, x + pdr.x, y + pdr.y, MinoColor.Gray);
+                paintMinoBlock(g, x + pdr.x, y + pdr.y, block, MinoColor.Gray);
                 setOpacity(1);
             }
         }

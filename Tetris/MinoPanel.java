@@ -68,6 +68,10 @@ public abstract class MinoPanel extends JPanel {
         paintMinoBlock(g, x, y, blockSkinManager.getImage(bwc));
     }
 
+    protected void paintMinoBlock(Graphics g, int x, int y, BlockWithConnection bwc, MinoColor overrideColor) {
+        paintMinoBlock(g, x, y, blockSkinManager.getImage(bwc, overrideColor));
+    }
+
     protected void paintMinoBlock(Graphics g, int x, int y, Image img) {
         if (opacity <= 0) {
             return;
