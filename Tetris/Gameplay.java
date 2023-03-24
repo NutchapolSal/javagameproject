@@ -189,7 +189,6 @@ public class Gameplay implements ReceiveSettings {
         goalData = goal.getGoalData();
 
         fillNextQueue();
-        playfield.spawnPlayerMino(getNextMino());
         renderFrame();
 
         timer.scheduleAtFixedRate(countdownTask, 0, 750);
@@ -198,6 +197,7 @@ public class Gameplay implements ReceiveSettings {
     private void startGameLoop() {
         startTime = System.nanoTime();
         lastFrame = System.nanoTime();
+        playfield.spawnPlayerMino(getNextMino());
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
 
