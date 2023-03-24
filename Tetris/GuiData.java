@@ -18,7 +18,7 @@ public class GuiData {
     /**
      * may be null
      */
-    public final ObjectDataGrid<MinoColor> renderBlocks;
+    public final ObjectDataGrid<BlockWithConnection> renderBlocks;
     /**
      * may be null
      */
@@ -56,7 +56,7 @@ public class GuiData {
             int b2bCount,
             GoalState goalState,
             String gamemodeName,
-            ObjectDataGrid<MinoColor> renderBlocks,
+            ObjectDataGrid<BlockWithConnection> renderBlocks,
             Mino[] nextQueue,
             int calloutLines,
             String spinName,

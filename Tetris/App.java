@@ -15,7 +15,7 @@ public class App {
         settings.bindReceivers(gameplay);
         settings.bindReceivers(gui);
         settings.bindReceivers(gui.getKeyboardHandler());
-        settings.bindReceivers(MinoColor.Blue);
+        settings.bindReceivers(gui.getBlockSkinManager());
         settings.loadSettingsToReceivers();
 
         ActionListener guiUpdater = new ActionListener() {
@@ -32,5 +32,7 @@ public class App {
 
         gui.setNewGameAction(newGameAction);
         new javax.swing.Timer(8, guiUpdater).start();
+
+        // BlockSkinImages.get().getImageFromFolder("Pixel Connected", MinoColor.Blue);
     }
 }

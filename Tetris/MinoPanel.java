@@ -15,10 +15,13 @@ public abstract class MinoPanel extends JPanel {
     protected final int PREF_W;
     protected final int PREF_H;
 
+    protected BlockSkinManager blockSkinManager;
     protected int centerOffsetX = 0;
     protected int centerOffsetY = 0;
+    protected double opacity = 1;
 
-    protected MinoPanel(int w, int h) {
+    protected MinoPanel(BlockSkinManager blockSkinManager, int w, int h) {
+        this.blockSkinManager = blockSkinManager;
         PANEL_WIDTH_BLOCKS = w;
         PANEL_HEIGHT_BLOCKS = h;
         PREF_W = PANEL_WIDTH_BLOCKS * BLOCK_WIDTH;
@@ -53,19 +56,29 @@ public abstract class MinoPanel extends JPanel {
         centerOffsetY = 0;
     }
 
-    protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc) {
-        paintMinoBlock(g, x, y, mc, 1);
+    protected void setOpacity(double opacity) {
+        this.opacity = opacity;
     }
 
-    protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc, double opacity) {
+    protected void paintMinoBlock(Graphics g, int x, int y, MinoColor mc) {
+        paintMinoBlock(g, x, y, blockSkinManager.getImage(mc));
+    }
+
+    protected void paintMinoBlock(Graphics g, int x, int y, BlockWithConnection bwc) {
+        paintMinoBlock(g, x, y, blockSkinManager.getImage(bwc));
+    }
+
+    protected void paintMinoBlock(Graphics g, int x, int y, BlockWithConnection bwc, MinoColor overrideColor) {
+        paintMinoBlock(g, x, y, blockSkinManager.getImage(bwc, overrideColor));
+    }
+
+    protected void paintMinoBlock(Graphics g, int x, int y, Image img) {
         if (opacity <= 0) {
             return;
         }
         Graphics2D g2d = (Graphics2D) g;
         int graphicsX = x * BLOCK_WIDTH + centerOffsetX;
         int graphicsY = (PANEL_HEIGHT_BLOCKS - 1 - y) * BLOCK_HEIGHT - centerOffsetY;
-        Image img;
-        img = mc.image();
 
         if (opacity < 1) {
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));

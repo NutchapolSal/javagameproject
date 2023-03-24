@@ -28,5 +28,9 @@ public enum SettingKey {
     /**
      * consumes {@code String}
      */
-    BlockSkin
+    BlockSkin,
+    /**
+     * consumes {@code BlockConnectionMode}
+     */
+    BlockConnectionMode
 }

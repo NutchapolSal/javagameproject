@@ -9,13 +9,14 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 
 public class PlayfieldPanel extends MinoPanel {
-    private ObjectDataGrid<MinoColor> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS, PANEL_HEIGHT_BLOCKS);
+    private ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS,
+            PANEL_HEIGHT_BLOCKS);
     private PlayerRenderData pdr = null;
     private double playerLockProgress;
     private CalloutLabel callout;
     private MinoColor playerOverrideColor;
 
-    public void setRenderBlocks(ObjectDataGrid<MinoColor> renderBlocks) {
+    public void setRenderBlocks(ObjectDataGrid<BlockWithConnection> renderBlocks) {
         this.renderBlocks = renderBlocks;
     }
 
@@ -30,8 +31,8 @@ public class PlayfieldPanel extends MinoPanel {
         this.playerOverrideColor = playerOverrideColor;
     }
 
-    public PlayfieldPanel() {
-        super(10, 20);
+    public PlayfieldPanel(BlockSkinManager blockSkinManager) {
+        super(blockSkinManager, 10, 20);
         setOpaque(false);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         callout = new CalloutLabel();
@@ -55,13 +56,24 @@ public class PlayfieldPanel extends MinoPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        setOpacity(1);
         for (int y = 0; y < PANEL_HEIGHT_BLOCKS; y++) {
             for (int x = 0; x < PANEL_WIDTH_BLOCKS; x++) {
-                MinoColor currColor = renderBlocks.getAtPos(x, y);
-                if (currColor == null) {
+                BlockWithConnection block = renderBlocks.getAtPos(x, y);
+                if (block == null) {
                     continue;
                 }
-                paintMinoBlock(g, x, y, currColor);
+                // boolean up = y < PANEL_HEIGHT_BLOCKS - 1 && renderBlocks.getAtPos(x, y + 1)
+                // != null;
+                // boolean right = x < PANEL_WIDTH_BLOCKS - 1 && renderBlocks.getAtPos(x + 1, y)
+                // != null;
+                // boolean down = 0 < y && renderBlocks.getAtPos(x, y - 1) != null;
+                // boolean left = 0 < x && renderBlocks.getAtPos(x - 1, y) != null;
+                paintMinoBlock(g, x, y, block);
+                // System.out.printf("%s%s%s%s%n", up ? "u" : " ",
+                // right ? "r" : " ",
+                // down ? "d" : " ",
+                // left ? "l" : " ");
             }
         }
 
@@ -69,18 +81,22 @@ public class PlayfieldPanel extends MinoPanel {
             return;
         }
 
-        for (int y = 0; y < pdr.blocks.getHeight(); y++) {
+        for (int y = pdr.blocks.getHeight() - 1; 0 <= y; y--) {
             for (int x = 0; x < pdr.blocks.getWidth(); x++) {
-                MinoColor currColor = pdr.blocks.getAtPos(x, y);
-                if (currColor == null) {
+                if (pdr.blocks.getAtPos(x, y) == null) {
                     continue;
                 }
+                BlockWithConnection block = pdr.blocks.getAtPos(x, y);
+                MinoColor mc = block.getMinoColor();
                 if (playerOverrideColor != null) {
-                    currColor = playerOverrideColor;
+                    mc = playerOverrideColor;
                 }
-                paintMinoBlock(g, x + pdr.x, y + pdr.y, currColor);
-                paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, currColor, 0.3);
-                paintMinoBlock(g, x + pdr.x, y + pdr.y, MinoColor.Gray, playerLockProgress * 0.75);
+                setOpacity(0.3);
+                paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, block, mc);
+                setOpacity(1);
+                paintMinoBlock(g, x + pdr.x, y + pdr.y, block, mc);
+                setOpacity(playerLockProgress * 0.75);
+                paintMinoBlock(g, x + pdr.x, y + pdr.y, block, MinoColor.Gray);
             }
         }
     }

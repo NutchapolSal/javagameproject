@@ -1,5 +1,7 @@
 package Tetris;
 
+import Tetris.BlockWithConnection.Dir;
+
 public class Playfield {
     private static int FIELD_WIDTH = 10;
     private static int FIELD_HEIGHT = 20;
@@ -9,7 +11,8 @@ public class Playfield {
     private int playerMinoX;
     private int playerMinoY;
     private Direction playerMinoDirection;
-    private ObjectDataGrid<MinoColor> blocks = new ObjectDataGrid<>(FIELD_WIDTH, FIELD_HEIGHT + FIELD_HEIGHT_BUFFER);
+    private ObjectDataGrid<BlockWithConnection> blocks = new ObjectDataGrid<>(FIELD_WIDTH,
+            FIELD_HEIGHT + FIELD_HEIGHT_BUFFER);
 
     public boolean hasPlayerMino() {
         return playerMino != null;
@@ -259,7 +262,7 @@ public class Playfield {
         return false;
     }
 
-    private static void writeShapeToColorGrid(ObjectDataGrid<MinoColor> blocks, ShapeGrid shape, int x, int y,
+    private static void writeShapeToColorGrid(ObjectDataGrid<BlockWithConnection> blocks, ShapeGrid shape, int x, int y,
             MinoColor mc) {
         int w = shape.getWidth();
         int h = shape.getHeight();
@@ -274,16 +277,81 @@ public class Playfield {
                         || blocks.getHeight() <= testY + y) {
                     continue;
                 }
-                blocks.setAtPos(testX + x, testY + y, mc);
+                BlockWithConnection newBlock = new BlockWithConnection(mc);
+                for (var dir : BlockWithConnection.Dir.values()) {
+                    if (testX + dir.x() < w && 0 <= testX + dir.x() &&
+                            testY + dir.y() < h && 0 <= testY + dir.y() &&
+                            shape.getAtPos(testX + dir.x(), testY + dir.y())) {
+                        newBlock.setConnectionAll(dir, true);
+                        newBlock.setConnectionColor(dir, true);
+                        newBlock.setConnectionMino(dir, true);
+                        continue;
+                    }
+                    if (x + testX + dir.x() < 0 ||
+                            y + testY + dir.y() < 0 ||
+                            blocks.getWidth() <= x + testX + dir.x() ||
+                            blocks.getHeight() <= y + testY + dir.y()) {
+                        continue;
+                    }
+                    var testBlock = blocks.getAtPos(x + testX + dir.x(), y + testY + dir.y());
+                    if (testBlock == null) {
+                        continue;
+                    }
+                    newBlock.setConnectionAll(dir, true);
+                    testBlock.setConnectionAll(dir.opposite(), true);
+                    if (testBlock.getMinoColor() == newBlock.getMinoColor()) {
+                        newBlock.setConnectionColor(dir, true);
+                        testBlock.setConnectionColor(dir.opposite(), true);
+                    }
+                }
+                blocks.setAtPos(testX + x, testY + y, newBlock);
             }
         }
     }
 
-    public ObjectDataGrid<MinoColor> getRenderBlocks() {
-        ObjectDataGrid<MinoColor> renderBlocks = new ObjectDataGrid<>(FIELD_WIDTH, FIELD_HEIGHT + FIELD_HEIGHT_BUFFER);
+    private void updateConnectionsForBlock(int x, int y) {
+        BlockWithConnection block;
+        try {
+            block = blocks.getAtPos(x, y);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return;
+        }
+        if (block == null) {
+            return;
+        }
+        for (var dir : BlockWithConnection.Dir.values()) {
+            if (x + dir.x() < 0 ||
+                    y + dir.y() < 0 ||
+                    blocks.getWidth() <= x + dir.x() ||
+                    blocks.getHeight() <= y + dir.y()) {
+                block.setConnectionAll(dir, false);
+                block.setConnectionColor(dir, false);
+                block.setConnectionMino(dir, false);
+                continue;
+            }
+            var testBlock = blocks.getAtPos(x + dir.x(), y + dir.y());
+            if (testBlock == null) {
+                block.setConnectionAll(dir, false);
+                block.setConnectionColor(dir, false);
+                block.setConnectionMino(dir, false);
+                continue;
+            }
+            block.setConnectionAll(dir, true);
+            testBlock.setConnectionAll(dir.opposite(), true);
+            boolean isSameColor = testBlock.getMinoColor() == block.getMinoColor();
+            block.setConnectionColor(dir, isSameColor);
+            testBlock.setConnectionColor(dir.opposite(), isSameColor);
+        }
+    }
+
+    public ObjectDataGrid<BlockWithConnection> getRenderBlocks() {
+        ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(FIELD_WIDTH,
+                FIELD_HEIGHT + FIELD_HEIGHT_BUFFER);
         for (int srcY = 0; srcY < renderBlocks.getHeight(); srcY++) {
             for (int srcX = 0; srcX < blocks.getWidth(); srcX++) {
-                renderBlocks.setAtPos(srcX, srcY, blocks.getAtPos(srcX, srcY));
+                if (blocks.getAtPos(srcX, srcY) != null) {
+                    renderBlocks.setAtPos(srcX, srcY, blocks.getAtPos(srcX, srcY).makeCopy());
+                }
             }
         }
         return renderBlocks;
@@ -294,7 +362,7 @@ public class Playfield {
             return null;
         }
 
-        ObjectDataGrid<MinoColor> playerBlocks = new ObjectDataGrid<>(playerMinoRotateData.shape.getWidth(),
+        ObjectDataGrid<BlockWithConnection> playerBlocks = new ObjectDataGrid<>(playerMinoRotateData.shape.getWidth(),
                 playerMinoRotateData.shape.getHeight());
         writeShapeToColorGrid(playerBlocks, playerMinoRotateData, 0, 0, playerMino.getColor());
 
@@ -331,9 +399,19 @@ public class Playfield {
                 for (int col = 0; col < width; col++) {
                     blocks.setAtPos(col, blocks.getHeight() - 1, null);
                 }
-            } else {
-                row--;
+
+                for (int x = 0; x < width; x++) {
+                    if (blocks.getAtPos(x, row) != null) {
+                        blocks.getAtPos(x, row).setConnectionMino(Dir.Down, false);
+                    }
+                    if (0 <= row - 1 && blocks.getAtPos(x, row - 1) != null) {
+                        blocks.getAtPos(x, row - 1).setConnectionMino(Dir.Up, false);
+                    }
+                    updateConnectionsForBlock(x, row);
+                    updateConnectionsForBlock(x, row - 1);
+                }
             }
+            row--;
         }
         return rowsCleared;
     }
