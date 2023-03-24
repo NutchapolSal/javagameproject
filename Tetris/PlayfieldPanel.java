@@ -56,6 +56,7 @@ public class PlayfieldPanel extends MinoPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        setOpacity(1);
         for (int y = 0; y < PANEL_HEIGHT_BLOCKS; y++) {
             for (int x = 0; x < PANEL_WIDTH_BLOCKS; x++) {
                 BlockWithConnection block = renderBlocks.getAtPos(x, y);
@@ -80,7 +81,7 @@ public class PlayfieldPanel extends MinoPanel {
             return;
         }
 
-        for (int y = 0; y < pdr.blocks.getHeight(); y++) {
+        for (int y = pdr.blocks.getHeight() - 1; 0 <= y; y--) {
             for (int x = 0; x < pdr.blocks.getWidth(); x++) {
                 if (pdr.blocks.getAtPos(x, y) == null) {
                     continue;
@@ -90,12 +91,12 @@ public class PlayfieldPanel extends MinoPanel {
                 if (playerOverrideColor != null) {
                     mc = playerOverrideColor;
                 }
-                paintMinoBlock(g, x + pdr.x, y + pdr.y, block, mc);
                 setOpacity(0.3);
                 paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, block, mc);
+                setOpacity(1);
+                paintMinoBlock(g, x + pdr.x, y + pdr.y, block, mc);
                 setOpacity(playerLockProgress * 0.75);
                 paintMinoBlock(g, x + pdr.x, y + pdr.y, block, MinoColor.Gray);
-                setOpacity(1);
             }
         }
     }
