@@ -164,7 +164,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
             long showMillis;
             if (goalData.isTimesGoal()) {
-                showMillis = goalData.getTimeMillisLength() - gds.timeMillis;
+                showMillis = Math.max(0, goalData.getTimeMillisLength() - gds.timeMillis);
             } else {
                 showMillis = gds.timeMillis;
             }
