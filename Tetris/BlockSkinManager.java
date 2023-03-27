@@ -52,10 +52,12 @@ public class BlockSkinManager implements ReceiveSettings {
     class FileReadResult {
         public final Image image;
         public final SkinConnection connnection;
+        public final boolean requestSmooth;
 
-        public FileReadResult(Image image, SkinConnection connnection) {
+        public FileReadResult(Image image, SkinConnection connnection, boolean requestSmooth) {
             this.image = image;
             this.connnection = connnection;
+            this.requestSmooth = requestSmooth;
         }
     }
 
@@ -219,21 +221,25 @@ public class BlockSkinManager implements ReceiveSettings {
     public ReadResult getImagesFromFolder(String folderName, MinoColor mc) {
         Image loadedImage;
         SkinConnection connected = SkinConnection.None;
+        boolean requestSmooth = false;
         try {
             FileReadResult result = readFromFolder(folderName, mc);
             loadedImage = result.image;
             connected = result.connnection;
+            requestSmooth = result.requestSmooth;
         } catch (IOException e) {
             loadedImage = generateErrorImage(mc);
             connected = SkinConnection.None;
         }
 
-        return new ReadResult(cutImageGrid(loadedImage, connected.width(), connected.height()), connected);
+        return new ReadResult(cutImageGrid(loadedImage, connected.width(), connected.height(), requestSmooth),
+                connected);
     }
 
     private FileReadResult readFromFolder(String folder, MinoColor mc) throws IOException {
         Image loadedImage = ImageIO.read(new File(filepath(mc, folder)));
         SkinConnection connection = getSkinConnectionMetadata(folder);
+        boolean requestSmooth = new File(folderpath(folder) + "/requestSmoothScaling.txt").isFile();
         boolean throwError = false;
 
         if (loadedImage.getWidth(null) % connection.width() != 0) {
@@ -248,7 +254,7 @@ public class BlockSkinManager implements ReceiveSettings {
         if (throwError) {
             throw new IOException();
         }
-        return new FileReadResult(loadedImage, connection);
+        return new FileReadResult(loadedImage, connection, requestSmooth);
     }
 
     private SkinConnection getSkinConnectionMetadata(String folder) {
@@ -274,14 +280,14 @@ public class BlockSkinManager implements ReceiveSettings {
         return bi;
     }
 
-    private Image[] cutImageGrid(Image loadedImage, int width, int height) {
+    private Image[] cutImageGrid(Image loadedImage, int width, int height, boolean smoothScale) {
         Image[] currImages = new Image[width * height];
         Image scaledImage = loadedImage.getScaledInstance(MinoPanel.BLOCK_WIDTH * width,
-                MinoPanel.BLOCK_HEIGHT * height, Image.SCALE_REPLICATE);
+                MinoPanel.BLOCK_HEIGHT * height, smoothScale ? Image.SCALE_SMOOTH : Image.SCALE_REPLICATE);
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 BufferedImage bi = new BufferedImage(MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT,
-                        BufferedImage.TYPE_INT_RGB);
+                        BufferedImage.TYPE_INT_ARGB);
                 Graphics g = bi.getGraphics();
                 g.drawImage(scaledImage,
                         0, 0,
