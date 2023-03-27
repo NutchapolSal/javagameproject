@@ -281,7 +281,7 @@ public class BlockSkinManager implements ReceiveSettings {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 BufferedImage bi = new BufferedImage(MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT,
-                        BufferedImage.TYPE_INT_RGB);
+                        BufferedImage.TYPE_INT_ARGB);
                 Graphics g = bi.getGraphics();
                 g.drawImage(scaledImage,
                         0, 0,
