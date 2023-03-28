@@ -74,6 +74,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private ControlScheme controlScheme;
     private boolean controlSchemeSonicDrop;
     private BlockSkinManager blockSkinManager = new BlockSkinManager();
+    private boolean lastDanger = false;
 
     private static double roundToZero(double in) {
         if (in < 0) {
@@ -172,6 +173,14 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 playfield.startAnimation(gds.gamemodeName.toUpperCase());
             }
             lastGamemodeName = gds.gamemodeName;
+
+            if (gds.danger != lastDanger) {
+                playfield.setBorder(BorderFactory.createLineBorder(gds.danger ? Color.RED : Color.BLACK));
+                // f.getContentPane().setBackground(gds.danger ? new Color(255, 0, 0, 63) : new
+                // Color(0, 0, 0, 0));
+                // centerPanel.setBackground(new Color(0, 0, 0, 0));
+            }
+            lastDanger = gds.danger;
 
             if (gds.allClear) {
                 playfield.startAnimation("ALL CLEAR");
