@@ -67,17 +67,7 @@ public class PlayfieldPanel extends MinoPanel {
                 if (block == null) {
                     continue;
                 }
-                // boolean up = y < PANEL_HEIGHT_BLOCKS - 1 && renderBlocks.getAtPos(x, y + 1)
-                // != null;
-                // boolean right = x < PANEL_WIDTH_BLOCKS - 1 && renderBlocks.getAtPos(x + 1, y)
-                // != null;
-                // boolean down = 0 < y && renderBlocks.getAtPos(x, y - 1) != null;
-                // boolean left = 0 < x && renderBlocks.getAtPos(x - 1, y) != null;
                 paintMinoBlock(g, x, y, block);
-                // System.out.printf("%s%s%s%s%n", up ? "u" : " ",
-                // right ? "r" : " ",
-                // down ? "d" : " ",
-                // left ? "l" : " ");
             }
         }
 

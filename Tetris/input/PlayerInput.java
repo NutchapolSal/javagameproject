@@ -130,12 +130,17 @@ public class PlayerInput {
         if (inputSource.getRotateFlip() && !lastRotationFlip) {
             rotation = Rotation.Flip;
         }
+    }
 
-        // System.out.printf("%2d", getXMove());
-        // System.out.print(getHardDrop() ? " V " : " ");
-        // System.out.print(getSoftDrop() ? "v " : " ");
-        // System.out.print(getHold() ? "H " : " ");
-        // System.out.println(getRotation());
+    private void printDebug() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%2d", getXMove()));
+        sb.append(getHardDrop() ? " V " : " ");
+        sb.append(getSoftDrop() ? "v " : " ");
+        sb.append(getHold() ? "H " : " ");
+        sb.append(getRotation());
+
+        System.out.println(sb.toString());
     }
 
     public int getXMove() {
