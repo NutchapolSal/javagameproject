@@ -37,7 +37,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
