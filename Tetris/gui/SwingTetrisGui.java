@@ -20,7 +20,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.util.EnumMap;
 import java.util.Map;
@@ -506,38 +505,26 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void bindSelectModeMenuItems(Settings s) {
-        gameMenuGroup.getMarathonModeMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        gameMenuGroup.getMarathonModeMenuItem().addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setGameplayMode(GameplayMode.Marathon);
                 newGameAction.actionPerformed(null);
             }
         });
-        gameMenuGroup.getSprintModeMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        gameMenuGroup.getSprintModeMenuItem().addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setGameplayMode(GameplayMode.Sprint);
                 newGameAction.actionPerformed(null);
             }
         });
-        gameMenuGroup.getUltraModeMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        gameMenuGroup.getUltraModeMenuItem().addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setGameplayMode(GameplayMode.Ultra);
                 newGameAction.actionPerformed(null);
             }
         });
-        gameMenuGroup.getZenModeMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        gameMenuGroup.getZenModeMenuItem().addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setGameplayMode(GameplayMode.Zen);
                 newGameAction.actionPerformed(null);
             }

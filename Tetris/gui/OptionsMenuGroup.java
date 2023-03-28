@@ -6,7 +6,6 @@ import Tetris.settings.ControlScheme;
 import Tetris.settings.HandlingPreset;
 import Tetris.settings.Settings;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
@@ -120,11 +119,7 @@ public class OptionsMenuGroup {
 
         bindControlSchemeMenuItems(s);
         bindHandlingMenuItems(s);
-        sonicDropMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED);
-            }
-        });
+        sonicDropMenuItem.addItemListener(evt -> s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED));
         bindBlockSkinMenuItems(s);
         bindBlockConnectionMenuItems(s);
     }
@@ -178,46 +173,31 @@ public class OptionsMenuGroup {
     }
 
     private void bindControlSchemeMenuItems(Settings s) {
-        wasdSchemeMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        wasdSchemeMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setControlScheme(ControlScheme.WASD);
             }
         });
-        classicSchemeMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        classicSchemeMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setControlScheme(ControlScheme.Classic);
             }
         });
-        slashBracketSchemeMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        slashBracketSchemeMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setControlScheme(ControlScheme.SlashBracket);
             }
         });
     }
 
     private void bindHandlingMenuItems(Settings s) {
-        defaultHandlingMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        defaultHandlingMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setHandlingPreset(HandlingPreset.Default);
             }
         });
-        fastHandlingMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        fastHandlingMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setHandlingPreset(HandlingPreset.Fast);
             }
         });
@@ -226,11 +206,8 @@ public class OptionsMenuGroup {
     private void bindBlockSkinMenuItems(Settings s) {
         for (int i = 0; i < blockSkinMenuItems.length; i++) {
             final String yourFolder = BlockSkinManager.getBlockSkinFolders()[i];
-            blockSkinMenuItems[i].addItemListener(new ItemListener() {
-                public void itemStateChanged(ItemEvent evt) {
-                    if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                        return;
-                    }
+            blockSkinMenuItems[i].addItemListener(evt -> {
+                if (evt.getStateChange() == ItemEvent.SELECTED) {
                     s.setBlockSkin(yourFolder);
                 }
             });
@@ -238,35 +215,23 @@ public class OptionsMenuGroup {
     }
 
     private void bindBlockConnectionMenuItems(Settings s) {
-        noneConnectionMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        noneConnectionMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setBlockConnectionMode(BlockConnectionMode.None);
             }
         });
-        minoConnectionMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        minoConnectionMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setBlockConnectionMode(BlockConnectionMode.Mino);
             }
         });
-        colorConnectionMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        colorConnectionMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setBlockConnectionMode(BlockConnectionMode.Color);
             }
         });
-        allConnectionMenuItem.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
+        allConnectionMenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setBlockConnectionMode(BlockConnectionMode.All);
             }
         });
