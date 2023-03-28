@@ -1,19 +1,19 @@
 package Tetris.gui;
 
-import Tetris.BlockConnectionMode;
-import Tetris.ControlScheme;
-import Tetris.GameplayMode;
 import Tetris.GoalData;
 import Tetris.GoalState;
 import Tetris.GuiData;
-import Tetris.HandlingPreset;
 import Tetris.MinoColor;
-import Tetris.ReceiveSettings;
-import Tetris.SendSettings;
-import Tetris.SettingKey;
-import Tetris.Settings;
 import Tetris.input.GameplayButton;
 import Tetris.input.RawInputSource;
+import Tetris.settings.BlockConnectionMode;
+import Tetris.settings.ControlScheme;
+import Tetris.settings.GameplayMode;
+import Tetris.settings.HandlingPreset;
+import Tetris.settings.ReceiveSettings;
+import Tetris.settings.SendSettings;
+import Tetris.settings.SettingKey;
+import Tetris.settings.Settings;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;

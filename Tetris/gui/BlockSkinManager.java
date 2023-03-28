@@ -1,12 +1,12 @@
 package Tetris.gui;
 
-import Tetris.BlockConnectionMode;
 import Tetris.BlockWithConnection;
 import Tetris.MinoColor;
-import Tetris.ReceiveSettings;
-import Tetris.SettingKey;
 import Tetris.XY;
 import Tetris.BlockWithConnection.Dir;
+import Tetris.settings.BlockConnectionMode;
+import Tetris.settings.ReceiveSettings;
+import Tetris.settings.SettingKey;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;

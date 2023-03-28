@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.settings;
 
 public interface SendSettings {
     /**

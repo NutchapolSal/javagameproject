@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.settings;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

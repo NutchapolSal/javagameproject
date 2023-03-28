@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.settings;
 
 import java.util.Map;
 import java.util.function.Consumer;
