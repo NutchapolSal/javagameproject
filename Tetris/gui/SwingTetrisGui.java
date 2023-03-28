@@ -59,12 +59,10 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private JLabel controlsText;
     private Box.Filler leftFiller;
     private JButton newGameButton;
-    private OneMinoPanel[] nextMinos;
-    private JPanel nextPanel;
-    private JLabel nextText;
     private PlayfieldPanel playfield;
     private Box.Filler rightFiller;
     private JPanel miscPanel;
+    private NextGroup nextGroup;
     private HoldGroup holdGroup;
     private CalloutsGroup calloutsGroup;
     private StatsGroup statsGroup;
@@ -191,8 +189,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 playfield.setRenderBlocks(gds.renderBlocks);
             }
             if (gds.nextQueue != null) {
-                for (int i = 0; i < gds.nextQueue.length && i < nextMinos.length; i++) {
-                    nextMinos[i].setMino(gds.nextQueue[i]);
+                for (int i = 0; i < gds.nextQueue.length && i < nextGroup.getNextMinos().length; i++) {
+                    nextGroup.getNextMinos()[i].setMino(gds.nextQueue[i]);
                 }
             }
             playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
@@ -461,7 +459,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 .addComponent(playfield)
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addGroup(centerPanelLayout.createParallelGroup()
-                        .addComponent(nextPanel)
+                        .addComponent(nextGroup.getPanel())
                         .addComponent(miscPanel)
 
                 ));
@@ -475,7 +473,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                         .addComponent(statsGroup.getPanel()))
                 .addComponent(playfield)
                 .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(nextPanel)
+                        .addComponent(nextGroup.getPanel())
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(miscPanel)
 
@@ -515,29 +513,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void createNextPanel() {
-        nextPanel = new JPanel();
-        nextText = new JLabel();
-        nextMinos = new OneMinoPanel[5];
-
-        nextText.setText("Next");
-
-        GroupLayout nextPanelLayout = new GroupLayout(nextPanel);
-        nextPanel.setLayout(nextPanelLayout);
-        var horizGroup = nextPanelLayout.createParallelGroup(Alignment.LEADING)
-                .addComponent(nextText);
-        var vertGroup = nextPanelLayout.createSequentialGroup()
-                .addComponent(nextText);
-
-        for (int i = 0; i < nextMinos.length; i++) {
-            nextMinos[i] = new OneMinoPanel(blockSkinManager);
-            horizGroup.addComponent(nextMinos[i]);
-
-            vertGroup.addPreferredGap(ComponentPlacement.RELATED);
-            vertGroup.addComponent(nextMinos[i]);
-        }
-        nextPanelLayout.setHorizontalGroup(horizGroup);
-        nextPanelLayout.setVerticalGroup(vertGroup);
-
+        nextGroup = new NextGroup(blockSkinManager);
     }
 
     private void createPlayfield() {
