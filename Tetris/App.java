@@ -1,7 +1,11 @@
 package Tetris;
 
+import Tetris.gameplay.Gameplay;
+import Tetris.gui.SwingTetrisGui;
+import Tetris.settings.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Timer;
 
 public class App {
 
@@ -18,12 +22,6 @@ public class App {
         settings.bindReceivers(gui.getBlockSkinManager());
         settings.loadSettingsToReceivers();
 
-        ActionListener guiUpdater = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                gui.update(gameplay.getGuiData());
-            }
-        };
-
         ActionListener newGameAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gameplay.startGame();
@@ -31,8 +29,12 @@ public class App {
         };
 
         gui.setNewGameAction(newGameAction);
-        new javax.swing.Timer(8, guiUpdater).start();
 
-        // BlockSkinImages.get().getImageFromFolder("Pixel Connected", MinoColor.Blue);
+        ActionListener guiUpdater = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                gui.update(gameplay.getGuiData());
+            }
+        };
+        new Timer(8, guiUpdater).start();
     }
 }
