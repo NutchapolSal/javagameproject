@@ -1,5 +1,7 @@
 package Tetris;
 
+import Tetris.gameplay.goal.GoalState;
+
 public class GuiData {
     public final long timeMillis;
     public final int linesCleared;

@@ -1,5 +1,17 @@
-package Tetris;
+package Tetris.gameplay;
 
+import Tetris.BlockWithConnection;
+import Tetris.BooleanDataGrid;
+import Tetris.Direction;
+import Tetris.Mino;
+import Tetris.MinoColor;
+import Tetris.ObjectDataGrid;
+import Tetris.PlayerRenderData;
+import Tetris.RotatedShape;
+import Tetris.RotationResult;
+import Tetris.ShapeGrid;
+import Tetris.ShapeRotator;
+import Tetris.XY;
 import Tetris.BlockWithConnection.Dir;
 import Tetris.input.Rotation;
 
@@ -69,7 +81,7 @@ public class Playfield {
                 playerMinoY = playerMinoY + kick.y;
                 playerMinoDirection = afterRotate;
                 playerMinoRotateData = rotateData;
-                if (playerMino.useTSpinCheck) {
+                if (playerMino.isUseTSpinCheck()) {
                     return threeCornerCheck(kick.x, kick.y);
                 } else {
                     return immobileCheck();
@@ -172,7 +184,7 @@ public class Playfield {
                 playerMinoRotateData,
                 playerMinoX + playerMinoRotateData.xOffset,
                 playerMinoY + playerMinoRotateData.yOffset,
-                playerMino.color);
+                playerMino.getColor());
 
         boolean output = false;
         int yOffset = playerMinoY + playerMinoRotateData.yOffset;

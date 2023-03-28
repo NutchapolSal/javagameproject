@@ -1,5 +1,6 @@
 package Tetris;
 
+import Tetris.gameplay.Gameplay;
 import Tetris.gui.SwingTetrisGui;
 import Tetris.settings.Settings;
 import java.awt.event.ActionEvent;

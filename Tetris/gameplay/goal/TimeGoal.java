@@ -1,4 +1,6 @@
-package Tetris;
+package Tetris.gameplay.goal;
+
+import Tetris.GoalData;
 
 public class TimeGoal extends Goal {
     private long goalTime;
@@ -8,7 +10,7 @@ public class TimeGoal extends Goal {
     }
 
     @Override
-    protected GoalState calculate(long timeMillis, int lines) {
+    public GoalState calculate(long timeMillis, int lines) {
         if (goalTime < timeMillis) {
             return GoalState.WIN;
         }

@@ -1,6 +1,6 @@
 package Tetris;
 
-class RotatedShape implements ShapeGrid {
+public class RotatedShape implements ShapeGrid {
     public final ShapeGrid shape;
     /**
      * offset from original shape origin

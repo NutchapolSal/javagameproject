@@ -1,6 +1,15 @@
-package Tetris;
+package Tetris.gameplay;
 
+import Tetris.BooleanDataGrid;
+import Tetris.Direction;
+import Tetris.KickTable;
+import Tetris.KickTableMap;
+import Tetris.Mino;
+import Tetris.MinoColor;
+import Tetris.MinoOrigin;
+import Tetris.XY;
 import Tetris.KickTableMap.KickTableBuilder;
+import Tetris.Mino.MinoBuilder;
 
 public class Tetromino {
     private Tetromino() {

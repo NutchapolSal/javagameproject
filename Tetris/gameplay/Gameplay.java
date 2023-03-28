@@ -1,5 +1,18 @@
-package Tetris;
+package Tetris.gameplay;
 
+import Tetris.BlockWithConnection;
+import Tetris.GoalData;
+import Tetris.GuiData;
+import Tetris.Mino;
+import Tetris.ObjectDataGrid;
+import Tetris.PlayerRenderData;
+import Tetris.gameplay.goal.Goal;
+import Tetris.gameplay.goal.GoalState;
+import Tetris.gameplay.goal.LineGoal;
+import Tetris.gameplay.goal.NoGoal;
+import Tetris.gameplay.goal.TimeGoal;
+import Tetris.gameplay.randomizer.MinoRandomizer;
+import Tetris.gameplay.randomizer.SevenBagRandomizer;
 import Tetris.input.PlayerInput;
 import Tetris.input.RawInputSource;
 import Tetris.input.Rotation;

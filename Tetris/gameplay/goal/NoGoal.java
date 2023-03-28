@@ -1,9 +1,11 @@
-package Tetris;
+package Tetris.gameplay.goal;
+
+import Tetris.GoalData;
 
 public class NoGoal extends Goal {
 
     @Override
-    protected GoalState calculate(long timeMillis, int lines) {
+    public GoalState calculate(long timeMillis, int lines) {
         return GoalState.NONE;
     }
 

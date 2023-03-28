@@ -1,4 +1,7 @@
-package Tetris;
+package Tetris.gameplay.randomizer;
+
+import Tetris.Mino;
+import Tetris.gameplay.Tetromino;
 
 public class SevenBagRandomizer extends MinoRandomizer {
 

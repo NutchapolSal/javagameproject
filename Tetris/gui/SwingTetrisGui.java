@@ -1,9 +1,9 @@
 package Tetris.gui;
 
 import Tetris.GoalData;
-import Tetris.GoalState;
 import Tetris.GuiData;
 import Tetris.MinoColor;
+import Tetris.gameplay.goal.GoalState;
 import Tetris.input.GameplayButton;
 import Tetris.input.RawInputSource;
 import Tetris.settings.BlockConnectionMode;

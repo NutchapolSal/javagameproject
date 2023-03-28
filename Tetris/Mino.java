@@ -10,6 +10,10 @@ public class Mino implements ShapeGrid, KickTable {
     protected String name;
     protected boolean useTSpinCheck;
 
+    public boolean isUseTSpinCheck() {
+        return useTSpinCheck;
+    }
+
     public static class MinoBuilder {
         protected ShapeGrid shape;
         protected MinoOrigin origin;
