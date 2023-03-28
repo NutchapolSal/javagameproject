@@ -1,6 +1,7 @@
 package Tetris.gui;
 
 import Tetris.data.mino.MinoColor;
+import Tetris.settings.Settings;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
@@ -107,6 +108,54 @@ public class OptionsMenuGroup {
         blockConnectionGroup.add(minoConnectionMenuItem);
         blockConnectionGroup.add(colorConnectionMenuItem);
         blockConnectionGroup.add(allConnectionMenuItem);
+    }
+
+    public void updateToSettings(Settings s) {
+        switch (s.getControlScheme()) {
+            case WASD:
+                wasdSchemeMenuItem.setSelected(true);
+                break;
+            case Classic:
+                classicSchemeMenuItem.setSelected(true);
+                break;
+            case SlashBracket:
+                slashBracketSchemeMenuItem.setSelected(true);
+                break;
+        }
+        switch (s.getHandlingPreset()) {
+            case Default:
+                defaultHandlingMenuItem.setSelected(true);
+                break;
+            case Fast:
+                fastHandlingMenuItem.setSelected(true);
+                break;
+            default:
+                break;
+        }
+        sonicDropMenuItem.setSelected(s.getSonicDrop());
+        String selectedSkin = s.getBlockSkin();
+        for (JRadioButtonMenuItem v : blockSkinMenuItems) {
+            if (v.getText().equals(selectedSkin)) {
+                v.setSelected(true);
+                break;
+            }
+        }
+        switch (s.getBlockConnectionMode()) {
+            case None:
+                noneConnectionMenuItem.setSelected(true);
+                break;
+            case Mino:
+                minoConnectionMenuItem.setSelected(true);
+                break;
+            case Color:
+                colorConnectionMenuItem.setSelected(true);
+                break;
+            case All:
+                allConnectionMenuItem.setSelected(true);
+                break;
+            default:
+                break;
+        }
     }
 
     public JMenu getMenu() {

@@ -562,65 +562,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void updateMenusToSettings(Settings s) {
-        switch (s.getGameplayMode()) {
-            case Marathon:
-                gameMenuGroup.getMarathonModeMenuItem().setSelected(true);
-                break;
-            case Sprint:
-                gameMenuGroup.getSprintModeMenuItem().setSelected(true);
-                break;
-            case Ultra:
-                gameMenuGroup.getUltraModeMenuItem().setSelected(true);
-                break;
-            case Zen:
-                gameMenuGroup.getZenModeMenuItem().setSelected(true);
-                break;
-        }
-        switch (s.getControlScheme()) {
-            case WASD:
-                optionsMenuGroup.getWasdSchemeMenuItem().setSelected(true);
-                break;
-            case Classic:
-                optionsMenuGroup.getClassicSchemeMenuItem().setSelected(true);
-                break;
-            case SlashBracket:
-                optionsMenuGroup.getSlashBracketSchemeMenuItem().setSelected(true);
-                break;
-        }
-        switch (s.getHandlingPreset()) {
-            case Default:
-                optionsMenuGroup.getDefaultHandlingMenuItem().setSelected(true);
-                break;
-            case Fast:
-                optionsMenuGroup.getFastHandlingMenuItem().setSelected(true);
-                break;
-            default:
-                break;
-        }
-        optionsMenuGroup.getSonicDropMenuItem().setSelected(s.getSonicDrop());
-        String selectedSkin = s.getBlockSkin();
-        for (JRadioButtonMenuItem v : optionsMenuGroup.getBlockSkinMenuItems()) {
-            if (v.getText().equals(selectedSkin)) {
-                v.setSelected(true);
-                break;
-            }
-        }
-        switch (s.getBlockConnectionMode()) {
-            case None:
-                optionsMenuGroup.getNoneConnectionMenuItem().setSelected(true);
-                break;
-            case Mino:
-                optionsMenuGroup.getMinoConnectionMenuItem().setSelected(true);
-                break;
-            case Color:
-                optionsMenuGroup.getColorConnectionMenuItem().setSelected(true);
-                break;
-            case All:
-                optionsMenuGroup.getAllConnectionMenuItem().setSelected(true);
-                break;
-            default:
-                break;
-        }
+        gameMenuGroup.updateToSettings(s);
+        optionsMenuGroup.updateToSettings(s);
     }
 
     private void bindSelectModeMenuItems(Settings s) {

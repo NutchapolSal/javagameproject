@@ -1,5 +1,6 @@
 package Tetris.gui;
 
+import Tetris.settings.Settings;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.ButtonGroup;
@@ -45,6 +46,23 @@ public class GameMenuGroup {
         gameMenu.setText("Game");
         gameMenu.add(newGameMenuItem);
         gameMenu.add(selectModeMenuItem);
+    }
+
+    public void updateToSettings(Settings s) {
+        switch (s.getGameplayMode()) {
+            case Marathon:
+                marathonModeMenuItem.setSelected(true);
+                break;
+            case Sprint:
+                sprintModeMenuItem.setSelected(true);
+                break;
+            case Ultra:
+                ultraModeMenuItem.setSelected(true);
+                break;
+            case Zen:
+                zenModeMenuItem.setSelected(true);
+                break;
+        }
     }
 
     public JMenu getMenu() {
