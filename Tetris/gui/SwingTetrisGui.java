@@ -67,13 +67,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     private KeyboardHandler kbh;
     private JMenuBar menuBar;
-    private JMenu gameMenu;
-    private JMenuItem newGameMenuItem;
-    private JMenu selectModeMenuItem;
-    private JRadioButtonMenuItem marathonModeMenuItem;
-    private JRadioButtonMenuItem sprintModeMenuItem;
-    private JRadioButtonMenuItem ultraModeMenuItem;
-    private JRadioButtonMenuItem zenModeMenuItem;
+    private GameMenuGroup gameMenuGroup;
     private JMenu optionsMenu;
     private JMenu controlSchemeMenu;
     private JRadioButtonMenuItem wasdSchemeMenuItem;
@@ -306,7 +300,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         createGameMenu();
         createOptionsMenu();
 
-        menuBar.add(gameMenu);
+        menuBar.add(gameMenuGroup.getMenu());
         menuBar.add(optionsMenu);
     }
 
@@ -400,41 +394,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void createGameMenu() {
-        gameMenu = new JMenu();
-        newGameMenuItem = new JMenuItem();
-        selectModeMenuItem = new JMenu();
-        marathonModeMenuItem = new JRadioButtonMenuItem();
-        sprintModeMenuItem = new JRadioButtonMenuItem();
-        ultraModeMenuItem = new JRadioButtonMenuItem();
-        zenModeMenuItem = new JRadioButtonMenuItem();
-
-        newGameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
-                InputEvent.CTRL_DOWN_MASK));
-        newGameMenuItem.setText("New Game");
-
-        marathonModeMenuItem.setSelected(true);
-        marathonModeMenuItem.setText("150 Lines Marathon");
-
-        sprintModeMenuItem.setText("40 Lines Sprint");
-
-        ultraModeMenuItem.setText("3 Minutes Ultra");
-
-        zenModeMenuItem.setText("Zen");
-
-        selectModeMenuItem.setText("Select Mode");
-        selectModeMenuItem.add(marathonModeMenuItem);
-        selectModeMenuItem.add(sprintModeMenuItem);
-        selectModeMenuItem.add(ultraModeMenuItem);
-        selectModeMenuItem.add(zenModeMenuItem);
-        ButtonGroup selectModeGroup = new ButtonGroup();
-        selectModeGroup.add(marathonModeMenuItem);
-        selectModeGroup.add(sprintModeMenuItem);
-        selectModeGroup.add(ultraModeMenuItem);
-        selectModeGroup.add(zenModeMenuItem);
-
-        gameMenu.setText("Game");
-        gameMenu.add(newGameMenuItem);
-        gameMenu.add(selectModeMenuItem);
+        gameMenuGroup = new GameMenuGroup();
     }
 
     private void createCenterPanel() {
@@ -659,7 +619,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     public void setNewGameAction(ActionListener a) {
         miscGroup.getNewGameButton().addActionListener(a);
-        newGameMenuItem.addActionListener(a);
+        gameMenuGroup.getNewGameMenuItem().addActionListener(a);
         newGameAction = a;
     }
 
@@ -771,16 +731,16 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private void updateMenusToSettings(Settings s) {
         switch (s.getGameplayMode()) {
             case Marathon:
-                marathonModeMenuItem.setSelected(true);
+                gameMenuGroup.getMarathonModeMenuItem().setSelected(true);
                 break;
             case Sprint:
-                sprintModeMenuItem.setSelected(true);
+                gameMenuGroup.getSprintModeMenuItem().setSelected(true);
                 break;
             case Ultra:
-                ultraModeMenuItem.setSelected(true);
+                gameMenuGroup.getUltraModeMenuItem().setSelected(true);
                 break;
             case Zen:
-                zenModeMenuItem.setSelected(true);
+                gameMenuGroup.getZenModeMenuItem().setSelected(true);
                 break;
         }
         switch (s.getControlScheme()) {
@@ -831,7 +791,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void bindSelectModeMenuItems(Settings s) {
-        marathonModeMenuItem.addItemListener(new ItemListener() {
+        gameMenuGroup.getMarathonModeMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -840,7 +800,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 newGameAction.actionPerformed(null);
             }
         });
-        sprintModeMenuItem.addItemListener(new ItemListener() {
+        gameMenuGroup.getSprintModeMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -849,7 +809,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 newGameAction.actionPerformed(null);
             }
         });
-        ultraModeMenuItem.addItemListener(new ItemListener() {
+        gameMenuGroup.getUltraModeMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -858,7 +818,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 newGameAction.actionPerformed(null);
             }
         });
-        zenModeMenuItem.addItemListener(new ItemListener() {
+        gameMenuGroup.getZenModeMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
