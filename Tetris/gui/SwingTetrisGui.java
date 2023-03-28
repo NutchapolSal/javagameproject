@@ -499,71 +499,10 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     public void bindToSettings(Settings s) {
-        updateMenusToSettings(s);
-
+        gameMenuGroup.updateToSettings(s);
         bindSelectModeMenuItems(s);
 
-        bindControlSchemeMenuItems(s);
-        bindHandlingMenuItems(s);
-        optionsMenuGroup.getSonicDropMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED);
-            }
-        });
-
-        bindBlockSkinMenuItems(s);
-        optionsMenuGroup.getNoneConnectionMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setBlockConnectionMode(BlockConnectionMode.None);
-            }
-        });
-        optionsMenuGroup.getMinoConnectionMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setBlockConnectionMode(BlockConnectionMode.Mino);
-            }
-        });
-        optionsMenuGroup.getColorConnectionMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setBlockConnectionMode(BlockConnectionMode.Color);
-            }
-        });
-        optionsMenuGroup.getAllConnectionMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setBlockConnectionMode(BlockConnectionMode.All);
-            }
-        });
-    }
-
-    private void bindBlockSkinMenuItems(Settings s) {
-        var blockSkinMenuItems = optionsMenuGroup.getBlockSkinMenuItems();
-        for (int i = 0; i < blockSkinMenuItems.length; i++) {
-            final String yourFolder = BlockSkinManager.getBlockSkinFolders()[i];
-            blockSkinMenuItems[i].addItemListener(new ItemListener() {
-                public void itemStateChanged(ItemEvent evt) {
-                    if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                        return;
-                    }
-                    s.setBlockSkin(yourFolder);
-                }
-            });
-        }
-    }
-
-    private void updateMenusToSettings(Settings s) {
-        gameMenuGroup.updateToSettings(s);
-        optionsMenuGroup.updateToSettings(s);
+        optionsMenuGroup.bindToSettings(s);
     }
 
     private void bindSelectModeMenuItems(Settings s) {
@@ -601,52 +540,6 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 }
                 s.setGameplayMode(GameplayMode.Zen);
                 newGameAction.actionPerformed(null);
-            }
-        });
-    }
-
-    private void bindControlSchemeMenuItems(Settings s) {
-        optionsMenuGroup.getWasdSchemeMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setControlScheme(ControlScheme.WASD);
-            }
-        });
-        optionsMenuGroup.getClassicSchemeMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setControlScheme(ControlScheme.Classic);
-            }
-        });
-        optionsMenuGroup.getSlashBracketSchemeMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setControlScheme(ControlScheme.SlashBracket);
-            }
-        });
-    }
-
-    private void bindHandlingMenuItems(Settings s) {
-        optionsMenuGroup.getDefaultHandlingMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setHandlingPreset(HandlingPreset.Default);
-            }
-        });
-        optionsMenuGroup.getFastHandlingMenuItem().addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                s.setHandlingPreset(HandlingPreset.Fast);
             }
         });
     }

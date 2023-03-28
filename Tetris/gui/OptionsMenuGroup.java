@@ -1,7 +1,12 @@
 package Tetris.gui;
 
 import Tetris.data.mino.MinoColor;
+import Tetris.settings.BlockConnectionMode;
+import Tetris.settings.ControlScheme;
+import Tetris.settings.HandlingPreset;
 import Tetris.settings.Settings;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
@@ -110,7 +115,21 @@ public class OptionsMenuGroup {
         blockConnectionGroup.add(allConnectionMenuItem);
     }
 
-    public void updateToSettings(Settings s) {
+    public void bindToSettings(Settings s) {
+        updateToSettings(s);
+
+        bindControlSchemeMenuItems(s);
+        bindHandlingMenuItems(s);
+        sonicDropMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+        bindBlockSkinMenuItems(s);
+        bindBlockConnectionMenuItems(s);
+    }
+
+    private void updateToSettings(Settings s) {
         switch (s.getControlScheme()) {
             case WASD:
                 wasdSchemeMenuItem.setSelected(true);
@@ -156,6 +175,101 @@ public class OptionsMenuGroup {
             default:
                 break;
         }
+    }
+
+    private void bindControlSchemeMenuItems(Settings s) {
+        wasdSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.WASD);
+            }
+        });
+        classicSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.Classic);
+            }
+        });
+        slashBracketSchemeMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setControlScheme(ControlScheme.SlashBracket);
+            }
+        });
+    }
+
+    private void bindHandlingMenuItems(Settings s) {
+        defaultHandlingMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setHandlingPreset(HandlingPreset.Default);
+            }
+        });
+        fastHandlingMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setHandlingPreset(HandlingPreset.Fast);
+            }
+        });
+    }
+
+    private void bindBlockSkinMenuItems(Settings s) {
+        for (int i = 0; i < blockSkinMenuItems.length; i++) {
+            final String yourFolder = BlockSkinManager.getBlockSkinFolders()[i];
+            blockSkinMenuItems[i].addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent evt) {
+                    if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                        return;
+                    }
+                    s.setBlockSkin(yourFolder);
+                }
+            });
+        }
+    }
+
+    private void bindBlockConnectionMenuItems(Settings s) {
+        noneConnectionMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setBlockConnectionMode(BlockConnectionMode.None);
+            }
+        });
+        minoConnectionMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setBlockConnectionMode(BlockConnectionMode.Mino);
+            }
+        });
+        colorConnectionMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setBlockConnectionMode(BlockConnectionMode.Color);
+            }
+        });
+        allConnectionMenuItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                    return;
+                }
+                s.setBlockConnectionMode(BlockConnectionMode.All);
+            }
+        });
     }
 
     public JMenu getMenu() {
