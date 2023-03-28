@@ -1,8 +1,8 @@
 package Tetris.gui;
 
 import Tetris.data.BlockWithConnection;
-import Tetris.data.XY;
 import Tetris.data.BlockWithConnection.Dir;
+import Tetris.data.XY;
 import Tetris.data.mino.MinoColor;
 import Tetris.settings.BlockConnectionMode;
 import Tetris.settings.ReceiveSettings;

@@ -4,12 +4,10 @@ import Tetris.data.BooleanDataGrid;
 import Tetris.data.XY;
 import Tetris.data.mino.Direction;
 import Tetris.data.mino.KickTable;
-import Tetris.data.mino.KickTableMap;
+import Tetris.data.mino.KickTableMap.KickTableBuilder;
 import Tetris.data.mino.Mino;
 import Tetris.data.mino.MinoColor;
 import Tetris.data.mino.MinoOrigin;
-import Tetris.data.mino.KickTableMap.KickTableBuilder;
-import Tetris.data.mino.Mino.MinoBuilder;
 
 public class Tetromino {
     private Tetromino() {

@@ -4,7 +4,6 @@ import Tetris.data.BooleanDataGrid;
 import Tetris.data.mino.Mino;
 import Tetris.data.mino.MinoColor;
 import Tetris.data.mino.MinoOrigin;
-import Tetris.data.mino.Mino.MinoBuilder;
 
 public class CalloutTestRandomizer extends MinoRandomizer {
     private int minoIndex = 0;
