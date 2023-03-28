@@ -56,16 +56,14 @@ import javax.swing.UIManager;
 public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings {
     private JFrame f;
     private JPanel centerPanel;
-    private JLabel controlsText;
     private Box.Filler leftFiller;
-    private JButton newGameButton;
     private PlayfieldPanel playfield;
     private Box.Filler rightFiller;
-    private JPanel miscPanel;
     private NextGroup nextGroup;
     private HoldGroup holdGroup;
     private CalloutsGroup calloutsGroup;
     private StatsGroup statsGroup;
+    private MiscGroup miscGroup;
 
     private KeyboardHandler kbh;
     private JMenuBar menuBar;
@@ -460,7 +458,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addGroup(centerPanelLayout.createParallelGroup()
                         .addComponent(nextGroup.getPanel())
-                        .addComponent(miscPanel)
+                        .addComponent(miscGroup.getPanel())
 
                 ));
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
@@ -475,7 +473,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(nextGroup.getPanel())
                         .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(miscPanel)
+                        .addComponent(miscGroup.getPanel())
 
                 ));
     }
@@ -489,27 +487,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void createMiscPanel() {
-        miscPanel = new JPanel();
-        newGameButton = new JButton();
-        controlsText = new JLabel();
-
-        newGameButton.setFocusable(false);
-
-        newGameButton.setText("New Game");
-        controlsText.setText("");
-        controlsText.setVerticalAlignment(SwingConstants.TOP);
-        controlsText.setPreferredSize(new Dimension(80, 1));
-
-        GroupLayout miscPanelLayout = new GroupLayout(miscPanel);
-        miscPanel.setLayout(miscPanelLayout);
-        miscPanelLayout.setHorizontalGroup(miscPanelLayout.createParallelGroup()
-                .addComponent(newGameButton)
-                .addComponent(controlsText, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
-        miscPanelLayout.setVerticalGroup(miscPanelLayout.createSequentialGroup()
-                .addComponent(newGameButton)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(controlsText));
-
+        miscGroup = new MiscGroup();
     }
 
     private void createNextPanel() {
@@ -680,7 +658,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     public void setNewGameAction(ActionListener a) {
-        newGameButton.addActionListener(a);
+        miscGroup.getNewGameButton().addActionListener(a);
         newGameMenuItem.addActionListener(a);
         newGameAction = a;
     }
@@ -712,7 +690,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 newControlText += " Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
                 break;
         }
-        controlsText.setText(newControlText);
+        miscGroup.getControlsText().setText(newControlText);
     }
 
     public Map<SettingKey, Consumer<Object>> getReceivers() {
