@@ -60,28 +60,20 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private OneMinoPanel holdMino;
     private JPanel holdPanel;
     private JLabel holdText;
-    private JPanel statsPanel;
     private Box.Filler leftFiller;
-    private JLabel scoreCountText;
-    private JLabel scoreText;
-    private JLabel levelCountText;
-    private JLabel levelText;
-    private JLabel linesCountText;
-    private JLabel linesText;
     private JButton newGameButton;
     private OneMinoPanel[] nextMinos;
     private JPanel nextPanel;
     private JLabel nextText;
     private PlayfieldPanel playfield;
     private Box.Filler rightFiller;
-    private JLabel timeCountText;
-    private JLabel timeText;
     private JPanel miscPanel;
     private JPanel calloutsPanel;
     private CalloutLabel spinLabel;
     private CalloutLabel lineCalloutLabel;
     private CalloutLabel comboLabel;
     private CalloutLabel b2bLabel;
+    private StatsGroup statsGroup;
 
     private KeyboardHandler kbh;
     private JMenuBar menuBar;
@@ -183,17 +175,17 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 showMillis = gds.timeMillis;
             }
 
-            timeCountText.setText(
+            statsGroup.getTimeCountText().setText(
                     String.format("%.0f:%05.2f", Math.floor(showMillis / (1000d * 60)),
                             (showMillis / 1000d) % 60));
 
-            scoreCountText.setText(String.format("%d", gds.score));
+            statsGroup.getScoreCountText().setText(String.format("%d", gds.score));
             String linesGoalPart = "";
             if (goalData.isLinesGoal()) {
                 linesGoalPart = String.format(" / %d", goalData.getLinesCount());
             }
-            linesCountText.setText(String.format("%d%s", gds.linesCleared, linesGoalPart));
-            levelCountText.setText(String.format("%d", gds.level));
+            statsGroup.getLinesCountText().setText(String.format("%d%s", gds.linesCleared, linesGoalPart));
+            statsGroup.getLevelCountText().setText(String.format("%d", gds.level));
             if (gds.lockHold) {
                 holdMino.setMino(gds.hold, MinoColor.Gray);
             } else {
@@ -469,7 +461,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 .addGroup(centerPanelLayout.createParallelGroup(Alignment.TRAILING)
                         .addComponent(holdPanel)
                         .addComponent(calloutsPanel)
-                        .addComponent(statsPanel))
+                        .addComponent(statsGroup.getPanel()))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(playfield)
                 .addPreferredGap(ComponentPlacement.RELATED)
@@ -485,7 +477,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                         .addComponent(calloutsPanel)
                         .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
                                 Integer.MAX_VALUE)
-                        .addComponent(statsPanel))
+                        .addComponent(statsGroup.getPanel()))
                 .addComponent(playfield)
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(nextPanel)
@@ -612,67 +604,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void createStatsPanel() {
-        statsPanel = new JPanel();
-        createStatsLabels();
-
-        GroupLayout statsPanelLayout = new GroupLayout(statsPanel);
-        statsPanel.setLayout(statsPanelLayout);
-        statsPanelLayout.setHorizontalGroup(
-                statsPanelLayout.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(scoreText)
-                        .addComponent(scoreCountText)
-                        .addComponent(levelText)
-                        .addComponent(levelCountText)
-                        .addComponent(linesText)
-                        .addComponent(linesCountText)
-                        .addComponent(timeText)
-                        .addComponent(timeCountText));
-        statsPanelLayout.setVerticalGroup(statsPanelLayout.createSequentialGroup()
-                .addComponent(scoreText)
-                .addComponent(scoreCountText)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(levelText)
-                .addComponent(levelCountText)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(linesText)
-                .addComponent(linesCountText)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(timeText)
-                .addComponent(timeCountText));
-    }
-
-    private void createStatsLabels() {
-        scoreText = new JLabel();
-        scoreCountText = new JLabel();
-        levelText = new JLabel();
-        levelCountText = new JLabel();
-        linesText = new JLabel();
-        linesCountText = new JLabel();
-        timeText = new JLabel();
-        timeCountText = new JLabel();
-
-        scoreText.setText("Score");
-        scoreCountText.setFont(scoreCountText.getFont().deriveFont(
-                scoreCountText.getFont().getStyle() | Font.BOLD, scoreCountText.getFont().getSize() + 7));
-        scoreCountText.setText("0");
-
-        levelText.setText("Level");
-
-        levelCountText.setFont(levelCountText.getFont().deriveFont(
-                levelCountText.getFont().getStyle() | Font.BOLD, levelCountText.getFont().getSize() + 7));
-        levelCountText.setText("0");
-
-        linesText.setText("Lines");
-
-        linesCountText.setFont(linesCountText.getFont().deriveFont(
-                linesCountText.getFont().getStyle() | Font.BOLD, linesCountText.getFont().getSize() + 7));
-        linesCountText.setText("0");
-
-        timeText.setText("Time");
-
-        timeCountText.setFont(timeCountText.getFont().deriveFont(
-                timeCountText.getFont().getStyle() | Font.BOLD, timeCountText.getFont().getSize() + 7));
-        timeCountText.setText("0:00.00");
+        statsGroup = new StatsGroup();
     }
 
     public KeyboardHandler getKeyboardHandler() {
