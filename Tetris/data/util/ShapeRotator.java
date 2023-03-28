@@ -1,4 +1,12 @@
-package Tetris;
+package Tetris.data.util;
+
+import Tetris.data.BooleanDataGrid;
+import Tetris.data.RotatedShape;
+import Tetris.data.ShapeGrid;
+import Tetris.data.XY;
+import Tetris.data.mino.Direction;
+import Tetris.data.mino.Mino;
+import Tetris.data.mino.MinoOrigin;
 
 public class ShapeRotator {
     private ShapeRotator() {

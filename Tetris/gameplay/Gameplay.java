@@ -1,11 +1,11 @@
 package Tetris.gameplay;
 
-import Tetris.BlockWithConnection;
-import Tetris.GoalData;
-import Tetris.GuiData;
-import Tetris.Mino;
-import Tetris.ObjectDataGrid;
-import Tetris.PlayerRenderData;
+import Tetris.data.BlockWithConnection;
+import Tetris.data.GoalData;
+import Tetris.data.GuiData;
+import Tetris.data.ObjectDataGrid;
+import Tetris.data.PlayerRenderData;
+import Tetris.data.mino.Mino;
 import Tetris.gameplay.goal.Goal;
 import Tetris.gameplay.goal.GoalState;
 import Tetris.gameplay.goal.LineGoal;

@@ -1,6 +1,6 @@
 package Tetris.gameplay.randomizer;
 
-import Tetris.Mino;
+import Tetris.data.mino.Mino;
 import java.util.Random;
 
 public abstract class MinoRandomizer {

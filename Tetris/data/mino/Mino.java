@@ -1,6 +1,8 @@
-package Tetris;
+package Tetris.data.mino;
 
-import Tetris.KickTableMap.KickTableBuilder;
+import Tetris.data.ShapeGrid;
+import Tetris.data.XY;
+import Tetris.data.mino.KickTableMap.KickTableBuilder;
 
 public class Mino implements ShapeGrid, KickTable {
     protected ShapeGrid shape;

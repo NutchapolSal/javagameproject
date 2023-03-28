@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.data.mino;
 
 public enum MinoColor {
     Blue("blue"),

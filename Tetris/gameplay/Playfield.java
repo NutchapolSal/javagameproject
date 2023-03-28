@@ -1,18 +1,18 @@
 package Tetris.gameplay;
 
-import Tetris.BlockWithConnection;
-import Tetris.BooleanDataGrid;
-import Tetris.Direction;
-import Tetris.Mino;
-import Tetris.MinoColor;
-import Tetris.ObjectDataGrid;
-import Tetris.PlayerRenderData;
-import Tetris.RotatedShape;
 import Tetris.RotationResult;
-import Tetris.ShapeGrid;
-import Tetris.ShapeRotator;
-import Tetris.XY;
-import Tetris.BlockWithConnection.Dir;
+import Tetris.data.BlockWithConnection;
+import Tetris.data.BooleanDataGrid;
+import Tetris.data.ObjectDataGrid;
+import Tetris.data.PlayerRenderData;
+import Tetris.data.RotatedShape;
+import Tetris.data.ShapeGrid;
+import Tetris.data.XY;
+import Tetris.data.BlockWithConnection.Dir;
+import Tetris.data.mino.Direction;
+import Tetris.data.mino.Mino;
+import Tetris.data.mino.MinoColor;
+import Tetris.data.util.ShapeRotator;
 import Tetris.input.Rotation;
 
 public class Playfield {

@@ -1,10 +1,10 @@
 package Tetris.gui;
 
-import Tetris.BlockWithConnection;
-import Tetris.Mino;
-import Tetris.MinoColor;
-import Tetris.MinoConnector;
-import Tetris.ObjectDataGrid;
+import Tetris.data.BlockWithConnection;
+import Tetris.data.ObjectDataGrid;
+import Tetris.data.mino.Mino;
+import Tetris.data.mino.MinoColor;
+import Tetris.data.util.MinoConnector;
 import java.awt.Graphics;
 
 public class OneMinoPanel extends MinoPanel {

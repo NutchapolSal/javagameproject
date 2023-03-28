@@ -1,6 +1,6 @@
 package Tetris.gameplay.goal;
 
-import Tetris.GoalData;
+import Tetris.data.GoalData;
 
 public class LineGoal extends Goal {
     private int goalLines;

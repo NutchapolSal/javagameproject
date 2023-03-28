@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.data;
 
 public class ObjectDataGrid<T> {
     protected T[][] field;

@@ -1,6 +1,6 @@
 package Tetris.gui;
 
-import Tetris.GuiData;
+import Tetris.data.GuiData;
 
 public interface TetrisGui {
     public void update(GuiData gds);

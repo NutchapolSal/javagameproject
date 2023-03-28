@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.data;
 
 public interface ShapeGrid {
     public boolean getAtPos(int x, int y);

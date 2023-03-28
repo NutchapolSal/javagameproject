@@ -1,6 +1,6 @@
 package Tetris.gameplay.goal;
 
-import Tetris.GoalData;
+import Tetris.data.GoalData;
 
 public class TimeGoal extends Goal {
     private long goalTime;

@@ -1,8 +1,8 @@
 package Tetris.gui;
 
-import Tetris.GoalData;
-import Tetris.GuiData;
-import Tetris.MinoColor;
+import Tetris.data.GoalData;
+import Tetris.data.GuiData;
+import Tetris.data.mino.MinoColor;
 import Tetris.gameplay.goal.GoalState;
 import Tetris.input.GameplayButton;
 import Tetris.input.RawInputSource;

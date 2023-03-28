@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.data.mino;
 
 public class MinoOrigin {
     public final int x;

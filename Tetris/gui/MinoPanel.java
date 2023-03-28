@@ -1,7 +1,7 @@
 package Tetris.gui;
 
-import Tetris.BlockWithConnection;
-import Tetris.MinoColor;
+import Tetris.data.BlockWithConnection;
+import Tetris.data.mino.MinoColor;
 import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics;

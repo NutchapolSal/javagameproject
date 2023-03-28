@@ -1,10 +1,10 @@
 package Tetris.gameplay.randomizer;
 
-import Tetris.BooleanDataGrid;
-import Tetris.Mino;
-import Tetris.MinoColor;
-import Tetris.MinoOrigin;
-import Tetris.Mino.MinoBuilder;
+import Tetris.data.BooleanDataGrid;
+import Tetris.data.mino.Mino;
+import Tetris.data.mino.MinoColor;
+import Tetris.data.mino.MinoOrigin;
+import Tetris.data.mino.Mino.MinoBuilder;
 
 public class CalloutTestRandomizer extends MinoRandomizer {
     private int minoIndex = 0;

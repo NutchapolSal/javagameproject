@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.data.mino;
 
 import Tetris.input.Rotation;
 

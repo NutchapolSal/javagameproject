@@ -1,5 +1,6 @@
-package Tetris;
+package Tetris.data.mino;
 
+import Tetris.data.XY;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;

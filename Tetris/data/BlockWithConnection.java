@@ -1,4 +1,6 @@
-package Tetris;
+package Tetris.data;
+
+import Tetris.data.mino.MinoColor;
 
 public class BlockWithConnection {
     public enum Dir {

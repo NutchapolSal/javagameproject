@@ -1,9 +1,9 @@
 package Tetris.gui;
 
-import Tetris.BlockWithConnection;
-import Tetris.MinoColor;
-import Tetris.ObjectDataGrid;
-import Tetris.PlayerRenderData;
+import Tetris.data.BlockWithConnection;
+import Tetris.data.ObjectDataGrid;
+import Tetris.data.PlayerRenderData;
+import Tetris.data.mino.MinoColor;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;

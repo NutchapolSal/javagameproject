@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.data;
 
 public class PlayerRenderData {
     public final ObjectDataGrid<BlockWithConnection> blocks;

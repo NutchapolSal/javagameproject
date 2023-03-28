@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.data;
 
 public class RotatedShape implements ShapeGrid {
     public final ShapeGrid shape;
@@ -11,7 +11,7 @@ public class RotatedShape implements ShapeGrid {
      */
     public final int yOffset;
 
-    RotatedShape(ShapeGrid shape, int xCornerOffset, int yCornerOffset) {
+    public RotatedShape(ShapeGrid shape, int xCornerOffset, int yCornerOffset) {
         this.shape = shape;
         this.xOffset = xCornerOffset;
         this.yOffset = yCornerOffset;

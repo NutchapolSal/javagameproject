@@ -1,4 +1,8 @@
-package Tetris;
+package Tetris.data.util;
+
+import Tetris.data.BlockWithConnection;
+import Tetris.data.ObjectDataGrid;
+import Tetris.data.mino.Mino;
 
 public class MinoConnector {
     public static ObjectDataGrid<BlockWithConnection> convertMinoToBWC(Mino mino) {

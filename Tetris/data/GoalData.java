@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.data;
 
 public class GoalData {
 
