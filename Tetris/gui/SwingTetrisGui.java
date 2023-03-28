@@ -68,11 +68,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private PlayfieldPanel playfield;
     private Box.Filler rightFiller;
     private JPanel miscPanel;
-    private JPanel calloutsPanel;
-    private CalloutLabel spinLabel;
-    private CalloutLabel lineCalloutLabel;
-    private CalloutLabel comboLabel;
-    private CalloutLabel b2bLabel;
+    private CalloutsGroup calloutsGroup;
     private StatsGroup statsGroup;
 
     private KeyboardHandler kbh;
@@ -133,7 +129,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         if (gds != null) {
             frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
             if (gds.spinName != null) {
-                spinLabel.startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName.toUpperCase() + "-SPIN");
+                calloutsGroup.getSpinLabel()
+                        .startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName.toUpperCase() + "-SPIN");
             }
             if (gds.calloutLines != 0) {
                 String calloutLinesStr = "";
@@ -148,19 +145,19 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 } else {
                     calloutLinesStr = String.format("%d LINES", gds.calloutLines);
                 }
-                lineCalloutLabel.startAnimation(calloutLinesStr);
+                calloutsGroup.getLineCalloutLabel().startAnimation(calloutLinesStr);
             }
             if (gds.b2bCount != lastB2B) {
                 if (gds.b2bCount != 0) {
-                    b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount), false);
+                    calloutsGroup.getB2bLabel().startAnimation(String.format("B2B x%s", gds.b2bCount), false);
                     lastB2B = gds.b2bCount;
                 } else {
-                    b2bLabel.startAnimation(String.format("B2B x%s", gds.b2bCount));
+                    calloutsGroup.getB2bLabel().startAnimation(String.format("B2B x%s", gds.b2bCount));
                     lastB2B = gds.b2bCount;
                 }
             }
             if (gds.comboCount != lastCombo && 0 < gds.comboCount) {
-                comboLabel.startAnimation(String.format("%d COMBO", gds.comboCount));
+                calloutsGroup.getComboLabel().startAnimation(String.format("%d COMBO", gds.comboCount));
             }
             lastCombo = gds.comboCount;
 
@@ -204,9 +201,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
             if (gds.countdown != -1) {
                 if (gds.countdown == 0) {
-                    lineCalloutLabel.startAnimation("GO!");
+                    calloutsGroup.getLineCalloutLabel().startAnimation("GO!");
                 } else {
-                    lineCalloutLabel.startAnimation(String.format("%s", gds.countdown));
+                    calloutsGroup.getLineCalloutLabel().startAnimation(String.format("%s", gds.countdown));
                 }
             }
 
@@ -223,13 +220,13 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                     case WIN:
                         playfield.startAnimation("FINISH");
                         playfield.setPlayerOverrideColor(MinoColor.Gray);
-                        b2bLabel.doFadeOut();
+                        calloutsGroup.getB2bLabel().doFadeOut();
                         lastB2B = 0;
                         break;
                     case LOSE:
                         playfield.startAnimation("GAME OVER");
                         playfield.setPlayerOverrideColor(MinoColor.Gray);
-                        b2bLabel.doFadeOut();
+                        calloutsGroup.getB2bLabel().doFadeOut();
                         lastB2B = 0;
                         break;
                     default:
@@ -460,7 +457,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         centerPanelLayout.setHorizontalGroup(centerPanelLayout.createSequentialGroup()
                 .addGroup(centerPanelLayout.createParallelGroup(Alignment.TRAILING)
                         .addComponent(holdPanel)
-                        .addComponent(calloutsPanel)
+                        .addComponent(calloutsGroup.getPanel())
                         .addComponent(statsGroup.getPanel()))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(playfield)
@@ -474,7 +471,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(holdPanel)
                         .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(calloutsPanel)
+                        .addComponent(calloutsGroup.getPanel())
                         .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
                                 Integer.MAX_VALUE)
                         .addComponent(statsGroup.getPanel()))
@@ -506,47 +503,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void createCallOutsPanel() {
-        calloutsPanel = new JPanel();
-        createCallOutsLabel();
-
-        GroupLayout calloutsPanelLayout = new GroupLayout(calloutsPanel);
-        calloutsPanel.setLayout(calloutsPanelLayout);
-        calloutsPanelLayout.setHorizontalGroup(
-                calloutsPanelLayout.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(spinLabel)
-                        .addComponent(lineCalloutLabel)
-                        .addComponent(b2bLabel)
-                        .addComponent(comboLabel));
-        calloutsPanelLayout.setVerticalGroup(calloutsPanelLayout.createSequentialGroup()
-                .addComponent(spinLabel)
-                .addComponent(lineCalloutLabel)
-                .addComponent(b2bLabel)
-                .addComponent(comboLabel));
-
-    }
-
-    private void createCallOutsLabel() {
-        spinLabel = new CalloutLabel();
-        lineCalloutLabel = new CalloutLabel();
-        b2bLabel = new CalloutLabel();
-        comboLabel = new CalloutLabel();
-
-        lineCalloutLabel.setFont(lineCalloutLabel.getFont().deriveFont(
-                lineCalloutLabel.getFont().getStyle() | Font.BOLD, lineCalloutLabel.getFont().getSize() + 6));
-        lineCalloutLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-
-        b2bLabel.setFont(b2bLabel.getFont().deriveFont(b2bLabel.getFont().getStyle() | Font.BOLD,
-                b2bLabel.getFont().getSize() + 2));
-        b2bLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-
-        comboLabel.setFont(comboLabel.getFont().deriveFont(comboLabel.getFont().getStyle() | Font.BOLD,
-                comboLabel.getFont().getSize() + 2));
-        comboLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-
-        spinLabel.setFont(spinLabel.getFont().deriveFont(spinLabel.getFont().getStyle() | Font.BOLD,
-                spinLabel.getFont().getSize() + 2));
-        spinLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-
+        calloutsGroup = new CalloutsGroup();
     }
 
     private void createMiscPanel() {
