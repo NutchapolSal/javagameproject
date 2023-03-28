@@ -17,7 +17,7 @@ public enum MinoColor {
         this.filename = filename;
     }
 
-    String filename() {
+    public String filename() {
         return filename;
     }
 }

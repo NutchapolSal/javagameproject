@@ -1,5 +1,19 @@
-package Tetris;
+package Tetris.gui;
 
+import Tetris.BlockConnectionMode;
+import Tetris.ControlScheme;
+import Tetris.GameplayButton;
+import Tetris.GameplayMode;
+import Tetris.GoalData;
+import Tetris.GoalState;
+import Tetris.GuiData;
+import Tetris.HandlingPreset;
+import Tetris.MinoColor;
+import Tetris.RawInputSource;
+import Tetris.ReceiveSettings;
+import Tetris.SendSettings;
+import Tetris.SettingKey;
+import Tetris.Settings;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;

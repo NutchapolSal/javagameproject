@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;

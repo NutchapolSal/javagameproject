@@ -1,5 +1,11 @@
-package Tetris;
+package Tetris.gui;
 
+import Tetris.BlockConnectionMode;
+import Tetris.BlockWithConnection;
+import Tetris.MinoColor;
+import Tetris.ReceiveSettings;
+import Tetris.SettingKey;
+import Tetris.XY;
 import Tetris.BlockWithConnection.Dir;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,7 +22,7 @@ import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 
 public class BlockSkinManager implements ReceiveSettings {
-    enum SkinConnection {
+    public enum SkinConnection {
         None(1, 1, new Dir[0]),
         Straight(4, 4, Dir.straights()),
         Diagonal(5, 11, Dir.values());
@@ -49,7 +55,7 @@ public class BlockSkinManager implements ReceiveSettings {
         }
     }
 
-    class FileReadResult {
+    public class FileReadResult {
         public final Image image;
         public final SkinConnection connnection;
         public final boolean requestSmooth;
@@ -61,7 +67,7 @@ public class BlockSkinManager implements ReceiveSettings {
         }
     }
 
-    class ReadResult {
+    public class ReadResult {
         public final Image[] images;
         public final SkinConnection connection;
 

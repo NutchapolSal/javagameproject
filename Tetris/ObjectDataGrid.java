@@ -4,7 +4,7 @@ public class ObjectDataGrid<T> {
     protected T[][] field;
 
     @SuppressWarnings("unchecked")
-    protected ObjectDataGrid(int w, int h) {
+    public ObjectDataGrid(int w, int h) {
         this.field = (T[][]) new Object[w][h];
     }
 

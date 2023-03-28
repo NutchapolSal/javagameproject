@@ -1,7 +1,7 @@
 package Tetris;
 
 public class BlockWithConnection {
-    enum Dir {
+    public enum Dir {
         Up(0, 0, 1),
         UpRight(1, 1, 1),
         Right(2, 1, 0),

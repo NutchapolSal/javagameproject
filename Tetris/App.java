@@ -1,5 +1,6 @@
 package Tetris;
 
+import Tetris.gui.SwingTetrisGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

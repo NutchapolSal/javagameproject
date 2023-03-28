@@ -1,5 +1,7 @@
-package Tetris;
+package Tetris.gui;
 
+import Tetris.BlockWithConnection;
+import Tetris.MinoColor;
 import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -8,8 +10,8 @@ import java.awt.Image;
 import javax.swing.JPanel;
 
 public abstract class MinoPanel extends JPanel {
-    protected static final int BLOCK_WIDTH = 20;
-    protected static final int BLOCK_HEIGHT = 20;
+    public static final int BLOCK_WIDTH = 20;
+    public static final int BLOCK_HEIGHT = 20;
     protected final int PANEL_WIDTH_BLOCKS;
     protected final int PANEL_HEIGHT_BLOCKS;
     protected final int PREF_W;
