@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 
 public class BlockSkinManager implements ReceiveSettings {
-    public enum SkinConnection {
+    public static enum SkinConnection {
         None(1, 1, new Dir[0]),
         Straight(4, 4, Dir.straights()),
         Diagonal(5, 11, Dir.values());
@@ -55,7 +55,7 @@ public class BlockSkinManager implements ReceiveSettings {
         }
     }
 
-    public class FileReadResult {
+    public static class FileReadResult {
         public final Image image;
         public final SkinConnection connnection;
         public final boolean requestSmooth;
@@ -67,7 +67,7 @@ public class BlockSkinManager implements ReceiveSettings {
         }
     }
 
-    public class ReadResult {
+    public static class ReadResult {
         public final Image[] images;
         public final SkinConnection connection;
 
@@ -158,11 +158,11 @@ public class BlockSkinManager implements ReceiveSettings {
         return filepath(mc, selectedFolder);
     }
 
-    private String filepath(MinoColor mc, String blockSkinFolder) {
+    private static String filepath(MinoColor mc, String blockSkinFolder) {
         return folderpath(blockSkinFolder) + "/" + mc.filename() + ".png";
     }
 
-    private String folderpath(String blockSkinFolder) {
+    private static String folderpath(String blockSkinFolder) {
         return "Tetris/blockImg/" + blockSkinFolder;
     }
 
@@ -224,7 +224,7 @@ public class BlockSkinManager implements ReceiveSettings {
         }
     }
 
-    public ReadResult getImagesFromFolder(String folderName, MinoColor mc) {
+    public static ReadResult getImagesFromFolder(String folderName, MinoColor mc) {
         Image loadedImage;
         SkinConnection connected = SkinConnection.None;
         boolean requestSmooth = false;
@@ -242,7 +242,7 @@ public class BlockSkinManager implements ReceiveSettings {
                 connected);
     }
 
-    private FileReadResult readFromFolder(String folder, MinoColor mc) throws IOException {
+    private static FileReadResult readFromFolder(String folder, MinoColor mc) throws IOException {
         Image loadedImage = ImageIO.read(new File(filepath(mc, folder)));
         SkinConnection connection = getSkinConnectionMetadata(folder);
         boolean requestSmooth = new File(folderpath(folder) + "/requestSmoothScaling.txt").isFile();
@@ -263,7 +263,7 @@ public class BlockSkinManager implements ReceiveSettings {
         return new FileReadResult(loadedImage, connection, requestSmooth);
     }
 
-    private SkinConnection getSkinConnectionMetadata(String folder) {
+    private static SkinConnection getSkinConnectionMetadata(String folder) {
         if (new File(folderpath(folder) + "/isConnectedDiagonal.txt").isFile()) {
             return SkinConnection.Diagonal;
         }
@@ -273,7 +273,7 @@ public class BlockSkinManager implements ReceiveSettings {
         return SkinConnection.None;
     }
 
-    private Image generateErrorImage(MinoColor mc) {
+    private static Image generateErrorImage(MinoColor mc) {
         BufferedImage bi = new BufferedImage(MinoPanel.BLOCK_WIDTH,
                 MinoPanel.BLOCK_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
@@ -286,7 +286,7 @@ public class BlockSkinManager implements ReceiveSettings {
         return bi;
     }
 
-    private Image[] cutImageGrid(Image loadedImage, int width, int height, boolean smoothScale) {
+    private static Image[] cutImageGrid(Image loadedImage, int width, int height, boolean smoothScale) {
         Image[] currImages = new Image[width * height];
         Image scaledImage = loadedImage.getScaledInstance(MinoPanel.BLOCK_WIDTH * width,
                 MinoPanel.BLOCK_HEIGHT * height, smoothScale ? Image.SCALE_SMOOTH : Image.SCALE_REPLICATE);
