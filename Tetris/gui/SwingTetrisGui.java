@@ -482,33 +482,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void updateControlSchemeText() {
-        String newControlText = "";
-        switch (controlScheme) {
-            case WASD:
-                newControlText = "<html>\nA D - Move<br>\nS - ";
-                break;
-
-            case Classic:
-                newControlText = "<html>\n⬅ ➡ - Move<br>\n⬇ - ";
-                break;
-            case SlashBracket:
-                newControlText = "<html>\nA D - Move<br>\nS - ";
-                break;
-        }
-        newControlText += controlSchemeSonicDrop ? "Sonic" : "Soft";
-        switch (controlScheme) {
-            case WASD:
-                newControlText += " Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold";
-                break;
-
-            case Classic:
-                newControlText += " Drop<br>\n⬆ - Hard Drop<br>\nZ - Rotate CCW<br>\nX - Rotate CW<br>\nC - Hold";
-                break;
-            case SlashBracket:
-                newControlText += " Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
-                break;
-        }
-        miscGroup.getControlsText().setText(newControlText);
+        miscGroup.updateControlSchemeText(controlScheme, controlSchemeSonicDrop);
     }
 
     public Map<SettingKey, Consumer<Object>> getReceivers() {
