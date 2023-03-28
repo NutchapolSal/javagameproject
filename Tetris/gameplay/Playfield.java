@@ -450,4 +450,15 @@ public class Playfield {
         }
         return true;
     }
+
+    public boolean getDanger() {
+        for (int i = FIELD_HEIGHT - 3; i < blocks.getHeight(); i++) {
+            for (int x = 0; x < blocks.getWidth(); x++) {
+                if (blocks.getAtPos(x, i) != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
