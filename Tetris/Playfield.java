@@ -1,6 +1,7 @@
 package Tetris;
 
 import Tetris.BlockWithConnection.Dir;
+import Tetris.input.Rotation;
 
 public class Playfield {
     private static int FIELD_WIDTH = 10;

@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.input;
 
 public class PlayerInput {
     private int DAS_CHARGE_FRAMES = 9;

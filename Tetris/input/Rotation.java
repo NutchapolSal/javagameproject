@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.input;
 
 public enum Rotation {
     None,

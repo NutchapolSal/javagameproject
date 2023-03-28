@@ -1,5 +1,7 @@
 package Tetris;
 
+import Tetris.input.Rotation;
+
 public enum Direction {
     Up, Right, Down, Left;
 

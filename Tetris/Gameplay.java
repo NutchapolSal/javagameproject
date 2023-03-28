@@ -1,5 +1,8 @@
 package Tetris;
 
+import Tetris.input.PlayerInput;
+import Tetris.input.RawInputSource;
+import Tetris.input.Rotation;
 import java.util.ArrayDeque;
 import java.util.EnumMap;
 import java.util.Map;

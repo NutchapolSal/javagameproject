@@ -1,4 +1,4 @@
-package Tetris;
+package Tetris.input;
 
 public interface RawInputSource {
     public boolean getLeft();
