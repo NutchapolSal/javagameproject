@@ -68,22 +68,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private KeyboardHandler kbh;
     private JMenuBar menuBar;
     private GameMenuGroup gameMenuGroup;
-    private JMenu optionsMenu;
-    private JMenu controlSchemeMenu;
-    private JRadioButtonMenuItem wasdSchemeMenuItem;
-    private JRadioButtonMenuItem classicSchemeMenuItem;
-    private JRadioButtonMenuItem slashBracketSchemeMenuItem;
-    private JMenu handlingMenu;
-    private JRadioButtonMenuItem defaultHandlingMenuItem;
-    private JRadioButtonMenuItem fastHandlingMenuItem;
-    private JCheckBoxMenuItem sonicDropMenuItem;
-    private JMenu blockSkinMenu;
-    private JRadioButtonMenuItem[] blockSkinMenuItems;
-    private JMenu blockConnectionMenu;
-    private JRadioButtonMenuItem noneConnectionMenuItem;
-    private JRadioButtonMenuItem minoConnectionMenuItem;
-    private JRadioButtonMenuItem colorConnectionMenuItem;
-    private JRadioButtonMenuItem allConnectionMenuItem;
+    private OptionsMenuGroup optionsMenuGroup;
     private ActionListener newGameAction;
 
     private double windowDeltaX;
@@ -301,96 +286,11 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         createOptionsMenu();
 
         menuBar.add(gameMenuGroup.getMenu());
-        menuBar.add(optionsMenu);
+        menuBar.add(optionsMenuGroup.getMenu());
     }
 
     private void createOptionsMenu() {
-        optionsMenu = new JMenu();
-        controlSchemeMenu = new JMenu();
-        wasdSchemeMenuItem = new JRadioButtonMenuItem();
-        classicSchemeMenuItem = new JRadioButtonMenuItem();
-        slashBracketSchemeMenuItem = new JRadioButtonMenuItem();
-        handlingMenu = new JMenu();
-        defaultHandlingMenuItem = new JRadioButtonMenuItem();
-        fastHandlingMenuItem = new JRadioButtonMenuItem();
-        sonicDropMenuItem = new JCheckBoxMenuItem();
-        blockSkinMenu = new JMenu();
-        blockSkinMenuItems = new JRadioButtonMenuItem[BlockSkinManager.getBlockSkinFolders().length];
-        blockConnectionMenu = new JMenu();
-        noneConnectionMenuItem = new JRadioButtonMenuItem();
-        minoConnectionMenuItem = new JRadioButtonMenuItem();
-        colorConnectionMenuItem = new JRadioButtonMenuItem();
-        allConnectionMenuItem = new JRadioButtonMenuItem();
-
-        wasdSchemeMenuItem.setSelected(true);
-        wasdSchemeMenuItem.setText("WASD");
-
-        classicSchemeMenuItem.setText("Classic");
-
-        slashBracketSchemeMenuItem.setText("SlashBracket");
-
-        defaultHandlingMenuItem.setSelected(true);
-        defaultHandlingMenuItem.setText("Default");
-
-        fastHandlingMenuItem.setText("Fast");
-
-        sonicDropMenuItem.setText("Sonic Drop");
-
-        noneConnectionMenuItem.setText("None");
-        minoConnectionMenuItem.setText("Mino");
-        colorConnectionMenuItem.setText("Color");
-        allConnectionMenuItem.setText("All");
-
-        controlSchemeMenu.setText("Control Scheme");
-        controlSchemeMenu.add(wasdSchemeMenuItem);
-        controlSchemeMenu.add(classicSchemeMenuItem);
-        controlSchemeMenu.add(slashBracketSchemeMenuItem);
-        ButtonGroup controlSchemeGroup = new ButtonGroup();
-        controlSchemeGroup.add(wasdSchemeMenuItem);
-        controlSchemeGroup.add(classicSchemeMenuItem);
-        controlSchemeGroup.add(slashBracketSchemeMenuItem);
-
-        handlingMenu.setText("Handling");
-        handlingMenu.add(defaultHandlingMenuItem);
-        handlingMenu.add(fastHandlingMenuItem);
-        ButtonGroup handlingGroup = new ButtonGroup();
-        handlingGroup.add(defaultHandlingMenuItem);
-        handlingGroup.add(fastHandlingMenuItem);
-
-        blockSkinMenu.setText("Block Skin");
-        ButtonGroup blockSkinGroup = new ButtonGroup();
-        String[] blockSkinFolders = BlockSkinManager.getBlockSkinFolders();
-        for (int i = 0; i < blockSkinMenuItems.length; i++) {
-            blockSkinMenuItems[i] = new JRadioButtonMenuItem();
-            blockSkinMenuItems[i].setText(blockSkinFolders[i]);
-            blockSkinMenuItems[i].setIcon(
-                    new ImageIcon(blockSkinManager.getImagesFromFolder(blockSkinFolders[i], MinoColor.Red).images[0]));
-            blockSkinMenu.add(blockSkinMenuItems[i]);
-            blockSkinGroup.add(blockSkinMenuItems[i]);
-            if (i == 0) {
-                blockSkinMenuItems[i].setSelected(true);
-            }
-        }
-
-        blockConnectionMenu.setText("Block Connection");
-        blockConnectionMenu.add(noneConnectionMenuItem);
-        blockConnectionMenu.add(minoConnectionMenuItem);
-        blockConnectionMenu.add(colorConnectionMenuItem);
-        blockConnectionMenu.add(allConnectionMenuItem);
-        ButtonGroup blockConnectionGroup = new ButtonGroup();
-        blockConnectionGroup.add(noneConnectionMenuItem);
-        blockConnectionGroup.add(minoConnectionMenuItem);
-        blockConnectionGroup.add(colorConnectionMenuItem);
-        blockConnectionGroup.add(allConnectionMenuItem);
-
-        optionsMenu.setText("Options");
-        optionsMenu.add(controlSchemeMenu);
-        optionsMenu.add(handlingMenu);
-        optionsMenu.add(sonicDropMenuItem);
-        optionsMenu.addSeparator();
-        optionsMenu.add(blockSkinMenu);
-        optionsMenu.add(blockConnectionMenu);
-
+        optionsMenuGroup = new OptionsMenuGroup();
     }
 
     private void createGameMenu() {
@@ -673,14 +573,14 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
         bindControlSchemeMenuItems(s);
         bindHandlingMenuItems(s);
-        sonicDropMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getSonicDropMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED);
             }
         });
 
         bindBlockSkinMenuItems(s);
-        noneConnectionMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getNoneConnectionMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -688,7 +588,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 s.setBlockConnectionMode(BlockConnectionMode.None);
             }
         });
-        minoConnectionMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getMinoConnectionMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -696,7 +596,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 s.setBlockConnectionMode(BlockConnectionMode.Mino);
             }
         });
-        colorConnectionMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getColorConnectionMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -704,7 +604,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 s.setBlockConnectionMode(BlockConnectionMode.Color);
             }
         });
-        allConnectionMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getAllConnectionMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -715,6 +615,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void bindBlockSkinMenuItems(Settings s) {
+        var blockSkinMenuItems = optionsMenuGroup.getBlockSkinMenuItems();
         for (int i = 0; i < blockSkinMenuItems.length; i++) {
             final String yourFolder = BlockSkinManager.getBlockSkinFolders()[i];
             blockSkinMenuItems[i].addItemListener(new ItemListener() {
@@ -745,28 +646,28 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         }
         switch (s.getControlScheme()) {
             case WASD:
-                wasdSchemeMenuItem.setSelected(true);
+                optionsMenuGroup.getWasdSchemeMenuItem().setSelected(true);
                 break;
             case Classic:
-                classicSchemeMenuItem.setSelected(true);
+                optionsMenuGroup.getClassicSchemeMenuItem().setSelected(true);
                 break;
             case SlashBracket:
-                slashBracketSchemeMenuItem.setSelected(true);
+                optionsMenuGroup.getSlashBracketSchemeMenuItem().setSelected(true);
                 break;
         }
         switch (s.getHandlingPreset()) {
             case Default:
-                defaultHandlingMenuItem.setSelected(true);
+                optionsMenuGroup.getDefaultHandlingMenuItem().setSelected(true);
                 break;
             case Fast:
-                fastHandlingMenuItem.setSelected(true);
+                optionsMenuGroup.getFastHandlingMenuItem().setSelected(true);
                 break;
             default:
                 break;
         }
-        sonicDropMenuItem.setSelected(s.getSonicDrop());
+        optionsMenuGroup.getSonicDropMenuItem().setSelected(s.getSonicDrop());
         String selectedSkin = s.getBlockSkin();
-        for (JRadioButtonMenuItem v : blockSkinMenuItems) {
+        for (JRadioButtonMenuItem v : optionsMenuGroup.getBlockSkinMenuItems()) {
             if (v.getText().equals(selectedSkin)) {
                 v.setSelected(true);
                 break;
@@ -774,16 +675,16 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         }
         switch (s.getBlockConnectionMode()) {
             case None:
-                noneConnectionMenuItem.setSelected(true);
+                optionsMenuGroup.getNoneConnectionMenuItem().setSelected(true);
                 break;
             case Mino:
-                minoConnectionMenuItem.setSelected(true);
+                optionsMenuGroup.getMinoConnectionMenuItem().setSelected(true);
                 break;
             case Color:
-                colorConnectionMenuItem.setSelected(true);
+                optionsMenuGroup.getColorConnectionMenuItem().setSelected(true);
                 break;
             case All:
-                allConnectionMenuItem.setSelected(true);
+                optionsMenuGroup.getAllConnectionMenuItem().setSelected(true);
                 break;
             default:
                 break;
@@ -830,7 +731,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void bindControlSchemeMenuItems(Settings s) {
-        wasdSchemeMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getWasdSchemeMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -838,7 +739,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 s.setControlScheme(ControlScheme.WASD);
             }
         });
-        classicSchemeMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getClassicSchemeMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -846,7 +747,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 s.setControlScheme(ControlScheme.Classic);
             }
         });
-        slashBracketSchemeMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getSlashBracketSchemeMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -857,7 +758,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     private void bindHandlingMenuItems(Settings s) {
-        defaultHandlingMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getDefaultHandlingMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -865,7 +766,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 s.setHandlingPreset(HandlingPreset.Default);
             }
         });
-        fastHandlingMenuItem.addItemListener(new ItemListener() {
+        optionsMenuGroup.getFastHandlingMenuItem().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.DESELECTED) {
                     return;
