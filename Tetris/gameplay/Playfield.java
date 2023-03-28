@@ -1,6 +1,5 @@
 package Tetris.gameplay;
 
-import Tetris.RotationResult;
 import Tetris.data.BlockWithConnection;
 import Tetris.data.BooleanDataGrid;
 import Tetris.data.ObjectDataGrid;
