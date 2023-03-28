@@ -19,6 +19,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.util.EnumMap;
@@ -35,7 +36,9 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -49,6 +52,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private Box.Filler rightFiller;
     private NextGroup nextGroup;
     private HoldGroup holdGroup;
+    private NextGroupMock nextGroupMock;
+    private HoldGroupMock holdGroupMock;
     private CalloutsGroup calloutsGroup;
     private StatsGroup statsGroup;
     private MiscGroup miscGroup;
@@ -74,6 +79,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private ControlScheme controlScheme;
     private boolean controlSchemeSonicDrop;
     private BlockSkinManager blockSkinManager = new BlockSkinManager();
+
+    private boolean mockUpP2;
 
     private static double roundToZero(double in) {
         if (in < 0) {
@@ -159,6 +166,10 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 }
             }
             playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
+            if (mockUpP2) {
+                playfield.setPlayerRenderData2(gds.playerRenderData);
+                mockUpP2 = false;
+            }
 
             if (gds.countdown != -1) {
                 if (gds.countdown == 0) {
@@ -224,8 +235,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     public SwingTetrisGui() {
         setLookAndFeel();
-        f = new JFrame("Tetris");
-        f.setSize(500, 500);
+        f = new JFrame("Friendship Stacker [Mockup]");
+        f.setSize(750, 600);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
 
@@ -272,9 +283,22 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
         gameMenuGroup = new GameMenuGroup();
         optionsMenuGroup = new OptionsMenuGroup();
+        JMenu helpMenu = new JMenu();
+        JMenuItem mockupP2MenuItem = new JMenuItem();
+
+        helpMenu.setText("Help");
+        mockupP2MenuItem.setText("mock up p2");
+        mockupP2MenuItem.addActionListener(evt -> {
+            mockUpP2 = true;
+        });
+        mockupP2MenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+                InputEvent.CTRL_DOWN_MASK));
+
+        helpMenu.add(mockupP2MenuItem);
 
         menuBar.add(gameMenuGroup.getMenu());
         menuBar.add(optionsMenuGroup.getMenu());
+        menuBar.add(helpMenu);
     }
 
     private void createCenterPanel() {
@@ -283,6 +307,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         statsGroup = new StatsGroup();
         nextGroup = new NextGroup(blockSkinManager);
         holdGroup = new HoldGroup(blockSkinManager);
+        nextGroupMock = new NextGroupMock(blockSkinManager);
+        holdGroupMock = new HoldGroupMock(blockSkinManager);
         calloutsGroup = new CalloutsGroup();
         miscGroup = new MiscGroup();
 
@@ -291,29 +317,25 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         centerPanelLayout.setHorizontalGroup(centerPanelLayout.createSequentialGroup()
                 .addGroup(centerPanelLayout.createParallelGroup(Alignment.TRAILING)
                         .addComponent(holdGroup.getPanel())
-                        .addComponent(calloutsGroup.getPanel())
-                        .addComponent(statsGroup.getPanel()))
+                        .addComponent(nextGroup.getPanel()))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(playfield)
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addGroup(centerPanelLayout.createParallelGroup()
-                        .addComponent(nextGroup.getPanel())
-                        .addComponent(miscGroup.getPanel())
+                        .addComponent(holdGroupMock.getPanel())
+                        .addComponent(nextGroupMock.getPanel())
 
                 ));
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(holdGroup.getPanel())
                         .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(calloutsGroup.getPanel())
-                        .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-                                Integer.MAX_VALUE)
-                        .addComponent(statsGroup.getPanel()))
+                        .addComponent(nextGroup.getPanel()))
                 .addComponent(playfield)
                 .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(nextGroup.getPanel())
+                        .addComponent(holdGroupMock.getPanel())
                         .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(miscGroup.getPanel())
+                        .addComponent(nextGroupMock.getPanel())
 
                 ));
     }

@@ -15,7 +15,7 @@ import Tetris.data.util.ShapeRotator;
 import Tetris.input.Rotation;
 
 public class Playfield {
-    private static int FIELD_WIDTH = 10;
+    private static int FIELD_WIDTH = 20;
     private static int FIELD_HEIGHT = 20;
     private static int FIELD_HEIGHT_BUFFER = 10;
     private Mino playerMino;

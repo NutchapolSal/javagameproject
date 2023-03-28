@@ -6,23 +6,23 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class NextGroup {
+public class NextGroupMock {
     private OneMinoPanel[] nextMinos = new OneMinoPanel[5];
     private JPanel nextPanel = new JPanel();
     private JLabel nextText = new JLabel();
 
-    public NextGroup(BlockSkinManager blockSkinManager) {
+    public NextGroupMock(BlockSkinManager blockSkinManager) {
         nextText.setText("Next");
 
         GroupLayout nextPanelLayout = new GroupLayout(nextPanel);
         nextPanel.setLayout(nextPanelLayout);
-        var horizGroup = nextPanelLayout.createParallelGroup(Alignment.TRAILING)
+        var horizGroup = nextPanelLayout.createParallelGroup(Alignment.LEADING)
                 .addComponent(nextText);
         var vertGroup = nextPanelLayout.createSequentialGroup()
                 .addComponent(nextText);
 
         for (int i = 0; i < nextMinos.length; i++) {
-            nextMinos[i] = new OneMinoPanel(blockSkinManager);
+            nextMinos[i] = new OneRandomMinoPanel(blockSkinManager);
             horizGroup.addComponent(nextMinos[i]);
 
             vertGroup.addPreferredGap(ComponentPlacement.RELATED);

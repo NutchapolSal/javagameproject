@@ -16,6 +16,7 @@ public class PlayfieldPanel extends MinoPanel {
     private ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS,
             PANEL_HEIGHT_BLOCKS);
     private PlayerRenderData pdr = null;
+    private PlayerRenderData pdr2 = null;
     private double playerLockProgress;
     private CalloutLabel callout;
     private MinoColor playerOverrideColor;
@@ -31,12 +32,17 @@ public class PlayfieldPanel extends MinoPanel {
 
     }
 
+    public void setPlayerRenderData2(PlayerRenderData pdr) {
+        this.pdr2 = pdr;
+
+    }
+
     public void setPlayerOverrideColor(MinoColor playerOverrideColor) {
         this.playerOverrideColor = playerOverrideColor;
     }
 
     public PlayfieldPanel(BlockSkinManager blockSkinManager) {
-        super(blockSkinManager, 10, 20);
+        super(blockSkinManager, 20, 20);
         setOpaque(false);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         callout = new CalloutLabel();
@@ -91,6 +97,27 @@ public class PlayfieldPanel extends MinoPanel {
                 paintMinoBlock(g, x + pdr.x, y + pdr.y, block, mc);
                 setOpacity(playerLockProgress * 0.75);
                 paintMinoBlock(g, x + pdr.x, y + pdr.y, block, MinoColor.Gray);
+            }
+        }
+
+        if (pdr2 == null) {
+            return;
+        }
+
+        for (int y = pdr2.blocks.getHeight() - 1; 0 <= y; y--) {
+            for (int x = 0; x < pdr2.blocks.getWidth(); x++) {
+                if (pdr2.blocks.getAtPos(x, y) == null) {
+                    continue;
+                }
+                BlockWithConnection block = pdr2.blocks.getAtPos(x, y);
+                MinoColor mc = block.getMinoColor();
+                if (playerOverrideColor != null) {
+                    mc = playerOverrideColor;
+                }
+                setOpacity(0.3);
+                paintMinoBlock(g, x + pdr2.x, y + pdr2.shadowY, block, mc);
+                setOpacity(1);
+                paintMinoBlock(g, x + pdr2.x, y + pdr2.y, block, mc);
             }
         }
     }
