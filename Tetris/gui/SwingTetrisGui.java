@@ -43,6 +43,7 @@ import javax.swing.UIManager;
 
 public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings {
     private JFrame f;
+    private JPanel fakeContentPane;
     private JPanel centerPanel;
     private Box.Filler leftFiller;
     private PlayfieldPanel playfield;
@@ -52,6 +53,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private CalloutsGroup calloutsGroup;
     private StatsGroup statsGroup;
     private MiscGroup miscGroup;
+    private DangerBorder dangerBorder;
 
     private KeyboardHandler kbh;
     private JMenuBar menuBar;
@@ -175,10 +177,12 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             lastGamemodeName = gds.gamemodeName;
 
             if (gds.danger != lastDanger) {
-                playfield.setBorder(BorderFactory.createLineBorder(gds.danger ? Color.RED : Color.BLACK));
+                // playfield.setBorder(BorderFactory.createLineBorder(gds.danger ? Color.RED :
+                // Color.BLACK));
                 // f.getContentPane().setBackground(gds.danger ? new Color(255, 0, 0, 63) : new
                 // Color(0, 0, 0, 0));
                 // centerPanel.setBackground(new Color(0, 0, 0, 0));
+                dangerBorder.transition(gds.danger);
             }
             lastDanger = gds.danger;
 
@@ -258,6 +262,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         createMenu();
         f.setJMenuBar(menuBar);
 
+        fakeContentPane = new JPanel();
         leftFiller = new Box.Filler(
                 new Dimension(0, 0),
                 new Dimension(0, 0),
@@ -267,12 +272,16 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 new Dimension(0, 0),
                 new Dimension(0, 0),
                 new Dimension(32767, 0));
+        dangerBorder = new DangerBorder(5);
+
+        fakeContentPane.setLayout(new BoxLayout(fakeContentPane, BoxLayout.X_AXIS));
+        fakeContentPane.add(leftFiller);
+        fakeContentPane.add(centerPanel);
+        fakeContentPane.add(rightFiller);
+        fakeContentPane.setBorder(dangerBorder);
 
         Container contentPane = f.getContentPane();
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
-        contentPane.add(leftFiller);
-        contentPane.add(centerPanel);
-        contentPane.add(rightFiller);
+        contentPane.add(fakeContentPane);
 
     }
 

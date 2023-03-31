@@ -41,7 +41,7 @@ public class Gameplay implements ReceiveSettings {
             goalState = goal.calculate(timeMillis, linesCleared);
             if (goalState != GoalState.NONE) {
                 gameLoop.cancel();
-                renderFrame();
+                renderEnd();
                 return;
             }
 
@@ -72,7 +72,7 @@ public class Gameplay implements ReceiveSettings {
             boolean loopContinueFromLock = processLockDelay();
             if (!loopContinueFromLock) {
                 gameLoop.cancel();
-                renderFrame();
+                renderEnd();
                 return;
             }
 
@@ -83,7 +83,7 @@ public class Gameplay implements ReceiveSettings {
                 boolean loopContinueFromSpawn = processPieceSpawn();
                 if (!loopContinueFromSpawn) {
                     gameLoop.cancel();
-                    renderFrame();
+                    renderEnd();
                     return;
                 }
             }
@@ -444,6 +444,11 @@ public class Gameplay implements ReceiveSettings {
         gravityCount = 0;
         lowestPlayerY = playfield.getPlayerMinoY();
         return true;
+    }
+
+    private void renderEnd() {
+        danger = false;
+        renderFrame();
     }
 
     private void renderFrame() {
