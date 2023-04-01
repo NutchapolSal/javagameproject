@@ -4,6 +4,10 @@ public class FloatEaser extends Easer {
     private float valueA;
     private float valueB;
 
+    public FloatEaser(long startTime) {
+        super(startTime);
+    }
+
     public void setValueA(float valueA) {
         this.valueA = valueA;
     }

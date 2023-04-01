@@ -4,6 +4,10 @@ public class LongEaser extends Easer {
     private long valueA;
     private long valueB;
 
+    public LongEaser(long startTime) {
+        super(startTime);
+    }
+
     public void setValueA(long valueA) {
         this.valueA = valueA;
     }
