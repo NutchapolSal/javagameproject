@@ -1,5 +1,8 @@
 package Tetris.gui;
 
+import Tetris.data.EasingFunctions;
+import Tetris.data.FloatEaser;
+import Tetris.data.IntEaser;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -15,34 +18,41 @@ public class DangerBorder implements Border {
     private static float smallOffset = 0.01f;
     private Color transparent = new Color(255, 255, 255, 0);
     private Color stripeColor = Color.red;
-    private int borderSize = 5;
     private int stripeSize = 10;
     private float stripeStopPos = 0.5f;
 
-    private boolean active = false;
-    private double currBorderSize = 0;
-    private float currStripeStopPos = 0.5f;
-
     private long lastFrame = System.nanoTime();
     private float animValue = 0;
-    private long animLength = TimeUnit.MILLISECONDS.toNanos(1000);
+    private long loopLength = TimeUnit.MILLISECONDS.toNanos(1000);
+
+    private IntEaser easedBorderSize = new IntEaser(lastFrame);
+    private FloatEaser easedStripeStopPos = new FloatEaser(lastFrame);
+    private int currBorderSize = 0;
 
     public DangerBorder(int fullBorderSize) {
-        this.borderSize = fullBorderSize;
+        easedBorderSize.setValueA(0);
+        easedBorderSize.setValueB(fullBorderSize);
+        easedBorderSize.setTimeLength(200, TimeUnit.MILLISECONDS);
+        easedBorderSize.setEaseFunction(EasingFunctions.easeOutPower(3));
+        easedBorderSize.setTimeLengthBToA(800, TimeUnit.MILLISECONDS);
+        easedBorderSize.setEaseBToAFunction(EasingFunctions.easeInExpo());
+        easedStripeStopPos.setValueA(1);
+        easedStripeStopPos.setValueB(stripeStopPos);
+        easedStripeStopPos.setTimeLength(500, TimeUnit.MILLISECONDS);
+        easedStripeStopPos.setEaseFunction(EasingFunctions.easeInPower(5));
+        easedStripeStopPos.setTimeLengthBToA(1500, TimeUnit.MILLISECONDS);
+        easedStripeStopPos.setEaseBToAFunction(EasingFunctions.easeOutExpo());
     }
 
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        int targetBorderSize = active ? borderSize : 0;
-        float targetStripeStopPos = active ? stripeStopPos : 1f;
-
         long currFrame = System.nanoTime();
-        float deltaAnimValue = (float) (currFrame - lastFrame) / animLength;
+        float deltaAnimValue = (float) (currFrame - lastFrame) / loopLength;
         animValue += deltaAnimValue;
         animValue %= 1;
         lastFrame = currFrame;
 
-        currBorderSize += (targetBorderSize - currBorderSize) * 0.19;
-        currStripeStopPos += (targetStripeStopPos - currStripeStopPos) * 0.24;
+        currBorderSize = easedBorderSize.getValue(currFrame);
+        float currStripeStopPos = easedStripeStopPos.getValue(currFrame);
 
         if (1f - smallOffset <= currStripeStopPos) {
             return;
@@ -64,15 +74,15 @@ public class DangerBorder implements Border {
                                 smallOffset, 1f },
                         new Color[] { transparent, stripeColor, stripeColor, transparent },
                         CycleMethod.REPEAT));
-        g2d.fillRect(0, 0, width, (int) currBorderSize);
-        g2d.fillRect(0, height - (int) currBorderSize, width, (int) currBorderSize);
-        g2d.fillRect(0, 0, (int) currBorderSize, height);
-        g2d.fillRect(width - (int) currBorderSize, 0, (int) currBorderSize, height);
+        g2d.fillRect(0, 0, width, currBorderSize);
+        g2d.fillRect(0, height - currBorderSize, width, currBorderSize);
+        g2d.fillRect(0, 0, currBorderSize, height);
+        g2d.fillRect(width - currBorderSize, 0, currBorderSize, height);
         g2d.dispose();
     }
 
     public Insets getBorderInsets(Component c) {
-        return new Insets((int) currBorderSize, (int) currBorderSize, (int) currBorderSize, (int) currBorderSize);
+        return new Insets(currBorderSize, currBorderSize, currBorderSize, currBorderSize);
     }
 
     public boolean isBorderOpaque() {
@@ -80,7 +90,10 @@ public class DangerBorder implements Border {
     }
 
     public void transition(boolean in) {
-        active = in;
+        long currTime = System.nanoTime();
+        easedStripeStopPos.setValueA(in ? smallOffset : 1);
+        easedBorderSize.startEase(currTime, in);
+        easedStripeStopPos.startEase(currTime, in);
     }
 
 }
