@@ -27,6 +27,14 @@ public class Playfield {
             rotateData = ShapeRotator.getRotatedMino(playerMino, direction);
         }
 
+        public int getRotateDataX() {
+            return x + rotateData.xOffset;
+        }
+
+        public int getRotateDataY() {
+            return y + rotateData.yOffset;
+        }
+
     }
 
     private int fieldWidth;
@@ -55,8 +63,8 @@ public class Playfield {
 
     public boolean getPlayerMinoGrounded() {
         return checkShapeCollision(playerData.rotateData,
-                playerData.x + playerData.rotateData.xOffset,
-                playerData.y + playerData.rotateData.yOffset - 1);
+                playerData.getRotateDataX(),
+                playerData.getRotateDataY() - 1);
     }
 
     private void setPlayerMino(Mino mino) {
@@ -105,23 +113,23 @@ public class Playfield {
 
     private RotationResult immobileCheck() {
         if (!checkShapeCollision(playerData.rotateData,
-                playerData.x + playerData.rotateData.xOffset,
-                playerData.y + playerData.rotateData.yOffset + 1)) {
+                playerData.getRotateDataX(),
+                playerData.getRotateDataY() + 1)) {
             return RotationResult.Success;
         }
         if (!checkShapeCollision(playerData.rotateData,
-                playerData.x + playerData.rotateData.xOffset,
-                playerData.y + playerData.rotateData.yOffset - 1)) {
+                playerData.getRotateDataX(),
+                playerData.getRotateDataY() - 1)) {
             return RotationResult.Success;
         }
         if (!checkShapeCollision(playerData.rotateData,
-                playerData.x + playerData.rotateData.xOffset + 1,
-                playerData.y + playerData.rotateData.yOffset)) {
+                playerData.getRotateDataX() + 1,
+                playerData.getRotateDataY())) {
             return RotationResult.Success;
         }
         if (!checkShapeCollision(playerData.rotateData,
-                playerData.x + playerData.rotateData.xOffset - 1,
-                playerData.y + playerData.rotateData.yOffset)) {
+                playerData.getRotateDataX() - 1,
+                playerData.getRotateDataY())) {
             return RotationResult.Success;
         }
         return RotationResult.SuccessTwist;
@@ -194,12 +202,12 @@ public class Playfield {
         writeShapeToColorGrid(
                 blocks,
                 playerData.rotateData,
-                playerData.x + playerData.rotateData.xOffset,
-                playerData.y + playerData.rotateData.yOffset,
+                playerData.getRotateDataX(),
+                playerData.getRotateDataY(),
                 playerData.mino.getColor());
 
         boolean output = false;
-        int yOffset = playerData.y + playerData.rotateData.yOffset;
+        int yOffset = playerData.getRotateDataY();
         outerLoop: for (int y = 0; y < playerData.rotateData.getHeight(); y++) {
             for (int x = 0; x < playerData.rotateData.getWidth(); x++) {
                 if (playerData.rotateData.getAtPos(x, y) && yOffset + y < fieldHeight) {
@@ -219,8 +227,8 @@ public class Playfield {
         boolean blocksInBounds = false;
         bibcheck: for (int y = 0; y < playerData.rotateData.getHeight(); y++) {
             for (int x = 0; x < playerData.rotateData.getWidth(); x++) {
-                if (blocks.getAtPos(playerData.x + playerData.rotateData.xOffset + x,
-                        playerData.y + playerData.rotateData.yOffset + y) != null) {
+                if (blocks.getAtPos(playerData.getRotateDataX() + x,
+                        playerData.getRotateDataY() + y) != null) {
                     blocksInBounds = true;
                     break bibcheck;
                 }
@@ -230,7 +238,7 @@ public class Playfield {
         if (!blocksInBounds) {
             fastcheck: for (; 0 < shadowY + playerData.rotateData.yOffset; shadowY--) {
                 for (int x = 0; x < playerData.rotateData.getWidth(); x++) {
-                    if (blocks.getAtPos(playerData.x + playerData.rotateData.xOffset + x,
+                    if (blocks.getAtPos(playerData.getRotateDataX() + x,
                             shadowY + playerData.rotateData.yOffset - 1) != null) {
                         break fastcheck;
                     }
@@ -241,7 +249,7 @@ public class Playfield {
         for (;; shadowY--) {
             if (checkShapeCollision(
                     playerData.rotateData,
-                    playerData.x + playerData.rotateData.xOffset,
+                    playerData.getRotateDataX(),
                     shadowY + playerData.rotateData.yOffset - 1)) {
                 break;
             }
@@ -393,8 +401,8 @@ public class Playfield {
 
         return new PlayerRenderData(
                 playerBlocks,
-                playerData.x + playerData.rotateData.xOffset,
-                playerData.y + playerData.rotateData.yOffset,
+                playerData.getRotateDataX(),
+                playerData.getRotateDataY(),
                 getShadowYPos() + playerData.rotateData.yOffset);
     }
 
