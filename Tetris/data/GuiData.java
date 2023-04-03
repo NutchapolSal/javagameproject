@@ -18,6 +18,7 @@ public class GuiData {
     public final int b2bCount;
     public final GoalState goalState;
     public final String gamemodeName;
+    public final boolean danger;
     /**
      * may be null
      */
@@ -59,6 +60,7 @@ public class GuiData {
             int b2bCount,
             GoalState goalState,
             String gamemodeName,
+            boolean danger,
             ObjectDataGrid<BlockWithConnection> renderBlocks,
             Mino[] nextQueue,
             int calloutLines,
@@ -82,6 +84,7 @@ public class GuiData {
         this.b2bCount = b2bCount;
         this.goalState = goalState;
         this.gamemodeName = gamemodeName;
+        this.danger = danger;
         this.renderBlocks = renderBlocks;
         this.calloutLines = calloutLines;
         this.spinName = spinName;

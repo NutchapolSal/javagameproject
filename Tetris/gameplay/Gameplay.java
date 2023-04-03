@@ -41,7 +41,7 @@ public class Gameplay implements ReceiveSettings {
             goalState = goal.calculate(timeMillis, linesCleared);
             if (goalState != GoalState.NONE) {
                 gameLoop.cancel();
-                renderFrame();
+                renderEnd();
                 return;
             }
 
@@ -72,7 +72,7 @@ public class Gameplay implements ReceiveSettings {
             boolean loopContinueFromLock = processLockDelay();
             if (!loopContinueFromLock) {
                 gameLoop.cancel();
-                renderFrame();
+                renderEnd();
                 return;
             }
 
@@ -83,7 +83,7 @@ public class Gameplay implements ReceiveSettings {
                 boolean loopContinueFromSpawn = processPieceSpawn();
                 if (!loopContinueFromSpawn) {
                     gameLoop.cancel();
-                    renderFrame();
+                    renderEnd();
                     return;
                 }
             }
@@ -156,6 +156,7 @@ public class Gameplay implements ReceiveSettings {
     private GoalState goalState;
     private int countdownGui;
     private String gamemodeName = "";
+    private boolean danger;
 
     public void setRawInputSource(RawInputSource ris) {
         pi.setRawInputSource(ris);
@@ -206,6 +207,7 @@ public class Gameplay implements ReceiveSettings {
         spinMini = false;
         allCleared = false;
         goalData = goal.getGoalData();
+        danger = false;
 
         fillNextQueue();
         renderFrame();
@@ -382,6 +384,7 @@ public class Gameplay implements ReceiveSettings {
             goalState = GoalState.LOSE;
             return false;
         }
+        danger = playfield.getDanger();
         return true;
     }
 
@@ -443,6 +446,11 @@ public class Gameplay implements ReceiveSettings {
         return true;
     }
 
+    private void renderEnd() {
+        danger = false;
+        renderFrame();
+    }
+
     private void renderFrame() {
         boolean offerResult = renderQueue.offer(new GuiData(timeMillis,
                 linesCleared,
@@ -458,6 +466,7 @@ public class Gameplay implements ReceiveSettings {
                 Math.max(0, b2bCount - 1),
                 goalState,
                 gamemodeName,
+                danger,
                 renderBlocks,
                 nextQueueGuiData,
                 calloutLines,
