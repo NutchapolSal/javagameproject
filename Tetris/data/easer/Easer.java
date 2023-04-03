@@ -1,4 +1,4 @@
-package Tetris.data;
+package Tetris.data.easer;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleUnaryOperator;

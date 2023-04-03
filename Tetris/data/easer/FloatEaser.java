@@ -1,4 +1,4 @@
-package Tetris.data;
+package Tetris.data.easer;
 
 public class FloatEaser extends Easer {
     private float valueA;

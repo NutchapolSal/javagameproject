@@ -1,8 +1,8 @@
 package Tetris.gui;
 
-import Tetris.data.EasingFunctions;
-import Tetris.data.FloatEaser;
-import Tetris.data.IntEaser;
+import Tetris.data.easer.EasingFunctions;
+import Tetris.data.easer.FloatEaser;
+import Tetris.data.easer.IntEaser;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
