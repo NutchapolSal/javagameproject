@@ -119,7 +119,7 @@ public class Gameplay implements ReceiveSettings {
     private long startTime;
     private long lastFrame;
     private long timeMillis;
-    private Playfield playfield;
+    private SingleplayerPlayfield playfield;
     private MinoRandomizer minoRandomizer;
     private Queue<Mino> nextQueue = new ArrayDeque<>();
     private Mino hold;
@@ -175,7 +175,7 @@ public class Gameplay implements ReceiveSettings {
         goal = newGoal.peek() != null ? newGoal.poll() : goal;
         lastFrame = System.nanoTime();
         timeMillis = 0;
-        playfield = new Playfield(10, 20);
+        playfield = new SingleplayerPlayfield(10, 20);
         minoRandomizer = new SevenBagRandomizer(System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5));
         nextQueue = new ArrayDeque<>();
         hold = null;

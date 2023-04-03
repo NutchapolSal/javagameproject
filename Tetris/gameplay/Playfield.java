@@ -40,106 +40,108 @@ public class Playfield {
     private int fieldWidth;
     private int fieldHeight;
     public static final int FIELD_HEIGHT_BUFFER = 10;
-    private PlayerData playerData;
+    private PlayerData[] playerDatas;
     private ObjectDataGrid<BlockWithConnection> blocks;
 
-    public Playfield(int fieldWidth, int fieldHeight) {
+    public Playfield(int fieldWidth, int fieldHeight, int players) {
         this.fieldWidth = fieldWidth;
         this.fieldHeight = fieldHeight;
         blocks = new ObjectDataGrid<>(fieldWidth, fieldHeight + FIELD_HEIGHT_BUFFER);
+        this.playerDatas = new PlayerData[players];
     }
 
-    public boolean hasPlayerMino() {
-        return playerData != null;
+    public boolean hasPlayerMino(int index) {
+        return playerDatas[index] != null;
     }
 
-    public boolean moveXPlayerMino(int x) {
-        return movePlayerMino(x, 0);
+    public boolean moveXPlayerMino(int index, int x) {
+        return movePlayerMino(index, x, 0);
     }
 
-    public boolean moveYPlayerMino(int y) {
-        return movePlayerMino(0, y);
+    public boolean moveYPlayerMino(int index, int y) {
+        return movePlayerMino(index, 0, y);
     }
 
-    public boolean getPlayerMinoGrounded() {
-        return checkShapeCollision(playerData.rotateData,
-                playerData.getRotateDataX(),
-                playerData.getRotateDataY() - 1);
+    public boolean getPlayerMinoGrounded(int index) {
+        return checkShapeCollision(playerDatas[index].rotateData,
+                playerDatas[index].getRotateDataX(),
+                playerDatas[index].getRotateDataY() - 1);
     }
 
-    private void setPlayerMino(Mino mino) {
-        playerData = new PlayerData(mino);
+    private void setPlayerMino(int index, Mino mino) {
+        playerDatas[index] = new PlayerData(mino);
     }
 
-    private boolean movePlayerMino(int x, int y) {
-        return setPlayerMinoPos(playerData.x + x, playerData.y + y);
+    private boolean movePlayerMino(int index, int x, int y) {
+        return setPlayerMinoPos(index, playerDatas[index].x + x, playerDatas[index].y + y);
     }
 
-    private boolean setPlayerMinoPos(int x, int y) {
-        boolean collided = checkShapeCollision(playerData.rotateData,
-                x + playerData.rotateData.xOffset,
-                y + playerData.rotateData.yOffset);
+    private boolean setPlayerMinoPos(int index, int x, int y) {
+        boolean collided = checkShapeCollision(playerDatas[index].rotateData,
+                x + playerDatas[index].rotateData.xOffset,
+                y + playerDatas[index].rotateData.yOffset);
         if (collided) {
             return false;
         }
-        playerData.x = x;
-        playerData.y = y;
+        playerDatas[index].x = x;
+        playerDatas[index].y = y;
         return true;
     }
 
-    public RotationResult rotatePlayerMino(Rotation rot) {
-        Direction beforeRotate = playerData.direction;
-        Direction afterRotate = playerData.direction.rotate(rot);
+    public RotationResult rotatePlayerMino(int index, Rotation rot) {
+        Direction beforeRotate = playerDatas[index].direction;
+        Direction afterRotate = playerDatas[index].direction.rotate(rot);
 
-        RotatedShape rotateData = ShapeRotator.getRotatedMino(playerData.mino, afterRotate);
-        XY[] kicks = playerData.mino.getKicks(beforeRotate, afterRotate);
+        RotatedShape rotateData = ShapeRotator.getRotatedMino(playerDatas[index].mino, afterRotate);
+        XY[] kicks = playerDatas[index].mino.getKicks(beforeRotate, afterRotate);
         for (XY kick : kicks) {
-            boolean collided = checkShapeCollision(rotateData.shape, playerData.x + rotateData.xOffset + kick.x,
-                    playerData.y + rotateData.yOffset + kick.y);
+            boolean collided = checkShapeCollision(rotateData.shape, playerDatas[index].x + rotateData.xOffset + kick.x,
+                    playerDatas[index].y + rotateData.yOffset + kick.y);
             if (!collided) {
-                playerData.x = playerData.x + kick.x;
-                playerData.y = playerData.y + kick.y;
-                playerData.direction = afterRotate;
-                playerData.rotateData = rotateData;
-                if (playerData.mino.isUseTSpinCheck()) {
-                    return threeCornerCheck(kick.x, kick.y);
+                playerDatas[index].x = playerDatas[index].x + kick.x;
+                playerDatas[index].y = playerDatas[index].y + kick.y;
+                playerDatas[index].direction = afterRotate;
+                playerDatas[index].rotateData = rotateData;
+                if (playerDatas[index].mino.isUseTSpinCheck()) {
+                    return threeCornerCheck(index, kick.x, kick.y);
                 } else {
-                    return immobileCheck();
+                    return immobileCheck(index);
                 }
             }
         }
         return RotationResult.Fail;
     }
 
-    private RotationResult immobileCheck() {
-        if (!checkShapeCollision(playerData.rotateData,
-                playerData.getRotateDataX(),
-                playerData.getRotateDataY() + 1)) {
+    private RotationResult immobileCheck(int index) {
+        if (!checkShapeCollision(playerDatas[index].rotateData,
+                playerDatas[index].getRotateDataX(),
+                playerDatas[index].getRotateDataY() + 1)) {
             return RotationResult.Success;
         }
-        if (!checkShapeCollision(playerData.rotateData,
-                playerData.getRotateDataX(),
-                playerData.getRotateDataY() - 1)) {
+        if (!checkShapeCollision(playerDatas[index].rotateData,
+                playerDatas[index].getRotateDataX(),
+                playerDatas[index].getRotateDataY() - 1)) {
             return RotationResult.Success;
         }
-        if (!checkShapeCollision(playerData.rotateData,
-                playerData.getRotateDataX() + 1,
-                playerData.getRotateDataY())) {
+        if (!checkShapeCollision(playerDatas[index].rotateData,
+                playerDatas[index].getRotateDataX() + 1,
+                playerDatas[index].getRotateDataY())) {
             return RotationResult.Success;
         }
-        if (!checkShapeCollision(playerData.rotateData,
-                playerData.getRotateDataX() - 1,
-                playerData.getRotateDataY())) {
+        if (!checkShapeCollision(playerDatas[index].rotateData,
+                playerDatas[index].getRotateDataX() - 1,
+                playerDatas[index].getRotateDataY())) {
             return RotationResult.Success;
         }
         return RotationResult.SuccessTwist;
     }
 
-    private RotationResult threeCornerCheck(int kickX, int kickY) {
+    private RotationResult threeCornerCheck(int index, int kickX, int kickY) {
         BooleanDataGrid absoluteTopLeftCorner = new BooleanDataGrid(3, 3);
         absoluteTopLeftCorner.setAtPos(0, 2, true);
 
-        ShapeGrid relativeTopLeftCorner = ShapeRotator.getRotatedShape(absoluteTopLeftCorner, playerData.direction);
+        ShapeGrid relativeTopLeftCorner = ShapeRotator.getRotatedShape(absoluteTopLeftCorner,
+                playerDatas[index].direction);
         ShapeGrid relativeTopRightCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Right);
         ShapeGrid relativeBottomRightCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Down);
         ShapeGrid relativeBottomLeftCorner = ShapeRotator.getRotatedShape(relativeTopLeftCorner, Direction.Left);
@@ -147,25 +149,25 @@ public class Playfield {
         int squaresCount = 0;
         int frontSquaresCount = 0;
         if (checkShapeCollision(relativeTopLeftCorner,
-                playerData.x + playerData.mino.getOrigin().x - 1,
-                playerData.y + playerData.mino.getOrigin().y - 1)) {
+                playerDatas[index].x + playerDatas[index].mino.getOrigin().x - 1,
+                playerDatas[index].y + playerDatas[index].mino.getOrigin().y - 1)) {
             squaresCount++;
             frontSquaresCount++;
         }
         if (checkShapeCollision(relativeTopRightCorner,
-                playerData.x + playerData.mino.getOrigin().x - 1,
-                playerData.y + playerData.mino.getOrigin().y - 1)) {
+                playerDatas[index].x + playerDatas[index].mino.getOrigin().x - 1,
+                playerDatas[index].y + playerDatas[index].mino.getOrigin().y - 1)) {
             squaresCount++;
             frontSquaresCount++;
         }
         if (checkShapeCollision(relativeBottomLeftCorner,
-                playerData.x + playerData.mino.getOrigin().x - 1,
-                playerData.y + playerData.mino.getOrigin().y - 1)) {
+                playerDatas[index].x + playerDatas[index].mino.getOrigin().x - 1,
+                playerDatas[index].y + playerDatas[index].mino.getOrigin().y - 1)) {
             squaresCount++;
         }
         if (checkShapeCollision(relativeBottomRightCorner,
-                playerData.x + playerData.mino.getOrigin().x - 1,
-                playerData.y + playerData.mino.getOrigin().y - 1)) {
+                playerDatas[index].x + playerDatas[index].mino.getOrigin().x - 1,
+                playerDatas[index].y + playerDatas[index].mino.getOrigin().y - 1)) {
             squaresCount++;
         }
 
@@ -184,13 +186,13 @@ public class Playfield {
     /**
      * @return amount of blocks player moved
      */
-    public int sonicDropPlayerMino() {
-        int shadowYPos = getShadowYPos();
-        if (shadowYPos == playerData.y) {
+    public int sonicDropPlayerMino(int index) {
+        int shadowYPos = getShadowYPos(index);
+        if (shadowYPos == playerDatas[index].y) {
             return 0;
         }
-        int blocksMoved = playerData.y - shadowYPos;
-        setPlayerMinoPos(playerData.x, shadowYPos);
+        int blocksMoved = playerDatas[index].y - shadowYPos;
+        setPlayerMinoPos(index, playerDatas[index].x, shadowYPos);
         return blocksMoved;
     }
 
@@ -198,37 +200,37 @@ public class Playfield {
      * @return true if locked inside playfield, false if did not lock inside
      *         playfield
      */
-    public boolean lockPlayerMino() {
+    public boolean lockPlayerMino(int index) {
         writeShapeToColorGrid(
                 blocks,
-                playerData.rotateData,
-                playerData.getRotateDataX(),
-                playerData.getRotateDataY(),
-                playerData.mino.getColor());
+                playerDatas[index].rotateData,
+                playerDatas[index].getRotateDataX(),
+                playerDatas[index].getRotateDataY(),
+                playerDatas[index].mino.getColor());
 
         boolean output = false;
-        int yOffset = playerData.getRotateDataY();
-        outerLoop: for (int y = 0; y < playerData.rotateData.getHeight(); y++) {
-            for (int x = 0; x < playerData.rotateData.getWidth(); x++) {
-                if (playerData.rotateData.getAtPos(x, y) && yOffset + y < fieldHeight) {
+        int yOffset = playerDatas[index].getRotateDataY();
+        outerLoop: for (int y = 0; y < playerDatas[index].rotateData.getHeight(); y++) {
+            for (int x = 0; x < playerDatas[index].rotateData.getWidth(); x++) {
+                if (playerDatas[index].rotateData.getAtPos(x, y) && yOffset + y < fieldHeight) {
                     output = true;
                     break outerLoop;
                 }
             }
         }
 
-        playerData = null;
+        playerDatas[index] = null;
         return output;
     }
 
-    private int getShadowYPos() {
-        int shadowY = playerData.y;
+    private int getShadowYPos(int index) {
+        int shadowY = playerDatas[index].y;
 
         boolean blocksInBounds = false;
-        bibcheck: for (int y = 0; y < playerData.rotateData.getHeight(); y++) {
-            for (int x = 0; x < playerData.rotateData.getWidth(); x++) {
-                if (blocks.getAtPos(playerData.getRotateDataX() + x,
-                        playerData.getRotateDataY() + y) != null) {
+        bibcheck: for (int y = 0; y < playerDatas[index].rotateData.getHeight(); y++) {
+            for (int x = 0; x < playerDatas[index].rotateData.getWidth(); x++) {
+                if (blocks.getAtPos(playerDatas[index].getRotateDataX() + x,
+                        playerDatas[index].getRotateDataY() + y) != null) {
                     blocksInBounds = true;
                     break bibcheck;
                 }
@@ -236,10 +238,10 @@ public class Playfield {
         }
 
         if (!blocksInBounds) {
-            fastcheck: for (; 0 < shadowY + playerData.rotateData.yOffset; shadowY--) {
-                for (int x = 0; x < playerData.rotateData.getWidth(); x++) {
-                    if (blocks.getAtPos(playerData.getRotateDataX() + x,
-                            shadowY + playerData.rotateData.yOffset - 1) != null) {
+            fastcheck: for (; 0 < shadowY + playerDatas[index].rotateData.yOffset; shadowY--) {
+                for (int x = 0; x < playerDatas[index].rotateData.getWidth(); x++) {
+                    if (blocks.getAtPos(playerDatas[index].getRotateDataX() + x,
+                            shadowY + playerDatas[index].rotateData.yOffset - 1) != null) {
                         break fastcheck;
                     }
                 }
@@ -248,28 +250,29 @@ public class Playfield {
 
         for (;; shadowY--) {
             if (checkShapeCollision(
-                    playerData.rotateData,
-                    playerData.getRotateDataX(),
-                    shadowY + playerData.rotateData.yOffset - 1)) {
+                    playerDatas[index].rotateData,
+                    playerDatas[index].getRotateDataX(),
+                    shadowY + playerDatas[index].rotateData.yOffset - 1)) {
                 break;
             }
         }
         return shadowY;
     }
 
-    public boolean spawnPlayerMino(Mino mino) {
-        setPlayerMino(mino);
-        boolean spawnSuccess = setPlayerMinoPos((fieldWidth - mino.getWidth()) / 2,
+    public boolean spawnPlayerMino(int index, Mino mino) {
+        setPlayerMino(index, mino);
+        boolean spawnSuccess = setPlayerMinoPos(index,
+                (fieldWidth - mino.getWidth()) / 2,
                 fieldHeight + 1);
         if (spawnSuccess) {
-            movePlayerMino(0, -1);
+            movePlayerMino(index, 0, -1);
         }
         return spawnSuccess;
     }
 
-    public Mino swapHold(Mino holdMino) {
-        PlayerData newHoldMino = playerData;
-        spawnPlayerMino(holdMino);
+    public Mino swapHold(int index, Mino holdMino) {
+        PlayerData newHoldMino = playerDatas[index];
+        spawnPlayerMino(index, holdMino);
         return newHoldMino.mino;
     }
 
@@ -390,20 +393,21 @@ public class Playfield {
         return renderBlocks;
     }
 
-    public PlayerRenderData getPlayerRenderData() {
-        if (playerData == null) {
+    public PlayerRenderData getPlayerRenderData(int index) {
+        if (playerDatas[index] == null) {
             return null;
         }
 
-        ObjectDataGrid<BlockWithConnection> playerBlocks = new ObjectDataGrid<>(playerData.rotateData.shape.getWidth(),
-                playerData.rotateData.shape.getHeight());
-        writeShapeToColorGrid(playerBlocks, playerData.rotateData, 0, 0, playerData.mino.getColor());
+        ObjectDataGrid<BlockWithConnection> playerBlocks = new ObjectDataGrid<>(
+                playerDatas[index].rotateData.shape.getWidth(),
+                playerDatas[index].rotateData.shape.getHeight());
+        writeShapeToColorGrid(playerBlocks, playerDatas[index].rotateData, 0, 0, playerDatas[index].mino.getColor());
 
         return new PlayerRenderData(
                 playerBlocks,
-                playerData.getRotateDataX(),
-                playerData.getRotateDataY(),
-                getShadowYPos() + playerData.rotateData.yOffset);
+                playerDatas[index].getRotateDataX(),
+                playerDatas[index].getRotateDataY(),
+                getShadowYPos(index) + playerDatas[index].rotateData.yOffset);
     }
 
     public int clearLines() {
@@ -449,19 +453,19 @@ public class Playfield {
         return rowsCleared;
     }
 
-    public int getPlayerMinoY() {
-        if (playerData == null) {
+    public int getPlayerMinoY(int index) {
+        if (playerDatas[index] == null) {
             return fieldHeight + 2;
         }
-        return playerData.y;
+        return playerDatas[index].y;
     }
 
-    public String getPlayerMinoName() {
-        return playerData.mino.getName();
+    public String getPlayerMinoName(int index) {
+        return playerDatas[index].mino.getName();
     }
 
-    public Direction getPlayerMinoDirection() {
-        return playerData.direction;
+    public Direction getPlayerMinoDirection(int index) {
+        return playerDatas[index].direction;
     }
 
     public boolean isClear() {
