@@ -1,4 +1,4 @@
-package Tetris.data;
+package Tetris.data.easer;
 
 import java.util.function.DoubleUnaryOperator;
 

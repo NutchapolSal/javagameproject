@@ -1,4 +1,4 @@
-package Tetris.data;
+package Tetris.data.easer;
 
 public class LongEaser extends Easer {
     private long valueA;
