@@ -12,10 +12,10 @@ import javax.swing.JPanel;
 public abstract class MinoPanel extends JPanel {
     public static final int BLOCK_WIDTH = 20;
     public static final int BLOCK_HEIGHT = 20;
-    protected final int PANEL_WIDTH_BLOCKS;
-    protected final int PANEL_HEIGHT_BLOCKS;
-    protected final int PREF_W;
-    protected final int PREF_H;
+    protected int PANEL_WIDTH_BLOCKS;
+    protected int PANEL_HEIGHT_BLOCKS;
+    protected int PREF_W;
+    protected int PREF_H;
 
     protected BlockSkinManager blockSkinManager;
     protected int centerOffsetX = 0;
@@ -24,6 +24,10 @@ public abstract class MinoPanel extends JPanel {
 
     protected MinoPanel(BlockSkinManager blockSkinManager, int w, int h) {
         this.blockSkinManager = blockSkinManager;
+        setBlocksSize(w, h);
+    }
+
+    protected void setBlocksSize(int w, int h) {
         PANEL_WIDTH_BLOCKS = w;
         PANEL_HEIGHT_BLOCKS = h;
         PREF_W = PANEL_WIDTH_BLOCKS * BLOCK_WIDTH;

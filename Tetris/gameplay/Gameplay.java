@@ -175,7 +175,7 @@ public class Gameplay implements ReceiveSettings {
         goal = newGoal.peek() != null ? newGoal.poll() : goal;
         lastFrame = System.nanoTime();
         timeMillis = 0;
-        playfield = new Playfield();
+        playfield = new Playfield(10, 20);
         minoRandomizer = new SevenBagRandomizer(System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5));
         nextQueue = new ArrayDeque<>();
         hold = null;

@@ -4,6 +4,7 @@ import Tetris.data.BlockWithConnection;
 import Tetris.data.ObjectDataGrid;
 import Tetris.data.PlayerRenderData;
 import Tetris.data.mino.MinoColor;
+import Tetris.gameplay.Playfield;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -22,6 +23,7 @@ public class PlayfieldPanel extends MinoPanel {
 
     public void setRenderBlocks(ObjectDataGrid<BlockWithConnection> renderBlocks) {
         this.renderBlocks = renderBlocks;
+        setBlocksSize(this.renderBlocks.getWidth(), this.renderBlocks.getHeight() - Playfield.FIELD_HEIGHT_BUFFER);
     }
 
     public void setPlayerRenderData(PlayerRenderData pdr, double playerLockProgress) {

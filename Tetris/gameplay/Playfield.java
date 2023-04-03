@@ -15,16 +15,21 @@ import Tetris.data.util.ShapeRotator;
 import Tetris.input.Rotation;
 
 public class Playfield {
-    private static int FIELD_WIDTH = 10;
-    private static int FIELD_HEIGHT = 20;
-    private static int FIELD_HEIGHT_BUFFER = 10;
+    private int fieldWidth;
+    private int fieldHeight;
+    public static final int FIELD_HEIGHT_BUFFER = 10;
     private Mino playerMino;
     private RotatedShape playerMinoRotateData;
     private int playerMinoX;
     private int playerMinoY;
     private Direction playerMinoDirection;
-    private ObjectDataGrid<BlockWithConnection> blocks = new ObjectDataGrid<>(FIELD_WIDTH,
-            FIELD_HEIGHT + FIELD_HEIGHT_BUFFER);
+    private ObjectDataGrid<BlockWithConnection> blocks;
+
+    public Playfield(int fieldWidth, int fieldHeight) {
+        this.fieldWidth = fieldWidth;
+        this.fieldHeight = fieldHeight;
+        blocks = new ObjectDataGrid<>(fieldWidth, fieldHeight + FIELD_HEIGHT_BUFFER);
+    }
 
     public boolean hasPlayerMino() {
         return playerMino != null;
@@ -189,7 +194,7 @@ public class Playfield {
         int yOffset = playerMinoY + playerMinoRotateData.yOffset;
         outerLoop: for (int y = 0; y < playerMinoRotateData.getHeight(); y++) {
             for (int x = 0; x < playerMinoRotateData.getWidth(); x++) {
-                if (playerMinoRotateData.getAtPos(x, y) && yOffset + y < FIELD_HEIGHT) {
+                if (playerMinoRotateData.getAtPos(x, y) && yOffset + y < fieldHeight) {
                     output = true;
                     break outerLoop;
                 }
@@ -238,8 +243,8 @@ public class Playfield {
 
     public boolean spawnPlayerMino(Mino mino) {
         setPlayerMino(mino);
-        boolean spawnSuccess = setPlayerMinoPos((FIELD_WIDTH - mino.getWidth()) / 2,
-                FIELD_HEIGHT + 1);
+        boolean spawnSuccess = setPlayerMinoPos((fieldWidth - mino.getWidth()) / 2,
+                fieldHeight + 1);
         if (spawnSuccess) {
             movePlayerMino(0, -1);
         }
@@ -357,8 +362,8 @@ public class Playfield {
     }
 
     public ObjectDataGrid<BlockWithConnection> getRenderBlocks() {
-        ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(FIELD_WIDTH,
-                FIELD_HEIGHT + FIELD_HEIGHT_BUFFER);
+        ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(fieldWidth,
+                fieldHeight + FIELD_HEIGHT_BUFFER);
         for (int srcY = 0; srcY < renderBlocks.getHeight(); srcY++) {
             for (int srcX = 0; srcX < blocks.getWidth(); srcX++) {
                 if (blocks.getAtPos(srcX, srcY) != null) {
@@ -452,7 +457,7 @@ public class Playfield {
     }
 
     public boolean getDanger() {
-        for (int i = FIELD_HEIGHT - 3; i < blocks.getHeight(); i++) {
+        for (int i = fieldHeight - 3; i < blocks.getHeight(); i++) {
             for (int x = 0; x < blocks.getWidth(); x++) {
                 if (blocks.getAtPos(x, i) != null) {
                     return true;
