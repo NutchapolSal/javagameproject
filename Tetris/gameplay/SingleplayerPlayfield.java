@@ -7,7 +7,7 @@ import Tetris.input.Rotation;
 
 public class SingleplayerPlayfield extends Playfield {
     public SingleplayerPlayfield(int fieldWidth, int fieldHeight) {
-        super(fieldWidth, fieldHeight, 0);
+        super(fieldWidth, fieldHeight, 1);
     }
 
     public Direction getPlayerMinoDirection() {
