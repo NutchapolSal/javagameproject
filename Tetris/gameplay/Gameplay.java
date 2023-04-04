@@ -106,8 +106,9 @@ public class Gameplay implements ReceiveSettings {
     }
 
     private static class PlayerData {
-        MinoRandomizer minoRandomizer = null;
-        Queue<Mino> nextQueue = new ArrayDeque<>();
+        final int playerIndex;
+        final MinoRandomizer minoRandomizer;
+        final Queue<Mino> nextQueue = new ArrayDeque<>();
         Mino hold = null;
         boolean lockHold = false;
         boolean lastMoveTSpin = false;
@@ -120,7 +121,8 @@ public class Gameplay implements ReceiveSettings {
         boolean spinMini = false;
         boolean softDropping = true;
 
-        PlayerData(MinoRandomizer minoRandomizer) {
+        PlayerData(int playerIndex, MinoRandomizer minoRandomizer) {
+            this.playerIndex = playerIndex;
             this.minoRandomizer = minoRandomizer;
             for (int i = 0; i < 5; i++) {
                 nextQueue.offer(minoRandomizer.next());
@@ -203,7 +205,9 @@ public class Gameplay implements ReceiveSettings {
         lastFrame = System.nanoTime();
         timeMillis = 0;
         playfield = new SingleplayerPlayfield(10, 20);
-        playerData = new PlayerData(new SevenBagRandomizer(System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5)));
+        playerData = new PlayerData(0,
+                new SevenBagRandomizer(
+                        System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5)));
         linesCleared = 0;
         level = 1;
         score = 0;
