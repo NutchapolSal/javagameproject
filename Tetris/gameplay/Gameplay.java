@@ -122,6 +122,24 @@ public class Gameplay implements ReceiveSettings {
 
         PlayerData(MinoRandomizer minoRandomizer) {
             this.minoRandomizer = minoRandomizer;
+            for (int i = 0; i < 5; i++) {
+                nextQueue.offer(minoRandomizer.next());
+            }
+        }
+
+        Mino getNextMino() {
+            nextQueue.offer(minoRandomizer.next());
+            var nextMino = nextQueue.poll();
+            return nextMino;
+        }
+
+        Mino[] getNextQueueGuiData() {
+            return nextQueue.toArray(new Mino[0]);
+        }
+
+        void resetLockDelay() {
+            lockDelayFrames = 0;
+            lockResetCount++;
         }
 
     }
@@ -207,7 +225,7 @@ public class Gameplay implements ReceiveSettings {
         goalData = goal.getGoalData();
         danger = false;
 
-        fillNextQueue();
+        nextQueueGuiData = playerData.getNextQueueGuiData();
         renderFrame();
 
         timer.scheduleAtFixedRate(countdownTask, 0, 750);
@@ -216,13 +234,15 @@ public class Gameplay implements ReceiveSettings {
     private void startGameLoop() {
         startTime = System.nanoTime();
         lastFrame = System.nanoTime();
-        playfield.spawnPlayerMino(getNextMino());
+        playfield.spawnPlayerMino(playerData.getNextMino());
+        nextQueueGuiData = playerData.getNextQueueGuiData();
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
 
     private void processHold() {
         if (playerData.hold == null) {
-            playerData.hold = playfield.swapHold(getNextMino());
+            playerData.hold = playfield.swapHold(playerData.getNextMino());
+            nextQueueGuiData = playerData.getNextQueueGuiData();
         } else {
             playerData.hold = playfield.swapHold(playerData.hold);
         }
@@ -235,7 +255,7 @@ public class Gameplay implements ReceiveSettings {
 
     private void processXMove() {
         if (playfield.moveXPlayerMino(pi.getXMove())) {
-            resetLockDelay();
+            playerData.resetLockDelay();
             playerData.lastMoveTSpin = false;
         } else {
             windowNudgeX += pi.getXMove() * 3;
@@ -256,7 +276,7 @@ public class Gameplay implements ReceiveSettings {
                 // fallthrough
             case SuccessTwist:
             case Success:
-                resetLockDelay();
+                playerData.resetLockDelay();
                 // fallthrough
             case Fail:
                 break;
@@ -434,7 +454,8 @@ public class Gameplay implements ReceiveSettings {
      * @return true if gameloop should not end, false if should end
      */
     private boolean processPieceSpawn() {
-        boolean spawnSuccess = playfield.spawnPlayerMino(getNextMino());
+        boolean spawnSuccess = playfield.spawnPlayerMino(playerData.getNextMino());
+        nextQueueGuiData = playerData.getNextQueueGuiData();
         if (!spawnSuccess) {
             goalState = GoalState.LOSE;
             return false;
@@ -485,25 +506,6 @@ public class Gameplay implements ReceiveSettings {
             goalData = null;
             countdownGui = -1;
         }
-    }
-
-    private Mino getNextMino() {
-        playerData.nextQueue.offer(playerData.minoRandomizer.next());
-        var nextMino = playerData.nextQueue.poll();
-        nextQueueGuiData = playerData.nextQueue.toArray(new Mino[0]);
-        return nextMino;
-    }
-
-    private void fillNextQueue() {
-        for (int i = 0; i < 5; i++) {
-            playerData.nextQueue.offer(playerData.minoRandomizer.next());
-        }
-        nextQueueGuiData = playerData.nextQueue.toArray(new Mino[0]);
-    }
-
-    private void resetLockDelay() {
-        playerData.lockDelayFrames = 0;
-        playerData.lockResetCount++;
     }
 
     private void resetLockCount() {
