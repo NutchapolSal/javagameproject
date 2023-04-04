@@ -15,7 +15,7 @@ import Tetris.data.util.ShapeRotator;
 import Tetris.input.Rotation;
 
 public class Playfield {
-    class PlayerData {
+    private static class PlayerData {
         final Mino mino;
         int x;
         int y;
