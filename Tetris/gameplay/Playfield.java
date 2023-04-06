@@ -13,6 +13,9 @@ import Tetris.data.mino.Mino;
 import Tetris.data.mino.MinoColor;
 import Tetris.data.util.ShapeRotator;
 import Tetris.input.Rotation;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Playfield {
     private static int FIELD_WIDTH = 10;
@@ -386,44 +389,60 @@ public class Playfield {
     }
 
     public int clearLines() {
-        int row = blocks.getHeight() - 1;
-        int width = blocks.getWidth();
-        int rowsCleared = 0;
+        ArrayList<Integer> rowsClearedIndex = new ArrayList<>();
         boolean removeRow;
 
-        while (row >= 0) {
+        // mark loop
+        for (int row = 0; row < blocks.getHeight() - 1; row++) {
             removeRow = true;
-            for (int col = 0; col < width; col++) {
+            for (int col = 0; col < blocks.getWidth(); col++) {
                 if (blocks.getAtPos(col, row) == null) {
                     removeRow = false;
                     break;
                 }
             }
-
             if (removeRow) {
-                for (int copyRow = row; copyRow < blocks.getHeight() - 1; copyRow++) {
-                    for (int copyCol = 0; copyCol < width; copyCol++) {
+                rowsClearedIndex.add(row);
+            }
+        }
+
+        int rowsCleared = 0;
+        int highestRowToClear = rowsClearedIndex.size() - 1;
+        // copy loop
+        if (highestRowToClear >= 0) {
+            for (int markRow = highestRowToClear; markRow >= 0; markRow--) {
+                for (int copyRow = rowsClearedIndex.get(markRow); copyRow < blocks.getHeight() - 1; copyRow++) {
+                    for (int copyCol = 0; copyCol < blocks.getWidth(); copyCol++) {
                         blocks.setAtPos(copyCol, copyRow, blocks.getAtPos(copyCol, copyRow + 1));
                     }
                 }
-
                 rowsCleared++;
-                for (int col = 0; col < width; col++) {
-                    blocks.setAtPos(col, blocks.getHeight() - 1, null);
-                }
-
-                for (int x = 0; x < width; x++) {
-                    if (blocks.getAtPos(x, row) != null) {
-                        blocks.getAtPos(x, row).setConnectionMino(Dir.Down, false);
-                    }
-                    if (0 <= row - 1 && blocks.getAtPos(x, row - 1) != null) {
-                        blocks.getAtPos(x, row - 1).setConnectionMino(Dir.Up, false);
-                    }
-                    updateConnectionsForBlock(x, row);
-                    updateConnectionsForBlock(x, row - 1);
-                }
             }
-            row--;
+        }
+
+        // rowsCleared++;
+        // for (int col = 0; col < blocks.getWidth(); col++) {
+        // blocks.setAtPos(col, blocks.getHeight() - 1, null);
+        // }
+
+        // for (int x = 0; x < width; x++) {
+        // if (blocks.getAtPos(x, row) != null) {
+        // blocks.getAtPos(x, row).setConnectionMino(Dir.Down, false);
+        // }
+        // if (0 <= row - 1 && blocks.getAtPos(x, row - 1) != null) {
+        // blocks.getAtPos(x, row - 1).setConnectionMino(Dir.Up, false);
+        // }
+        // updateConnectionsForBlock(x, row);
+        // updateConnectionsForBlock(x, row - 1);
+        // }
+        // }
+        // row--;
+        // rowsClearedIndex.removeAll(rowsClearedIndex);
+        // }
+
+        int[] clearLines = new int[rowsClearedIndex.size()];
+        for (int i = 0; i < clearLines.length; i++) {
+            clearLines[i] = rowsClearedIndex.get(i);
         }
         return rowsCleared;
     }
