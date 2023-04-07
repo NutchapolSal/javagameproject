@@ -346,7 +346,8 @@ public class Gameplay implements ReceiveSettings {
      */
     private boolean processPieceLock() {
         boolean inField = playfield.lockPlayerMino();
-        int lines = playfield.clearLines();
+        ClearLinesResult result = playfield.clearLines();
+        int lines = result.count;
         linesCleared += lines;
 
         if (4 <= lines || (lastMoveTSpin && 0 < lines)) {

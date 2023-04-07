@@ -390,14 +390,11 @@ public class Playfield {
                 getShadowYPos() + playerMinoRotateData.yOffset);
     }
 
-    public int clearLines() {
+    public ClearLinesResult clearLines() {
         ArrayList<Integer> rowsClearedIndex = new ArrayList<>();
-        boolean removeRow;
 
-        int rowsCleared = 0;
-        // mark loop
         for (int row = 0; row < blocks.getHeight() - 1; row++) {
-            removeRow = true;
+            boolean removeRow = true;
             for (int col = 0; col < blocks.getWidth(); col++) {
                 if (blocks.getAtPos(col, row) == null) {
                     removeRow = false;
@@ -405,28 +402,29 @@ public class Playfield {
                 }
             }
             if (removeRow) {
-                rowsCleared++;
                 rowsClearedIndex.add(row);
             }
         }
 
-        Queue<Integer> deque = new ArrayDeque<>();
-        deque.addAll(rowsClearedIndex);
+        int[] clearLines = new int[rowsClearedIndex.size()];
+        for (int i = 0; i < clearLines.length; i++) {
+            clearLines[i] = rowsClearedIndex.get(i);
+        }
 
+        if (rowsClearedIndex.size() == 0) {
+            return new ClearLinesResult(clearLines);
+        }
+
+        Queue<Integer> skipQueue = new ArrayDeque<>(rowsClearedIndex);
+        Queue<Integer> recalcConnections = new ArrayDeque<>();
         int rowOffset = 0;
+
         for (int row = 0; row < blocks.getHeight(); row++) {
-            if (rowsClearedIndex.contains(row)) {
-                if (deque.peek() == 0) {
-                    rowOffset++;
-                    System.out.println(rowOffset);
-                } else {
-                    while ((deque.peek() + 1) - deque.peek() == 1 && deque.peek() + 1 <= deque.size()
-                            && deque.peek() < blocks.getHeight()) {
-                        rowOffset++;
-                        deque.poll();
-                    }
-                    System.out.println(rowOffset);
-                }
+            boolean skippedMore = false;
+            while (!skipQueue.isEmpty() && skipQueue.peek() == row + rowOffset) {
+                rowOffset++;
+                skipQueue.poll();
+                skippedMore = true;
             }
             for (int col = 0; col < blocks.getWidth(); col++) {
                 if (row + rowOffset < blocks.getHeight()) {
@@ -435,13 +433,24 @@ public class Playfield {
                     blocks.setAtPos(col, row, null);
                 }
             }
+            if (skippedMore) {
+                recalcConnections.offer(row);
+            }
+        }
+        for (int row : recalcConnections) {
+            for (int col = 0; col < blocks.getWidth(); col++) {
+                if (blocks.getAtPos(col, row) != null) {
+                    blocks.getAtPos(col, row).setConnectionMino(Dir.Down, false);
+                }
+                if (0 <= row - 1 && blocks.getAtPos(col, row - 1) != null) {
+                    blocks.getAtPos(col, row - 1).setConnectionMino(Dir.Up, false);
+                }
+                updateConnectionsForBlock(col, row);
+                updateConnectionsForBlock(col, row - 1);
+            }
         }
 
-        int[] clearLines = new int[rowsClearedIndex.size()];
-        for (int i = 0; i < clearLines.length; i++) {
-            clearLines[i] = rowsClearedIndex.get(i);
-        }
-        return rowsCleared;
+        return new ClearLinesResult(clearLines);
     }
 
     public int getPlayerMinoY() {
