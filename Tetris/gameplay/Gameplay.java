@@ -31,7 +31,6 @@ import java.util.function.Consumer;
 
 public class Gameplay implements ReceiveSettings {
     private final class GameLoopTask extends TimerTask {
-        int heha = 0;
 
         public void run() {
             long nowFrame = System.nanoTime();
@@ -47,8 +46,7 @@ public class Gameplay implements ReceiveSettings {
                 return;
             }
 
-            heha++;
-            heha %= 2;
+            pdrs = new PlayerRenderData[playerCount];
             for (int i = 0; i < playerCount; i++) {
                 pis[i].tick();
 
@@ -81,10 +79,8 @@ public class Gameplay implements ReceiveSettings {
                     return;
                 }
 
-                if (i == heha) {
-                    playerLockProgress = (double) playerDatas[i].lockDelayFrames / lockDelayMaxFrames;
-                    pdr = playfield.getPlayerRenderData(i);
-                }
+                playerLockProgress = (double) playerDatas[i].lockDelayFrames / lockDelayMaxFrames;
+                pdrs[i] = playfield.getPlayerRenderData(i);
 
                 if (!playfield.hasPlayerMino(i)) {
                     boolean loopContinueFromSpawn = processPieceSpawn(i);
@@ -182,7 +178,7 @@ public class Gameplay implements ReceiveSettings {
     private boolean zenMode;
 
     private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
-    private PlayerRenderData pdr;
+    private PlayerRenderData[] pdrs;
     private double playerLockProgress;
     private double windowNudgeX;
     private double windowNudgeY;
@@ -217,7 +213,7 @@ public class Gameplay implements ReceiveSettings {
         goal = newGoal.peek() != null ? newGoal.poll() : goal;
         lastFrame = System.nanoTime();
         timeMillis = 0;
-        playfield = new Playfield(10, 20, playerCount);
+        playfield = new Playfield(20, 20, playerCount);
 
         long seed = System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5);
         for (int i = 0; i < playerCount; i++) {
@@ -234,7 +230,7 @@ public class Gameplay implements ReceiveSettings {
         zenMode = goal instanceof NoGoal;
         level = zenMode ? 2 : level;
 
-        pdr = playfield.getPlayerRenderData(0);
+        pdrs = null;
         playerLockProgress = 0;
         windowNudgeX = 0;
         windowNudgeY = 0;
@@ -500,7 +496,7 @@ public class Gameplay implements ReceiveSettings {
                 score,
                 playerDatas[0].hold,
                 playerDatas[0].lockHold,
-                pdr,
+                pdrs,
                 playerLockProgress,
                 windowNudgeX,
                 windowNudgeY,

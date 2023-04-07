@@ -161,7 +161,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                     nextGroup.getNextMinos()[i].setMino(gds.nextQueue[i]);
                 }
             }
-            playfield.setPlayerRenderData(gds.playerRenderData, gds.playerLockProgress);
+            playfield.setPlayerRenderDatas(gds.playerRenderDatas, gds.playerLockProgress);
 
             if (gds.countdown != -1) {
                 if (gds.countdown == 0) {

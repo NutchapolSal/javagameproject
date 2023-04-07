@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 public class PlayfieldPanel extends MinoPanel {
     private ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS,
             PANEL_HEIGHT_BLOCKS);
-    private PlayerRenderData pdr = null;
+    private PlayerRenderData[] pdrs;
     private double playerLockProgress;
     private CalloutLabel callout;
     private MinoColor playerOverrideColor;
@@ -26,8 +26,8 @@ public class PlayfieldPanel extends MinoPanel {
         setBlocksSize(this.renderBlocks.getWidth(), this.renderBlocks.getHeight() - Playfield.FIELD_HEIGHT_BUFFER);
     }
 
-    public void setPlayerRenderData(PlayerRenderData pdr, double playerLockProgress) {
-        this.pdr = pdr;
+    public void setPlayerRenderDatas(PlayerRenderData[] pdrs, double playerLockProgress) {
+        this.pdrs = pdrs;
         this.playerLockProgress = playerLockProgress;
         this.playerOverrideColor = null;
 
@@ -73,26 +73,31 @@ public class PlayfieldPanel extends MinoPanel {
             }
         }
 
-        if (pdr == null) {
+        if (pdrs == null) {
             return;
         }
 
-        for (int y = pdr.blocks.getHeight() - 1; 0 <= y; y--) {
-            for (int x = 0; x < pdr.blocks.getWidth(); x++) {
-                if (pdr.blocks.getAtPos(x, y) == null) {
-                    continue;
+        for (PlayerRenderData pdr : pdrs) {
+            if (pdr == null) {
+                continue;
+            }
+            for (int y = pdr.blocks.getHeight() - 1; 0 <= y; y--) {
+                for (int x = 0; x < pdr.blocks.getWidth(); x++) {
+                    if (pdr.blocks.getAtPos(x, y) == null) {
+                        continue;
+                    }
+                    BlockWithConnection block = pdr.blocks.getAtPos(x, y);
+                    MinoColor mc = block.getMinoColor();
+                    if (playerOverrideColor != null) {
+                        mc = playerOverrideColor;
+                    }
+                    setOpacity(0.3);
+                    paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, block, mc);
+                    setOpacity(1);
+                    paintMinoBlock(g, x + pdr.x, y + pdr.y, block, mc);
+                    setOpacity(playerLockProgress * 0.75);
+                    paintMinoBlock(g, x + pdr.x, y + pdr.y, block, MinoColor.Gray);
                 }
-                BlockWithConnection block = pdr.blocks.getAtPos(x, y);
-                MinoColor mc = block.getMinoColor();
-                if (playerOverrideColor != null) {
-                    mc = playerOverrideColor;
-                }
-                setOpacity(0.3);
-                paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, block, mc);
-                setOpacity(1);
-                paintMinoBlock(g, x + pdr.x, y + pdr.y, block, mc);
-                setOpacity(playerLockProgress * 0.75);
-                paintMinoBlock(g, x + pdr.x, y + pdr.y, block, MinoColor.Gray);
             }
         }
     }

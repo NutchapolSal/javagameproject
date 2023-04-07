@@ -10,7 +10,7 @@ public class GuiData {
     public final int score;
     public final Mino hold;
     public final boolean lockHold;
-    public final PlayerRenderData playerRenderData;
+    public final PlayerRenderData[] playerRenderDatas;
     public final double playerLockProgress;
     public final double windowNudgeX;
     public final double windowNudgeY;
@@ -52,7 +52,7 @@ public class GuiData {
             int score,
             Mino hold,
             boolean lockHold,
-            PlayerRenderData playerRenderData,
+            PlayerRenderData[] playerRenderDatas,
             double playerLockProgress,
             double windowNudgeX,
             double windowNudgeY,
@@ -76,7 +76,7 @@ public class GuiData {
         this.nextQueue = nextQueue;
         this.hold = hold;
         this.lockHold = lockHold;
-        this.playerRenderData = playerRenderData;
+        this.playerRenderDatas = playerRenderDatas;
         this.playerLockProgress = playerLockProgress;
         this.windowNudgeX = windowNudgeX;
         this.windowNudgeY = windowNudgeY;
