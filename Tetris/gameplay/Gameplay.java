@@ -31,6 +31,8 @@ import java.util.function.Consumer;
 
 public class Gameplay implements ReceiveSettings {
     private final class GameLoopTask extends TimerTask {
+        int heha = 0;
+
         public void run() {
             long nowFrame = System.nanoTime();
             if (nowFrame - lastFrame < FRAME_DELAY) {
@@ -45,46 +47,52 @@ public class Gameplay implements ReceiveSettings {
                 return;
             }
 
-            pis[0].tick();
+            heha++;
+            heha %= 2;
+            for (int i = 0; i < playerCount; i++) {
+                pis[i].tick();
 
-            if (pis[0].getHold() && !playerDatas[0].lockHold) {
-                processHold(0);
-            }
+                if (pis[i].getHold() && !playerDatas[i].lockHold) {
+                    processHold(i);
+                }
 
-            if (pis[0].getXMove() != 0) {
-                processXMove(0);
-            }
+                if (pis[i].getXMove() != 0) {
+                    processXMove(i);
+                }
 
-            if (pis[0].getRotation() != Rotation.None) {
-                processRotation(0);
-            }
+                if (pis[i].getRotation() != Rotation.None) {
+                    processRotation(i);
+                }
 
-            if (pis[0].getHardDrop()) {
-                processHardDrop(0);
-            }
-            playerDatas[0].softDropping = pis[0].getSoftDrop();
-            if (playerDatas[0].softDropping) {
-                processSoftDrop(0);
-            }
+                if (pis[i].getHardDrop()) {
+                    processHardDrop(i);
+                }
+                playerDatas[i].softDropping = pis[i].getSoftDrop();
+                if (playerDatas[i].softDropping) {
+                    processSoftDrop(i);
+                }
 
-            processGravity(0);
+                processGravity(i);
 
-            boolean loopContinueFromLock = processLockDelay(0);
-            if (!loopContinueFromLock) {
-                gameLoop.cancel();
-                renderEnd();
-                return;
-            }
-
-            playerLockProgress = (double) playerDatas[0].lockDelayFrames / lockDelayMaxFrames;
-            pdr = playfield.getPlayerRenderData(0);
-
-            if (!playfield.hasPlayerMino(0)) {
-                boolean loopContinueFromSpawn = processPieceSpawn(0);
-                if (!loopContinueFromSpawn) {
+                boolean loopContinueFromLock = processLockDelay(i);
+                if (!loopContinueFromLock) {
                     gameLoop.cancel();
                     renderEnd();
                     return;
+                }
+
+                if (i == heha) {
+                    playerLockProgress = (double) playerDatas[i].lockDelayFrames / lockDelayMaxFrames;
+                    pdr = playfield.getPlayerRenderData(i);
+                }
+
+                if (!playfield.hasPlayerMino(i)) {
+                    boolean loopContinueFromSpawn = processPieceSpawn(i);
+                    if (!loopContinueFromSpawn) {
+                        gameLoop.cancel();
+                        renderEnd();
+                        return;
+                    }
                 }
             }
 
@@ -151,6 +159,8 @@ public class Gameplay implements ReceiveSettings {
     private int lockDelayMaxFrames = 30;
     private boolean sonicDrop = false;
 
+    private int playerCount = 2;
+
     private PlayerInput[] pis = new PlayerInput[2];
     private Timer timer = new Timer();
     private TimerTask gameLoop;
@@ -161,7 +171,7 @@ public class Gameplay implements ReceiveSettings {
     private long lastFrame;
     private long timeMillis;
     private Playfield playfield;
-    private PlayerData[] playerDatas = new PlayerData[1];
+    private PlayerData[] playerDatas = new PlayerData[2];
     private int linesCleared;
     private int level;
     private int score;
@@ -207,10 +217,13 @@ public class Gameplay implements ReceiveSettings {
         goal = newGoal.peek() != null ? newGoal.poll() : goal;
         lastFrame = System.nanoTime();
         timeMillis = 0;
-        playfield = new Playfield(10, 20, 1);
-        playerDatas[0] = new PlayerData(0,
-                new SevenBagRandomizer(
-                        System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5)));
+        playfield = new Playfield(10, 20, playerCount);
+
+        long seed = System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5);
+        for (int i = 0; i < playerCount; i++) {
+            playerDatas[i] = new PlayerData(i, new SevenBagRandomizer(seed + i));
+        }
+
         linesCleared = 0;
         level = 1;
         score = 0;
@@ -241,7 +254,9 @@ public class Gameplay implements ReceiveSettings {
     private void startGameLoop() {
         startTime = System.nanoTime();
         lastFrame = System.nanoTime();
-        playfield.spawnPlayerMino(0, playerDatas[0].getNextMino());
+        for (int i = 0; i < playerCount; i++) {
+            playfield.spawnPlayerMino(i, playerDatas[i].getNextMino());
+        }
         nextQueueGuiData = playerDatas[0].getNextQueueGuiData();
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
