@@ -151,7 +151,7 @@ public class Gameplay implements ReceiveSettings {
     private int lockDelayMaxFrames = 30;
     private boolean sonicDrop = false;
 
-    private PlayerInput[] pis = new PlayerInput[] { new PlayerInput() };
+    private PlayerInput[] pis = new PlayerInput[2];
     private Timer timer = new Timer();
     private TimerTask gameLoop;
     private TimerTask countdownTask;
@@ -188,6 +188,9 @@ public class Gameplay implements ReceiveSettings {
     private boolean danger;
 
     public void setRawInputSource(int index, RawInputSource ris) {
+        if (pis[index] == null) {
+            pis[index] = new PlayerInput();
+        }
         pis[index].setRawInputSource(ris);
     }
 

@@ -14,11 +14,12 @@ public class App {
         SwingTetrisGui gui = new SwingTetrisGui();
         gui.bindToSettings(settings);
         Gameplay gameplay = new Gameplay();
-        gameplay.setRawInputSource(0, gui.getKeyboardHandler());
+        gameplay.setRawInputSource(0, gui.getKeyboardHandler(1));
+        gameplay.setRawInputSource(1, gui.getKeyboardHandler(0));
 
         settings.bindReceivers(gameplay);
         settings.bindReceivers(gui);
-        settings.bindReceivers(gui.getKeyboardHandler());
+        // settings.bindReceivers(gui.getKeyboardHandler(0));
         settings.bindReceivers(gui.getBlockSkinManager());
         settings.loadSettingsToReceivers();
 
