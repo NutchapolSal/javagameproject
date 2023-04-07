@@ -47,7 +47,7 @@ public class Gameplay implements ReceiveSettings {
 
             pis[0].tick();
 
-            if (pis[0].getHold() && !playerData.lockHold) {
+            if (pis[0].getHold() && !playerDatas[0].lockHold) {
                 processHold();
             }
 
@@ -62,8 +62,8 @@ public class Gameplay implements ReceiveSettings {
             if (pis[0].getHardDrop()) {
                 processHardDrop();
             }
-            playerData.softDropping = pis[0].getSoftDrop();
-            if (playerData.softDropping) {
+            playerDatas[0].softDropping = pis[0].getSoftDrop();
+            if (playerDatas[0].softDropping) {
                 processSoftDrop();
             }
 
@@ -76,7 +76,7 @@ public class Gameplay implements ReceiveSettings {
                 return;
             }
 
-            playerLockProgress = (double) playerData.lockDelayFrames / lockDelayMaxFrames;
+            playerLockProgress = (double) playerDatas[0].lockDelayFrames / lockDelayMaxFrames;
             pdr = playfield.getPlayerRenderData();
 
             if (!playfield.hasPlayerMino()) {
@@ -161,7 +161,7 @@ public class Gameplay implements ReceiveSettings {
     private long lastFrame;
     private long timeMillis;
     private SingleplayerPlayfield playfield;
-    private PlayerData playerData;
+    private PlayerData[] playerDatas = new PlayerData[1];
     private int linesCleared;
     private int level;
     private int score;
@@ -205,7 +205,7 @@ public class Gameplay implements ReceiveSettings {
         lastFrame = System.nanoTime();
         timeMillis = 0;
         playfield = new SingleplayerPlayfield(10, 20);
-        playerData = new PlayerData(0,
+        playerDatas[0] = new PlayerData(0,
                 new SevenBagRandomizer(
                         System.currentTimeMillis() / TimeUnit.SECONDS.toMillis(5)));
         linesCleared = 0;
@@ -229,7 +229,7 @@ public class Gameplay implements ReceiveSettings {
         goalData = goal.getGoalData();
         danger = false;
 
-        nextQueueGuiData = playerData.getNextQueueGuiData();
+        nextQueueGuiData = playerDatas[0].getNextQueueGuiData();
         renderFrame();
 
         timer.scheduleAtFixedRate(countdownTask, 0, 750);
@@ -238,49 +238,49 @@ public class Gameplay implements ReceiveSettings {
     private void startGameLoop() {
         startTime = System.nanoTime();
         lastFrame = System.nanoTime();
-        playfield.spawnPlayerMino(playerData.getNextMino());
-        nextQueueGuiData = playerData.getNextQueueGuiData();
+        playfield.spawnPlayerMino(playerDatas[0].getNextMino());
+        nextQueueGuiData = playerDatas[0].getNextQueueGuiData();
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
 
     private void processHold() {
-        if (playerData.hold == null) {
-            playerData.hold = playfield.swapHold(playerData.getNextMino());
-            nextQueueGuiData = playerData.getNextQueueGuiData();
+        if (playerDatas[0].hold == null) {
+            playerDatas[0].hold = playfield.swapHold(playerDatas[0].getNextMino());
+            nextQueueGuiData = playerDatas[0].getNextQueueGuiData();
         } else {
-            playerData.hold = playfield.swapHold(playerData.hold);
+            playerDatas[0].hold = playfield.swapHold(playerDatas[0].hold);
         }
-        playerData.lockHold = true;
-        playerData.lockResetCount = 0;
-        playerData.lockDelayFrames = 0;
-        playerData.gravityCount = 0;
-        playerData.lowestPlayerY = playfield.getPlayerMinoY();
+        playerDatas[0].lockHold = true;
+        playerDatas[0].lockResetCount = 0;
+        playerDatas[0].lockDelayFrames = 0;
+        playerDatas[0].gravityCount = 0;
+        playerDatas[0].lowestPlayerY = playfield.getPlayerMinoY();
     }
 
     private void processXMove(int index) {
         if (playfield.moveXPlayerMino(pis[index].getXMove())) {
-            playerData.resetLockDelay();
-            playerData.lastMoveTSpin = false;
+            playerDatas[0].resetLockDelay();
+            playerDatas[0].lastMoveTSpin = false;
         } else {
             windowNudgeX += pis[index].getXMove() * 3;
         }
     }
 
     private void processRotation(int index) {
-        playerData.lastMoveTSpin = false;
-        playerData.spinMini = false;
+        playerDatas[0].lastMoveTSpin = false;
+        playerDatas[0].spinMini = false;
         switch (playfield.rotatePlayerMino(pis[index].getRotation())) {
             case SuccessTSpinMini:
-                playerData.spinMini = true;
+                playerDatas[0].spinMini = true;
                 // fallthrough
             case SuccessTSpin:
-                playerData.lastMoveTSpin = true;
-                playerData.spinName = playfield.getPlayerMinoName();
+                playerDatas[0].lastMoveTSpin = true;
+                playerDatas[0].spinName = playfield.getPlayerMinoName();
                 windowNudgeX += calculateRotationNudge(index);
                 // fallthrough
             case SuccessTwist:
             case Success:
-                playerData.resetLockDelay();
+                playerDatas[0].resetLockDelay();
                 // fallthrough
             case Fail:
                 break;
@@ -309,9 +309,9 @@ public class Gameplay implements ReceiveSettings {
     private void processHardDrop() {
         int blocksMoved = playfield.sonicDropPlayerMino();
         if (blocksMoved != 0) {
-            playerData.lastMoveTSpin = false;
+            playerDatas[0].lastMoveTSpin = false;
         }
-        playerData.hardDropLock = true;
+        playerDatas[0].hardDropLock = true;
         windowNudgeY += 6;
         score += 2 * blocksMoved;
     }
@@ -324,24 +324,24 @@ public class Gameplay implements ReceiveSettings {
             }
             score += blocksMoved;
         } else {
-            playerData.gravityCount += getGravityFromLevel(level) * 6;
-            playerData.softDropping = true;
+            playerDatas[0].gravityCount += getGravityFromLevel(level) * 6;
+            playerDatas[0].softDropping = true;
         }
     }
 
     private void processGravity() {
-        playerData.gravityCount += getGravityFromLevel(level);
-        int dropCount = (int) playerData.gravityCount;
+        playerDatas[0].gravityCount += getGravityFromLevel(level);
+        int dropCount = (int) playerDatas[0].gravityCount;
         for (int i = 0; i < dropCount; i++) {
             if (playfield.moveYPlayerMino(-1)) {
                 resetLockCount();
-                playerData.lastMoveTSpin = false;
+                playerDatas[0].lastMoveTSpin = false;
             } else {
                 break;
             }
         }
-        playerData.gravityCount -= dropCount;
-        if (playerData.softDropping) {
+        playerDatas[0].gravityCount -= dropCount;
+        if (playerDatas[0].softDropping) {
             score += dropCount;
         }
     }
@@ -351,14 +351,14 @@ public class Gameplay implements ReceiveSettings {
      */
     private boolean processLockDelay() {
         if (playfield.getPlayerMinoGrounded()) {
-            playerData.lockDelayFrames++;
-            if (playerData.hardDropLock ||
-                    lockResetMaxCount <= playerData.lockResetCount ||
-                    lockDelayMaxFrames <= playerData.lockDelayFrames) {
+            playerDatas[0].lockDelayFrames++;
+            if (playerDatas[0].hardDropLock ||
+                    lockResetMaxCount <= playerDatas[0].lockResetCount ||
+                    lockDelayMaxFrames <= playerDatas[0].lockDelayFrames) {
                 return processPieceLock();
             }
         } else {
-            playerData.lockDelayFrames = 0;
+            playerDatas[0].lockDelayFrames = 0;
         }
         return true;
     }
@@ -371,7 +371,7 @@ public class Gameplay implements ReceiveSettings {
         int lines = playfield.clearLines();
         linesCleared += lines;
 
-        if (4 <= lines || (playerData.lastMoveTSpin && 0 < lines)) {
+        if (4 <= lines || (playerDatas[0].lastMoveTSpin && 0 < lines)) {
             b2bCount++;
         } else if (0 < lines) {
             b2bCount = 0;
@@ -387,17 +387,17 @@ public class Gameplay implements ReceiveSettings {
         if (!zenMode) {
             level = 1 + (linesCleared / 10);
         }
-        playerData.lockResetCount = 0;
-        playerData.lockDelayFrames = 0;
-        playerData.hardDropLock = false;
+        playerDatas[0].lockResetCount = 0;
+        playerDatas[0].lockDelayFrames = 0;
+        playerDatas[0].hardDropLock = false;
         renderBlocks = playfield.getRenderBlocks();
-        if (playerData.lastMoveTSpin) {
-            spinNameGui = playerData.spinName;
+        if (playerDatas[0].lastMoveTSpin) {
+            spinNameGui = playerDatas[0].spinName;
         }
-        playerData.spinName = null;
+        playerDatas[0].spinName = null;
         allCleared = playfield.isClear();
 
-        score += calculateLockScore(lines, playerData.lastMoveTSpin, playerData.spinMini) * level
+        score += calculateLockScore(lines, playerDatas[0].lastMoveTSpin, playerDatas[0].spinMini) * level
                 * (1 < b2bCount ? 1.5 : 1);
         score += 50 * (1 < comboCount ? comboCount - 1 : 0) * level;
 
@@ -458,15 +458,15 @@ public class Gameplay implements ReceiveSettings {
      * @return true if gameloop should not end, false if should end
      */
     private boolean processPieceSpawn() {
-        boolean spawnSuccess = playfield.spawnPlayerMino(playerData.getNextMino());
-        nextQueueGuiData = playerData.getNextQueueGuiData();
+        boolean spawnSuccess = playfield.spawnPlayerMino(playerDatas[0].getNextMino());
+        nextQueueGuiData = playerDatas[0].getNextQueueGuiData();
         if (!spawnSuccess) {
             goalState = GoalState.LOSE;
             return false;
         }
-        playerData.lockHold = false;
-        playerData.gravityCount = 0;
-        playerData.lowestPlayerY = playfield.getPlayerMinoY();
+        playerDatas[0].lockHold = false;
+        playerDatas[0].gravityCount = 0;
+        playerDatas[0].lowestPlayerY = playfield.getPlayerMinoY();
         return true;
     }
 
@@ -480,8 +480,8 @@ public class Gameplay implements ReceiveSettings {
                 linesCleared,
                 level,
                 score,
-                playerData.hold,
-                playerData.lockHold,
+                playerDatas[0].hold,
+                playerDatas[0].lockHold,
                 pdr,
                 playerLockProgress,
                 windowNudgeX,
@@ -495,7 +495,7 @@ public class Gameplay implements ReceiveSettings {
                 nextQueueGuiData,
                 calloutLines,
                 spinNameGui,
-                playerData.spinMini,
+                playerDatas[0].spinMini,
                 allCleared,
                 goalData,
                 countdownGui));
@@ -513,9 +513,9 @@ public class Gameplay implements ReceiveSettings {
     }
 
     private void resetLockCount() {
-        if (playfield.getPlayerMinoY() < playerData.lowestPlayerY) {
-            playerData.lockResetCount = 0;
-            playerData.lowestPlayerY = playfield.getPlayerMinoY();
+        if (playfield.getPlayerMinoY() < playerDatas[0].lowestPlayerY) {
+            playerDatas[0].lockResetCount = 0;
+            playerDatas[0].lowestPlayerY = playfield.getPlayerMinoY();
         }
     }
 
