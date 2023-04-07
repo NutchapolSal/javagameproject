@@ -45,24 +45,24 @@ public class Gameplay implements ReceiveSettings {
                 return;
             }
 
-            pi.tick();
+            pis[0].tick();
 
-            if (pi.getHold() && !playerData.lockHold) {
+            if (pis[0].getHold() && !playerData.lockHold) {
                 processHold();
             }
 
-            if (pi.getXMove() != 0) {
-                processXMove();
+            if (pis[0].getXMove() != 0) {
+                processXMove(0);
             }
 
-            if (pi.getRotation() != Rotation.None) {
-                processRotation();
+            if (pis[0].getRotation() != Rotation.None) {
+                processRotation(0);
             }
 
-            if (pi.getHardDrop()) {
+            if (pis[0].getHardDrop()) {
                 processHardDrop();
             }
-            playerData.softDropping = pi.getSoftDrop();
+            playerData.softDropping = pis[0].getSoftDrop();
             if (playerData.softDropping) {
                 processSoftDrop();
             }
@@ -151,7 +151,7 @@ public class Gameplay implements ReceiveSettings {
     private int lockDelayMaxFrames = 30;
     private boolean sonicDrop = false;
 
-    private PlayerInput pi = new PlayerInput();
+    private PlayerInput[] pis = new PlayerInput[] { new PlayerInput() };
     private Timer timer = new Timer();
     private TimerTask gameLoop;
     private TimerTask countdownTask;
@@ -187,8 +187,8 @@ public class Gameplay implements ReceiveSettings {
     private String gamemodeName = "";
     private boolean danger;
 
-    public void setRawInputSource(RawInputSource ris) {
-        pi.setRawInputSource(ris);
+    public void setRawInputSource(int index, RawInputSource ris) {
+        pis[index].setRawInputSource(ris);
     }
 
     public void startGame() {
@@ -257,26 +257,26 @@ public class Gameplay implements ReceiveSettings {
         playerData.lowestPlayerY = playfield.getPlayerMinoY();
     }
 
-    private void processXMove() {
-        if (playfield.moveXPlayerMino(pi.getXMove())) {
+    private void processXMove(int index) {
+        if (playfield.moveXPlayerMino(pis[index].getXMove())) {
             playerData.resetLockDelay();
             playerData.lastMoveTSpin = false;
         } else {
-            windowNudgeX += pi.getXMove() * 3;
+            windowNudgeX += pis[index].getXMove() * 3;
         }
     }
 
-    private void processRotation() {
+    private void processRotation(int index) {
         playerData.lastMoveTSpin = false;
         playerData.spinMini = false;
-        switch (playfield.rotatePlayerMino(pi.getRotation())) {
+        switch (playfield.rotatePlayerMino(pis[index].getRotation())) {
             case SuccessTSpinMini:
                 playerData.spinMini = true;
                 // fallthrough
             case SuccessTSpin:
                 playerData.lastMoveTSpin = true;
                 playerData.spinName = playfield.getPlayerMinoName();
-                windowNudgeX += calculateRotationNudge();
+                windowNudgeX += calculateRotationNudge(index);
                 // fallthrough
             case SuccessTwist:
             case Success:
@@ -287,8 +287,8 @@ public class Gameplay implements ReceiveSettings {
         }
     }
 
-    private int calculateRotationNudge() {
-        switch (pi.getRotation()) {
+    private int calculateRotationNudge(int index) {
+        switch (pis[index].getRotation()) {
             case Clockwise:
                 return 6;
             case CounterClockwise:
@@ -539,10 +539,10 @@ public class Gameplay implements ReceiveSettings {
             sonicDrop = (boolean) x;
         });
         receiversMap.put(SettingKey.DasChargeFrames, x -> {
-            pi.setDAS((int) x);
+            pis[0].setDAS((int) x);
         });
         receiversMap.put(SettingKey.AutoRepeatFrames, x -> {
-            pi.setARR((int) x);
+            pis[0].setARR((int) x);
         });
         receiversMap.put(SettingKey.GameplayMode, x -> {
             newGoal.poll();
