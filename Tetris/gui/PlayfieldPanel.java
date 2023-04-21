@@ -2,6 +2,7 @@ package Tetris.gui;
 
 import Tetris.data.BlockWithConnection;
 import Tetris.data.ObjectDataGrid;
+import Tetris.data.PlayerGuiData;
 import Tetris.data.PlayerRenderData;
 import Tetris.data.mino.MinoColor;
 import Tetris.gameplay.Playfield;
@@ -16,8 +17,7 @@ import javax.swing.SwingConstants;
 public class PlayfieldPanel extends MinoPanel {
     private ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(PANEL_WIDTH_BLOCKS,
             PANEL_HEIGHT_BLOCKS);
-    private PlayerRenderData[] pdrs;
-    private double playerLockProgress;
+    private PlayerGuiData[] pgds;
     private CalloutLabel callout;
     private MinoColor playerOverrideColor;
 
@@ -26,11 +26,9 @@ public class PlayfieldPanel extends MinoPanel {
         setBlocksSize(this.renderBlocks.getWidth(), this.renderBlocks.getHeight() - Playfield.FIELD_HEIGHT_BUFFER);
     }
 
-    public void setPlayerRenderDatas(PlayerRenderData[] pdrs, double playerLockProgress) {
-        this.pdrs = pdrs;
-        this.playerLockProgress = playerLockProgress;
+    public void setPlayerGuiDatas(PlayerGuiData[] pgds) {
+        this.pgds = pgds;
         this.playerOverrideColor = null;
-
     }
 
     public void setPlayerOverrideColor(MinoColor playerOverrideColor) {
@@ -38,7 +36,7 @@ public class PlayfieldPanel extends MinoPanel {
     }
 
     public PlayfieldPanel(BlockSkinManager blockSkinManager) {
-        super(blockSkinManager, 10, 20);
+        super(blockSkinManager, 20, 20);
         setOpaque(false);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         callout = new CalloutLabel();
@@ -73,11 +71,15 @@ public class PlayfieldPanel extends MinoPanel {
             }
         }
 
-        if (pdrs == null) {
+        if (pgds == null) {
             return;
         }
 
-        for (PlayerRenderData pdr : pdrs) {
+        for (PlayerGuiData pgd : pgds) {
+            if (pgd == null) {
+                continue;
+            }
+            PlayerRenderData pdr = pgd.pdr;
             if (pdr == null) {
                 continue;
             }
@@ -95,7 +97,7 @@ public class PlayfieldPanel extends MinoPanel {
                     paintMinoBlock(g, x + pdr.x, y + pdr.shadowY, block, mc);
                     setOpacity(1);
                     paintMinoBlock(g, x + pdr.x, y + pdr.y, block, mc);
-                    setOpacity(playerLockProgress * 0.75);
+                    setOpacity(pgd.playerLockProgress * 0.75);
                     paintMinoBlock(g, x + pdr.x, y + pdr.y, block, MinoColor.Gray);
                 }
             }

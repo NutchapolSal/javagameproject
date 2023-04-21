@@ -2,6 +2,7 @@ package Tetris.gui;
 
 import Tetris.data.GoalData;
 import Tetris.data.GuiData;
+import Tetris.data.PlayerRenderData;
 import Tetris.data.mino.MinoColor;
 import Tetris.gameplay.goal.GoalState;
 import Tetris.input.GameplayButton;
@@ -48,8 +49,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private Box.Filler leftFiller;
     private PlayfieldPanel playfield;
     private Box.Filler rightFiller;
-    private NextGroup nextGroup;
-    private HoldGroup holdGroup;
+    private NextGroup[] nextGroups;
+    private HoldGroup[] holdGroups;
     private CalloutsGroup calloutsGroup;
     private StatsGroup statsGroup;
     private MiscGroup miscGroup;
@@ -147,21 +148,29 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             }
             statsGroup.getLinesCountText().setText(String.format("%d%s", gds.linesCleared, linesGoalPart));
             statsGroup.getLevelCountText().setText(String.format("%d", gds.level));
-            if (gds.lockHold) {
-                holdGroup.getHoldMino().setMino(gds.hold, MinoColor.Gray);
-            } else {
-                holdGroup.getHoldMino().setMino(gds.hold);
-            }
-
             if (gds.renderBlocks != null) {
                 playfield.setRenderBlocks(gds.renderBlocks);
             }
-            if (gds.nextQueue != null) {
-                for (int i = 0; i < gds.nextQueue.length && i < nextGroup.getNextMinos().length; i++) {
-                    nextGroup.getNextMinos()[i].setMino(gds.nextQueue[i]);
+
+            for (int i = 0; i < gds.playerGuiDatas.length; i++) {
+                if (gds.playerGuiDatas[i].lockHold) {
+                    holdGroups[i].getHoldMino().setMino(gds.playerGuiDatas[i].hold, MinoColor.Gray);
+                } else {
+                    holdGroups[i].getHoldMino().setMino(gds.playerGuiDatas[i].hold);
                 }
+
+                if (gds.playerGuiDatas[i].nextQueue == null) {
+                    continue;
+                }
+
+                for (int j = 0; j < gds.playerGuiDatas[i].nextQueue.length
+                        && j < nextGroups[i].getNextMinos().length; j++) {
+                    nextGroups[i].getNextMinos()[j].setMino(gds.playerGuiDatas[i].nextQueue[j]);
+                }
+
             }
-            playfield.setPlayerRenderDatas(gds.playerRenderDatas, gds.playerLockProgress);
+
+            playfield.setPlayerGuiDatas(gds.playerGuiDatas);
 
             if (gds.countdown != -1) {
                 if (gds.countdown == 0) {
@@ -284,6 +293,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         Container contentPane = f.getContentPane();
         contentPane.add(fakeContentPane);
 
+        debugWithBorder();
     }
 
     private void createMenu() {
@@ -300,8 +310,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         centerPanel = new JPanel();
         playfield = new PlayfieldPanel(blockSkinManager);
         statsGroup = new StatsGroup();
-        nextGroup = new NextGroup(blockSkinManager);
-        holdGroup = new HoldGroup(blockSkinManager);
+        nextGroups = new NextGroup[] { new NextGroup(blockSkinManager), new NextGroup(blockSkinManager) };
+        holdGroups = new HoldGroup[] { new HoldGroup(blockSkinManager), new HoldGroup(blockSkinManager) };
         calloutsGroup = new CalloutsGroup();
         miscGroup = new MiscGroup();
 
@@ -309,20 +319,28 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         centerPanel.setLayout(centerPanelLayout);
         centerPanelLayout.setHorizontalGroup(centerPanelLayout.createSequentialGroup()
                 .addGroup(centerPanelLayout.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(holdGroup.getPanel())
+                        .addGroup(centerPanelLayout.createSequentialGroup()
+                                .addComponent(holdGroups[0].getPanel())
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(nextGroups[0].getPanel()))
                         .addComponent(calloutsGroup.getPanel())
                         .addComponent(statsGroup.getPanel()))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addComponent(playfield)
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addGroup(centerPanelLayout.createParallelGroup()
-                        .addComponent(nextGroup.getPanel())
+                        .addGroup(centerPanelLayout.createSequentialGroup()
+                                .addComponent(nextGroups[1].getPanel())
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(holdGroups[1].getPanel()))
                         .addComponent(miscGroup.getPanel())
 
                 ));
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
                 .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(holdGroup.getPanel())
+                        .addGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(holdGroups[0].getPanel())
+                                .addComponent(nextGroups[0].getPanel()))
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(calloutsGroup.getPanel())
                         .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
@@ -330,7 +348,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                         .addComponent(statsGroup.getPanel()))
                 .addComponent(playfield)
                 .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(nextGroup.getPanel())
+                        .addGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(nextGroups[1].getPanel())
+                                .addComponent(holdGroups[1].getPanel()))
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(miscGroup.getPanel())
 

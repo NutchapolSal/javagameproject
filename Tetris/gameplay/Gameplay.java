@@ -4,6 +4,7 @@ import Tetris.data.BlockWithConnection;
 import Tetris.data.GoalData;
 import Tetris.data.GuiData;
 import Tetris.data.ObjectDataGrid;
+import Tetris.data.PlayerGuiData;
 import Tetris.data.PlayerRenderData;
 import Tetris.data.mino.Mino;
 import Tetris.gameplay.goal.Goal;
@@ -46,7 +47,6 @@ public class Gameplay implements ReceiveSettings {
                 return;
             }
 
-            pdrs = new PlayerRenderData[playerCount];
             for (int i = 0; i < playerCount; i++) {
                 pis[i].tick();
 
@@ -79,8 +79,8 @@ public class Gameplay implements ReceiveSettings {
                     return;
                 }
 
-                playerLockProgress = (double) playerDatas[i].lockDelayFrames / lockDelayMaxFrames;
-                pdrs[i] = playfield.getPlayerRenderData(i);
+                playerDatas[i].playerLockProgress = (double) playerDatas[i].lockDelayFrames / lockDelayMaxFrames;
+                playerDatas[i].pdr = playfield.getPlayerRenderData(i);
 
                 if (!playfield.hasPlayerMino(i)) {
                     boolean loopContinueFromSpawn = processPieceSpawn(i);
@@ -120,10 +120,13 @@ public class Gameplay implements ReceiveSettings {
         int lockDelayFrames = 0;
         int lockResetCount = 0;
         int lowestPlayerY;
+        double playerLockProgress;
         boolean hardDropLock = false;
         String spinName = null;
         boolean spinMini = false;
         boolean softDropping = true;
+        private Mino[] nextQueueGuiData;
+        PlayerRenderData pdr;
 
         PlayerData(int playerIndex, MinoRandomizer minoRandomizer) {
             this.playerIndex = playerIndex;
@@ -131,16 +134,29 @@ public class Gameplay implements ReceiveSettings {
             for (int i = 0; i < 5; i++) {
                 nextQueue.offer(minoRandomizer.next());
             }
+            generateNextQueueGuiData();
         }
 
         Mino getNextMino() {
             nextQueue.offer(minoRandomizer.next());
             var nextMino = nextQueue.poll();
+            generateNextQueueGuiData();
             return nextMino;
         }
 
         Mino[] getNextQueueGuiData() {
-            return nextQueue.toArray(new Mino[0]);
+            var temp = nextQueueGuiData;
+            nextQueueGuiData = null;
+            return temp;
+        }
+
+        PlayerGuiData render() {
+            return new PlayerGuiData(
+                    hold, lockHold, pdr, playerLockProgress, getNextQueueGuiData());
+        }
+
+        void generateNextQueueGuiData() {
+            nextQueueGuiData = nextQueue.toArray(new Mino[0]);
         }
 
         void resetLockDelay() {
@@ -178,14 +194,14 @@ public class Gameplay implements ReceiveSettings {
     private boolean zenMode;
 
     private Queue<GuiData> renderQueue = new ArrayBlockingQueue<>(3);
-    private PlayerRenderData[] pdrs;
-    private double playerLockProgress;
     private double windowNudgeX;
     private double windowNudgeY;
     private ObjectDataGrid<BlockWithConnection> renderBlocks;
-    private Mino[] nextQueueGuiData = new Mino[6];
+    // private Mino[] nextQueueGuiData = new Mino[6];
+    private PlayerGuiData[] pgds;
     private int calloutLines;
     private String spinNameGui;
+    private boolean spinMiniGui;
     private boolean allCleared;
     private GoalData goalData;
     private GoalState goalState;
@@ -230,8 +246,7 @@ public class Gameplay implements ReceiveSettings {
         zenMode = goal instanceof NoGoal;
         level = zenMode ? 2 : level;
 
-        pdrs = null;
-        playerLockProgress = 0;
+        pgds = null;
         windowNudgeX = 0;
         windowNudgeY = 0;
         goalState = GoalState.NONE;
@@ -241,7 +256,10 @@ public class Gameplay implements ReceiveSettings {
         goalData = goal.getGoalData();
         danger = false;
 
-        nextQueueGuiData = playerDatas[0].getNextQueueGuiData();
+        for (int i = 0; i < playerDatas.length; i++) {
+            playerDatas[i].generateNextQueueGuiData();
+        }
+
         renderFrame();
 
         timer.scheduleAtFixedRate(countdownTask, 0, 750);
@@ -253,14 +271,16 @@ public class Gameplay implements ReceiveSettings {
         for (int i = 0; i < playerCount; i++) {
             playfield.spawnPlayerMino(i, playerDatas[i].getNextMino());
         }
-        nextQueueGuiData = playerDatas[0].getNextQueueGuiData();
+        for (int i = 0; i < playerDatas.length; i++) {
+            playerDatas[i].generateNextQueueGuiData();
+        }
         timer.scheduleAtFixedRate(gameLoop, 0, 3);
     }
 
     private void processHold(int index) {
         if (playerDatas[index].hold == null) {
             playerDatas[index].hold = playfield.swapHold(index, playerDatas[index].getNextMino());
-            nextQueueGuiData = playerDatas[index].getNextQueueGuiData();
+            playerDatas[index].generateNextQueueGuiData();
         } else {
             playerDatas[index].hold = playfield.swapHold(index, playerDatas[index].hold);
         }
@@ -407,6 +427,7 @@ public class Gameplay implements ReceiveSettings {
         renderBlocks = playfield.getRenderBlocks();
         if (playerDatas[index].lastMoveTSpin) {
             spinNameGui = playerDatas[index].spinName;
+            spinMiniGui = playerDatas[index].spinMini;
         }
         playerDatas[index].spinName = null;
         allCleared = playfield.isClear();
@@ -473,7 +494,6 @@ public class Gameplay implements ReceiveSettings {
      */
     private boolean processPieceSpawn(int index) {
         boolean spawnSuccess = playfield.spawnPlayerMino(index, playerDatas[index].getNextMino());
-        nextQueueGuiData = playerDatas[index].getNextQueueGuiData();
         if (!spawnSuccess) {
             goalState = GoalState.LOSE;
             return false;
@@ -490,14 +510,15 @@ public class Gameplay implements ReceiveSettings {
     }
 
     private void renderFrame() {
+        pgds = new PlayerGuiData[playerDatas.length];
+        for (int i = 0; i < playerDatas.length; i++) {
+            pgds[i] = playerDatas[i].render();
+        }
         boolean offerResult = renderQueue.offer(new GuiData(timeMillis,
                 linesCleared,
                 level,
                 score,
-                playerDatas[0].hold,
-                playerDatas[0].lockHold,
-                pdrs,
-                playerLockProgress,
+                pgds,
                 windowNudgeX,
                 windowNudgeY,
                 Math.max(0, comboCount - 1),
@@ -506,16 +527,15 @@ public class Gameplay implements ReceiveSettings {
                 gamemodeName,
                 danger,
                 renderBlocks,
-                nextQueueGuiData,
                 calloutLines,
                 spinNameGui,
-                playerDatas[0].spinMini,
+                spinMiniGui,
                 allCleared,
                 goalData,
                 countdownGui));
         if (offerResult) {
+            pgds = null;
             renderBlocks = null;
-            nextQueueGuiData = null;
             spinNameGui = null;
             calloutLines = 0;
             windowNudgeX = 0;

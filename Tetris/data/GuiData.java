@@ -8,10 +8,7 @@ public class GuiData {
     public final int linesCleared;
     public final int level;
     public final int score;
-    public final Mino hold;
-    public final boolean lockHold;
-    public final PlayerRenderData[] playerRenderDatas;
-    public final double playerLockProgress;
+    public final PlayerGuiData[] playerGuiDatas;
     public final double windowNudgeX;
     public final double windowNudgeY;
     public final int comboCount;
@@ -23,10 +20,6 @@ public class GuiData {
      * may be null
      */
     public final ObjectDataGrid<BlockWithConnection> renderBlocks;
-    /**
-     * may be null
-     */
-    public final Mino[] nextQueue;
     public final int calloutLines;
     /**
      * may be null
@@ -39,7 +32,6 @@ public class GuiData {
 
     /**
      * @param renderBlocks if null, will keep using old data
-     * @param nextQueue    if null, will keep using old data
      * @param calloutLines if not 0, will start animation for line clear callout
      * @param spinName     if not null, will start animation for spin callout
      * @param allClear     if true, will start animation for all clear callout
@@ -50,10 +42,7 @@ public class GuiData {
             int linesCleared,
             int level,
             int score,
-            Mino hold,
-            boolean lockHold,
-            PlayerRenderData[] playerRenderDatas,
-            double playerLockProgress,
+            PlayerGuiData[] playerGuiDatas,
             double windowNudgeX,
             double windowNudgeY,
             int comboCount,
@@ -62,7 +51,6 @@ public class GuiData {
             String gamemodeName,
             boolean danger,
             ObjectDataGrid<BlockWithConnection> renderBlocks,
-            Mino[] nextQueue,
             int calloutLines,
             String spinName,
             boolean spinMini,
@@ -73,11 +61,7 @@ public class GuiData {
         this.linesCleared = linesCleared;
         this.level = level;
         this.score = score;
-        this.nextQueue = nextQueue;
-        this.hold = hold;
-        this.lockHold = lockHold;
-        this.playerRenderDatas = playerRenderDatas;
-        this.playerLockProgress = playerLockProgress;
+        this.playerGuiDatas = playerGuiDatas;
         this.windowNudgeX = windowNudgeX;
         this.windowNudgeY = windowNudgeY;
         this.comboCount = comboCount;
