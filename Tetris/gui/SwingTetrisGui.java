@@ -34,11 +34,14 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 
@@ -53,7 +56,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private HoldGroup[] holdGroups;
     private CalloutsGroup calloutsGroup;
     private StatsGroup statsGroup;
-    private MiscGroup miscGroup;
+    private JPanel miscPanel;
+    private JButton newGameButton;
+    private JLabel controlsText;
     private DangerBorder dangerBorder;
 
     private KeyboardHandler[] kbh = new KeyboardHandler[2];
@@ -313,7 +318,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         nextGroups = new NextGroup[] { new NextGroup(blockSkinManager), new NextGroup(blockSkinManager) };
         holdGroups = new HoldGroup[] { new HoldGroup(blockSkinManager), new HoldGroup(blockSkinManager) };
         calloutsGroup = new CalloutsGroup();
-        miscGroup = new MiscGroup();
+        createMiscPanel();
 
         GroupLayout centerPanelLayout = new GroupLayout(centerPanel);
         centerPanel.setLayout(centerPanelLayout);
@@ -333,7 +338,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                                 .addComponent(nextGroups[1].getPanel())
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(holdGroups[1].getPanel()))
-                        .addComponent(miscGroup.getPanel())
+                        .addComponent(miscPanel)
 
                 ));
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
@@ -352,9 +357,62 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                                 .addComponent(nextGroups[1].getPanel())
                                 .addComponent(holdGroups[1].getPanel()))
                         .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(miscGroup.getPanel())
+                        .addComponent(miscPanel)
 
                 ));
+    }
+
+    private void createMiscPanel() {
+        miscPanel = new JPanel();
+        newGameButton = new JButton();
+        controlsText = new JLabel();
+
+        newGameButton.setFocusable(false);
+
+        newGameButton.setText("New Game");
+        controlsText.setText("");
+        controlsText.setVerticalAlignment(SwingConstants.TOP);
+        controlsText.setPreferredSize(new Dimension(80, 1));
+
+        GroupLayout miscPanelLayout = new GroupLayout(miscPanel);
+        miscPanel.setLayout(miscPanelLayout);
+        miscPanelLayout.setHorizontalGroup(miscPanelLayout.createParallelGroup()
+                .addComponent(newGameButton)
+                .addComponent(controlsText, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
+        miscPanelLayout.setVerticalGroup(miscPanelLayout.createSequentialGroup()
+                .addComponent(newGameButton)
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addComponent(controlsText));
+    }
+
+    public void updateControlSchemeTextTemp(ControlScheme controlScheme, boolean sonicDrop) {
+        String newControlText = "";
+        switch (controlScheme) {
+            case WASD:
+                newControlText = "<html>\nA D - Move<br>\nS - ";
+                break;
+
+            case Classic:
+                newControlText = "<html>\n⬅ ➡ - Move<br>\n⬇ - ";
+                break;
+            case SlashBracket:
+                newControlText = "<html>\nA D - Move<br>\nS - ";
+                break;
+        }
+        newControlText += sonicDrop ? "Sonic" : "Soft";
+        switch (controlScheme) {
+            case WASD:
+                newControlText += " Drop<br>\nW - Hard Drop<br>\nR - Rotate<br>\nF - Hold";
+                break;
+
+            case Classic:
+                newControlText += " Drop<br>\n⬆ - Hard Drop<br>\nZ - Rotate CCW<br>\nX - Rotate CW<br>\nC - Hold";
+                break;
+            case SlashBracket:
+                newControlText += " Drop<br>\nW - Hard Drop<br>\n/ - Rotate CCW<br>\n[ - Rotate Flip<br>\n] - Rotate CW<br>\nShift - Hold";
+                break;
+        }
+        controlsText.setText(newControlText);
     }
 
     public KeyboardHandler getKeyboardHandler(int index) {
@@ -517,13 +575,13 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     }
 
     public void setNewGameAction(ActionListener a) {
-        miscGroup.getNewGameButton().addActionListener(a);
+        newGameButton.addActionListener(a);
         gameMenuGroup.getNewGameMenuItem().addActionListener(a);
         newGameAction = a;
     }
 
     private void updateControlSchemeText() {
-        miscGroup.updateControlSchemeText(controlScheme, controlSchemeSonicDrop);
+        updateControlSchemeTextTemp(controlScheme, controlSchemeSonicDrop);
     }
 
     public Map<SettingKey, Consumer<Object>> getReceivers() {
