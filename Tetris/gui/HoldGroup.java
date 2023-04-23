@@ -11,14 +11,14 @@ public class HoldGroup {
     private JPanel holdPanel = new JPanel();
     private JLabel holdText = new JLabel();
 
-    public HoldGroup(BlockSkinManager blockSkinManager) {
+    public HoldGroup(BlockSkinManager blockSkinManager, Alignment alignment) {
         holdMino = new OneMinoPanel(blockSkinManager);
 
         holdText.setText("Hold");
 
         GroupLayout holdPanelLayout = new GroupLayout(holdPanel);
         holdPanel.setLayout(holdPanelLayout);
-        holdPanelLayout.setHorizontalGroup(holdPanelLayout.createParallelGroup(Alignment.TRAILING)
+        holdPanelLayout.setHorizontalGroup(holdPanelLayout.createParallelGroup(alignment)
                 .addComponent(holdText)
                 .addComponent(holdMino));
         holdPanelLayout.setVerticalGroup(holdPanelLayout.createSequentialGroup()

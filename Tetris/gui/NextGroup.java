@@ -11,12 +11,12 @@ public class NextGroup {
     private JPanel nextPanel = new JPanel();
     private JLabel nextText = new JLabel();
 
-    public NextGroup(BlockSkinManager blockSkinManager) {
+    public NextGroup(BlockSkinManager blockSkinManager, Alignment alignment) {
         nextText.setText("Next");
 
         GroupLayout nextPanelLayout = new GroupLayout(nextPanel);
         nextPanel.setLayout(nextPanelLayout);
-        var horizGroup = nextPanelLayout.createParallelGroup(Alignment.LEADING)
+        var horizGroup = nextPanelLayout.createParallelGroup(alignment)
                 .addComponent(nextText);
         var vertGroup = nextPanelLayout.createSequentialGroup()
                 .addComponent(nextText);
