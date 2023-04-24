@@ -1,6 +1,5 @@
 package Tetris.data;
 
-import Tetris.data.mino.Mino;
 import Tetris.gameplay.goal.GoalState;
 
 public class GuiData {
