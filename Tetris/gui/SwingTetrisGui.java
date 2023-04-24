@@ -96,20 +96,21 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 calloutsGroup.getSpinLabel()
                         .startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName.toUpperCase() + "-SPIN");
             }
-            if (gds.calloutLines != 0) {
+            if (gds.clearLinesResult != null) {
                 String calloutLinesStr = "";
-                if (gds.calloutLines == 1) {
+                if (gds.clearLinesResult.count == 1) {
                     calloutLinesStr = "SINGLE";
-                } else if (gds.calloutLines == 2) {
+                } else if (gds.clearLinesResult.count == 2) {
                     calloutLinesStr = "DOUBLE";
-                } else if (gds.calloutLines == 3) {
+                } else if (gds.clearLinesResult.count == 3) {
                     calloutLinesStr = "TRIPLE";
-                } else if (gds.calloutLines == 4) {
+                } else if (gds.clearLinesResult.count == 4) {
                     calloutLinesStr = "QUAD";
                 } else {
-                    calloutLinesStr = String.format("%d LINES", gds.calloutLines);
+                    calloutLinesStr = String.format("%d LINES", gds.clearLinesResult.count);
                 }
                 calloutsGroup.getLineCalloutLabel().startAnimation(calloutLinesStr);
+                playfield.startClearLineAnimation(gds.clearLinesResult);
             }
             if (gds.b2bCount != lastB2B) {
                 if (gds.b2bCount != 0) {

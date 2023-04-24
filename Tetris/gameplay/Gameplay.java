@@ -149,7 +149,7 @@ public class Gameplay implements ReceiveSettings {
     private double windowNudgeY;
     private ObjectDataGrid<BlockWithConnection> renderBlocks;
     private Mino[] nextQueueGuiData = new Mino[6];
-    private int calloutLines;
+    private ClearLinesResult calloutLines;
     private String spinNameGui;
     private boolean allCleared;
     private GoalData goalData;
@@ -202,7 +202,7 @@ public class Gameplay implements ReceiveSettings {
         windowNudgeY = 0;
         goalState = GoalState.NONE;
         renderBlocks = playfield.getRenderBlocks();
-        calloutLines = 0;
+        calloutLines = null;
         spinName = null;
         spinMini = false;
         allCleared = false;
@@ -362,7 +362,9 @@ public class Gameplay implements ReceiveSettings {
             comboCount = 0;
         }
 
-        calloutLines = lines;
+        if (0 < result.count) {
+            calloutLines = result;
+        }
         if (!zenMode) {
             level = 1 + (linesCleared / 10);
         }
@@ -480,7 +482,7 @@ public class Gameplay implements ReceiveSettings {
             renderBlocks = null;
             nextQueueGuiData = null;
             spinNameGui = null;
-            calloutLines = 0;
+            calloutLines = null;
             windowNudgeX = 0;
             windowNudgeY = 0;
             allCleared = false;

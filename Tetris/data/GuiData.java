@@ -1,6 +1,7 @@
 package Tetris.data;
 
 import Tetris.data.mino.Mino;
+import Tetris.gameplay.ClearLinesResult;
 import Tetris.gameplay.goal.GoalState;
 
 public class GuiData {
@@ -27,7 +28,10 @@ public class GuiData {
      * may be null
      */
     public final Mino[] nextQueue;
-    public final int calloutLines;
+    /**
+     * may be null
+     */
+    public final ClearLinesResult clearLinesResult;
     /**
      * may be null
      */
@@ -63,7 +67,7 @@ public class GuiData {
             boolean danger,
             ObjectDataGrid<BlockWithConnection> renderBlocks,
             Mino[] nextQueue,
-            int calloutLines,
+            ClearLinesResult clearLinesResult,
             String spinName,
             boolean spinMini,
             boolean allClear,
@@ -86,7 +90,7 @@ public class GuiData {
         this.gamemodeName = gamemodeName;
         this.danger = danger;
         this.renderBlocks = renderBlocks;
-        this.calloutLines = calloutLines;
+        this.clearLinesResult = clearLinesResult;
         this.spinName = spinName;
         this.spinMini = spinMini;
         this.allClear = allClear;
