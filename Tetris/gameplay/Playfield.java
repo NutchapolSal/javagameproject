@@ -261,8 +261,9 @@ public class Playfield {
 
     public boolean spawnPlayerMino(int index, Mino mino) {
         setPlayerMino(index, mino);
+        int sectionWidth = fieldWidth / playerDatas.length;
         boolean spawnSuccess = setPlayerMinoPos(index,
-                (fieldWidth - mino.getWidth()) / 2,
+                (sectionWidth * index) + ((sectionWidth - mino.getWidth()) / 2),
                 fieldHeight + 1);
         if (spawnSuccess) {
             movePlayerMino(index, 0, -1);
