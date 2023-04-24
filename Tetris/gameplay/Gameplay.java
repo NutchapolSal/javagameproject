@@ -169,7 +169,7 @@ public class Gameplay implements ReceiveSettings {
     private static long FRAME_DELAY = 16_666_666;
     private int lockResetMaxCount = 15;
     private int lockDelayMaxFrames = 30;
-    private boolean sonicDrop = false;
+    private boolean[] sonicDrops = new boolean[2];
 
     private int playerCount = 2;
 
@@ -351,7 +351,7 @@ public class Gameplay implements ReceiveSettings {
     }
 
     private void processSoftDrop(int index) {
-        if (sonicDrop) {
+        if (sonicDrops[index]) {
             int blocksMoved = playfield.sonicDropPlayerMino(index);
             if (blocksMoved != 0) {
                 resetLockCount(index);
@@ -570,13 +570,22 @@ public class Gameplay implements ReceiveSettings {
     public Map<SettingKey, Consumer<Object>> getReceivers() {
         Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
         receiversMap.put(SettingKey.SonicDrop, x -> {
-            sonicDrop = (boolean) x;
+            sonicDrops[0] = (boolean) x;
         });
         receiversMap.put(SettingKey.DasChargeFrames, x -> {
             pis[0].setDAS((int) x);
         });
         receiversMap.put(SettingKey.AutoRepeatFrames, x -> {
             pis[0].setARR((int) x);
+        });
+        receiversMap.put(SettingKey.SonicDropP2, x -> {
+            sonicDrops[1] = (boolean) x;
+        });
+        receiversMap.put(SettingKey.DasChargeFramesP2, x -> {
+            pis[1].setDAS((int) x);
+        });
+        receiversMap.put(SettingKey.AutoRepeatFramesP2, x -> {
+            pis[1].setARR((int) x);
         });
         receiversMap.put(SettingKey.GameplayMode, x -> {
             newGoal.poll();

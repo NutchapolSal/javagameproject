@@ -22,6 +22,26 @@ public enum SettingKey {
      */
     HandlingPreset,
     /**
+     * consumes {@code int}
+     */
+    DasChargeFramesP2,
+    /**
+     * consumes {@code int}
+     */
+    AutoRepeatFramesP2,
+    /**
+     * consumes {@code boolean}
+     */
+    SonicDropP2,
+    /**
+     * consumes {@code ControlScheme}
+     */
+    ControlSchemeP2,
+    /**
+     * consumes {@code HandlingPreset}
+     */
+    HandlingPresetP2,
+    /**
      * consumes {@code GameplayMode}
      */
     GameplayMode,

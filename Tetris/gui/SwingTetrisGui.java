@@ -2,15 +2,12 @@ package Tetris.gui;
 
 import Tetris.data.GoalData;
 import Tetris.data.GuiData;
-import Tetris.data.PlayerRenderData;
 import Tetris.data.mino.MinoColor;
 import Tetris.gameplay.goal.GoalState;
 import Tetris.input.GameplayButton;
 import Tetris.input.RawInputSource;
-import Tetris.settings.BlockConnectionMode;
 import Tetris.settings.ControlScheme;
 import Tetris.settings.GameplayMode;
-import Tetris.settings.HandlingPreset;
 import Tetris.settings.ReceiveSettings;
 import Tetris.settings.SendSettings;
 import Tetris.settings.SettingKey;
@@ -37,11 +34,9 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 
@@ -78,8 +73,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private GoalData goalData = new GoalData();
     private GoalState lastGoalState = GoalState.NONE;
     private String lastGamemodeName = "";
-    private ControlScheme controlScheme;
-    private boolean controlSchemeSonicDrop;
+    // private ControlScheme controlScheme;
+    // private boolean controlSchemeSonicDrop;
     private BlockSkinManager blockSkinManager = new BlockSkinManager();
     private boolean lastDanger = false;
 
@@ -255,10 +250,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
 
-        controlScheme = ControlScheme.WASD;
-        getKeyboardHandler(0).setupSlashBracket();
-        getKeyboardHandler(1).setupClassic();
-        updateControlSchemeText();
+        getKeyboardHandler(0).setupWASDP1();
+        getKeyboardHandler(1).setupWASDP2();
 
         f.setLocationRelativeTo(null);
         f.setVisible(true);
@@ -315,8 +308,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         playfield = new PlayfieldPanel(blockSkinManager);
         statsGroup = new StatsGroup();
         playerGroups = new PlayerGroup[] {
-                new PlayerGroup(blockSkinManager, Alignment.TRAILING),
-                new PlayerGroup(blockSkinManager, Alignment.LEADING)
+                new PlayerGroup(0, blockSkinManager, Alignment.TRAILING),
+                new PlayerGroup(1, blockSkinManager, Alignment.LEADING)
         };
         calloutsGroup = new CalloutsGroup();
 
@@ -378,8 +371,22 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                     gb.name() + PRESSED + Integer.toString(playerIndex));
             inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, true),
                     gb.name() + RELEASED + Integer.toString(playerIndex));
-            inputMap.put(KeyStroke.getKeyStroke(keyCode, KeyEvent.SHIFT_DOWN_MASK, false), gb.name() + PRESSED);
-            inputMap.put(KeyStroke.getKeyStroke(keyCode, KeyEvent.SHIFT_DOWN_MASK, true), gb.name() + RELEASED);
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, KeyEvent.SHIFT_DOWN_MASK, false),
+                    gb.name() + PRESSED + Integer.toString(playerIndex));
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, KeyEvent.SHIFT_DOWN_MASK, true),
+                    gb.name() + RELEASED + Integer.toString(playerIndex));
+        }
+
+        private void cleanupKeyActions() {
+            if (inputMap.keys() == null) {
+                return;
+            }
+            for (var k : inputMap.keys()) {
+                var v = inputMap.get(k);
+                if (((String) v).endsWith(Integer.toString(playerIndex))) {
+                    inputMap.put(k, null);
+                }
+            }
         }
 
         private KeyboardHandler(int playerIndex) {
@@ -397,8 +404,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             }
         }
 
-        private void setupWASD() {
-            inputMap.clear();
+        private void setupWASDP1() {
+            cleanupKeyActions();
             setupKeyAction(GameplayButton.Left, KeyEvent.VK_A);
             setupKeyAction(GameplayButton.Right, KeyEvent.VK_D);
             setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_W);
@@ -407,31 +414,60 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_R);
         }
 
-        private void setupClassic() {
-            // inputMap.clear();
+        private void setupWASDP2() {
+            cleanupKeyActions();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_J);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_L);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_I);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_K);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_COLON);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_P);
+        }
+
+        private void setupClassicP1() {
+            cleanupKeyActions();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_C);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_B);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_F);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_V);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_D);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_A);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_S);
+        }
+
+        private void setupClassicP2() {
+            cleanupKeyActions();
             setupKeyAction(GameplayButton.Left, KeyEvent.VK_LEFT);
             setupKeyAction(GameplayButton.Right, KeyEvent.VK_RIGHT);
             setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_UP);
             setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_DOWN);
-            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_C);
-            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_Z);
-            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_X);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_SLASH);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_COMMA);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_PERIOD);
         }
 
-        private void setupSlashBracket() {
-            // inputMap.clear();
-            setupKeyAction(GameplayButton.Left, KeyEvent.VK_A);
+        private void setupSlashBracketP1() {
+            cleanupKeyActions();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_W);
             setupKeyAction(GameplayButton.Right, KeyEvent.VK_D);
-            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_W);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_E);
             setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_S);
-            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_SHIFT);
-            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_R);
-            setupKeyAction(GameplayButton.RotateFlip, KeyEvent.VK_T);
-            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_Y);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_Q);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_C);
+            setupKeyAction(GameplayButton.RotateFlip, KeyEvent.VK_F);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_G);
+        }
 
-            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_SLASH);
-            setupKeyAction(GameplayButton.RotateFlip, KeyEvent.VK_OPEN_BRACKET);
-            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_CLOSE_BRACKET);
+        private void setupSlashBracketP2() {
+            cleanupKeyActions();
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_K);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_SEMICOLON);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_O);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_L);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_M);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_QUOTE);
+            setupKeyAction(GameplayButton.RotateFlip, KeyEvent.VK_MINUS);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_EQUALS);
         }
 
         class ButtonAction extends AbstractAction {
@@ -497,20 +533,35 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
         public Map<SettingKey, Consumer<Object>> getReceivers() {
             Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
-            // receiversMap.put(SettingKey.ControlScheme, x -> {
-            // switch ((ControlScheme) x) {
-            // case WASD:
-            // getKeyboardHandler().setupWASD();
-            // break;
-
-            // case Classic:
-            // getKeyboardHandler().setupClassic();
-            // break;
-            // case SlashBracket:
-            // getKeyboardHandler().setupSlashBracket();
-            // break;
-            // }
-            // });
+            if (playerIndex == 0) {
+                receiversMap.put(SettingKey.ControlScheme, x -> {
+                    switch ((ControlScheme) x) {
+                        case WASD:
+                            setupWASDP1();
+                            break;
+                        case Classic:
+                            setupClassicP1();
+                            break;
+                        case SlashBracket:
+                            setupSlashBracketP1();
+                            break;
+                    }
+                });
+            } else {
+                receiversMap.put(SettingKey.ControlSchemeP2, x -> {
+                    switch ((ControlScheme) x) {
+                        case WASD:
+                            setupWASDP2();
+                            break;
+                        case Classic:
+                            setupClassicP2();
+                            break;
+                        case SlashBracket:
+                            setupSlashBracketP2();
+                            break;
+                    }
+                });
+            }
             return receiversMap;
         }
 
@@ -522,19 +573,19 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         newGameAction = a;
     }
 
-    private void updateControlSchemeText() {
-        playerGroups[0].updateControlSchemeText(controlScheme, controlSchemeSonicDrop);
-    }
-
     public Map<SettingKey, Consumer<Object>> getReceivers() {
         Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
         receiversMap.put(SettingKey.ControlScheme, x -> {
-            controlScheme = (ControlScheme) x;
-            updateControlSchemeText();
+            playerGroups[0].setControlScheme((ControlScheme) x);
+        });
+        receiversMap.put(SettingKey.ControlSchemeP2, x -> {
+            playerGroups[1].setControlScheme((ControlScheme) x);
         });
         receiversMap.put(SettingKey.SonicDrop, x -> {
-            controlSchemeSonicDrop = (Boolean) x;
-            updateControlSchemeText();
+            playerGroups[0].setSonicDrop((Boolean) x);
+        });
+        receiversMap.put(SettingKey.SonicDropP2, x -> {
+            playerGroups[1].setSonicDrop((Boolean) x);
         });
         return receiversMap;
     }

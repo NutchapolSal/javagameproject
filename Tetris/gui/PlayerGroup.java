@@ -12,23 +12,17 @@ import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class PlayerGroup {
-    private static class ControlsTextData {
-        String button;
-        String name;
-
-        ControlsTextData(String button, String name) {
-            this.button = button;
-            this.name = name;
-        }
-    }
-
     private HoldGroup holdGroup;
     private NextGroup nextGroup;
     private JLabel controlsText = new JLabel();
     private JPanel panel = new JPanel();
     private Alignment alignment;
+    private int playerIndex;
+    private ControlScheme controlScheme = ControlScheme.WASD;
+    private boolean controlSchemeSonicDrop;
 
-    public PlayerGroup(BlockSkinManager blockSkinManager, Alignment alignment) {
+    public PlayerGroup(int playerIndex, BlockSkinManager blockSkinManager, Alignment alignment) {
+        this.playerIndex = playerIndex;
         this.alignment = alignment;
         holdGroup = new HoldGroup(blockSkinManager, alignment);
         nextGroup = new NextGroup(blockSkinManager, alignment);
@@ -70,48 +64,23 @@ public class PlayerGroup {
         layout.setHorizontalGroup(hGroup);
         layout.setVerticalGroup(vGroup);
 
-        updateControlSchemeText(ControlScheme.WASD, false);
+        updateControlSchemeText();
     }
 
-    public void updateControlSchemeText(ControlScheme controlScheme, boolean sonicDrop) {
+    public void setControlScheme(ControlScheme controlScheme) {
+        this.controlScheme = controlScheme;
+        updateControlSchemeText();
+    }
+
+    public void setSonicDrop(boolean sonicDrop) {
+        this.controlSchemeSonicDrop = sonicDrop;
+        updateControlSchemeText();
+    }
+
+    private void updateControlSchemeText() {
         String newControlText = "<html>" + (alignment == Alignment.TRAILING ? "<body style='text-align: right'>" : "");
 
-        ControlsTextData[] ctds;
-        switch (controlScheme) {
-            case WASD:
-                ctds = new ControlsTextData[] {
-                        new ControlsTextData("A D", "Move"),
-                        new ControlsTextData("S", (sonicDrop ? "Sonic" : "Soft") + " Drop"),
-                        new ControlsTextData("W", "Hard Drop"),
-                        new ControlsTextData("R", "Rotate"),
-                        new ControlsTextData("F", "Hold"),
-                };
-                break;
-            case Classic:
-                ctds = new ControlsTextData[] {
-                        new ControlsTextData("⬅ ➡", "Move"),
-                        new ControlsTextData("⬇", (sonicDrop ? "Sonic" : "Soft") + " Drop"),
-                        new ControlsTextData("⬆", "Hard Drop"),
-                        new ControlsTextData("Z", "Rotate CCW"),
-                        new ControlsTextData("X", "Rotate CW"),
-                        new ControlsTextData("C", "Hold"),
-                };
-                break;
-            case SlashBracket:
-                ctds = new ControlsTextData[] {
-                        new ControlsTextData("A D", "Move"),
-                        new ControlsTextData("S", (sonicDrop ? "Sonic" : "Soft") + " Drop"),
-                        new ControlsTextData("W", "Hard Drop"),
-                        new ControlsTextData("/", "Rotate CCW"),
-                        new ControlsTextData("[", "Rotate Flip"),
-                        new ControlsTextData("]", "Rotate CW"),
-                        new ControlsTextData("Shift", "Hold"),
-                };
-                break;
-            default:
-                ctds = new ControlsTextData[0];
-                break;
-        }
+        ControlsTextData[] ctds = ControlsTextData.getControlsTexts(playerIndex, controlScheme, controlSchemeSonicDrop);
 
         boolean start = true;
         for (ControlsTextData ctd : ctds) {

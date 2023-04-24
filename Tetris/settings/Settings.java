@@ -10,14 +10,20 @@ public class Settings {
     private Preferences prefs = Preferences.userNodeForPackage(Settings.class);
 
     private HandlingPreset handlingPreset;
+    private HandlingPreset handlingPresetP2;
     private EnumMap<SettingKey, List<Consumer<Object>>> receivers = new EnumMap<>(SettingKey.class);
 
     public Settings() {
         interpretHandlingPreset();
+        interpretHandlingPresetP2();
     }
 
     public HandlingPreset getHandlingPreset() {
         return handlingPreset;
+    }
+
+    public HandlingPreset getHandlingPresetP2() {
+        return handlingPresetP2;
     }
 
     public boolean getSonicDrop() {
@@ -34,6 +40,22 @@ public class Settings {
 
     public ControlScheme getControlScheme() {
         return ControlScheme.valueOf(prefs.get(SettingKey.ControlScheme.name(), ControlScheme.WASD.name()));
+    }
+
+    public boolean getSonicDropP2() {
+        return prefs.getBoolean(SettingKey.SonicDropP2.name(), false);
+    }
+
+    public int getDasChargeFramesP2() {
+        return prefs.getInt(SettingKey.DasChargeFramesP2.name(), 9);
+    }
+
+    public int getAutoRepeatFramesP2() {
+        return prefs.getInt(SettingKey.AutoRepeatFramesP2.name(), 2);
+    }
+
+    public ControlScheme getControlSchemeP2() {
+        return ControlScheme.valueOf(prefs.get(SettingKey.ControlSchemeP2.name(), ControlScheme.WASD.name()));
     }
 
     public GameplayMode getGameplayMode() {
@@ -63,6 +85,22 @@ public class Settings {
 
     private void saveControlScheme(ControlScheme in) {
         prefs.put(SettingKey.ControlScheme.name(), in.name());
+    }
+
+    private void saveDasChargeFramesP2(int in) {
+        prefs.putInt(SettingKey.DasChargeFramesP2.name(), in);
+    }
+
+    private void saveAutoRepeatFramesP2(int in) {
+        prefs.putInt(SettingKey.AutoRepeatFramesP2.name(), in);
+    }
+
+    private void saveSonicDropP2(Boolean in) {
+        prefs.putBoolean(SettingKey.SonicDropP2.name(), in);
+    }
+
+    private void saveControlSchemeP2(ControlScheme in) {
+        prefs.put(SettingKey.ControlSchemeP2.name(), in.name());
     }
 
     private void saveGameplayMode(GameplayMode in) {
@@ -107,11 +145,28 @@ public class Settings {
         handlingPreset = HandlingPreset.Custom;
     }
 
+    private void interpretHandlingPresetP2() {
+        if (getDasChargeFramesP2() == 9 && getAutoRepeatFramesP2() == 2) {
+            handlingPresetP2 = HandlingPreset.Default;
+            return;
+        }
+        if (getDasChargeFramesP2() == 4 && getAutoRepeatFramesP2() == 2) {
+            handlingPresetP2 = HandlingPreset.Fast;
+            return;
+        }
+
+        handlingPresetP2 = HandlingPreset.Custom;
+    }
+
     public void loadSettingsToReceivers() {
         iterateOverReceivers(SettingKey.DasChargeFrames, getDasChargeFrames());
         iterateOverReceivers(SettingKey.AutoRepeatFrames, getAutoRepeatFrames());
         iterateOverReceivers(SettingKey.SonicDrop, getSonicDrop());
         iterateOverReceivers(SettingKey.ControlScheme, getControlScheme());
+        iterateOverReceivers(SettingKey.DasChargeFramesP2, getDasChargeFramesP2());
+        iterateOverReceivers(SettingKey.AutoRepeatFramesP2, getAutoRepeatFramesP2());
+        iterateOverReceivers(SettingKey.SonicDropP2, getSonicDropP2());
+        iterateOverReceivers(SettingKey.ControlSchemeP2, getControlSchemeP2());
         iterateOverReceivers(SettingKey.GameplayMode, getGameplayMode());
         iterateOverReceivers(SettingKey.BlockSkin, getBlockSkin());
         iterateOverReceivers(SettingKey.BlockConnectionMode, getBlockConnectionMode());
@@ -139,6 +194,22 @@ public class Settings {
         this.handlingPreset = handlingPreset;
     }
 
+    public void setHandlingPresetP2(HandlingPreset handlingPreset) {
+        switch (handlingPreset) {
+            case Default:
+                setDasChargeFramesP2(9);
+                setAutoRepeatFramesP2(2);
+                break;
+            case Fast:
+                setDasChargeFramesP2(4);
+                setAutoRepeatFramesP2(2);
+                break;
+            default:
+                break;
+        }
+        this.handlingPresetP2 = handlingPreset;
+    }
+
     public void setDasChargeFrames(int dasChargeFrames) {
         saveDasChargeFrames(dasChargeFrames);
         iterateOverReceivers(SettingKey.DasChargeFrames, getDasChargeFrames());
@@ -157,6 +228,26 @@ public class Settings {
     public void setControlScheme(ControlScheme controlScheme) {
         saveControlScheme(controlScheme);
         iterateOverReceivers(SettingKey.ControlScheme, getControlScheme());
+    }
+
+    public void setDasChargeFramesP2(int dasChargeFrames) {
+        saveDasChargeFramesP2(dasChargeFrames);
+        iterateOverReceivers(SettingKey.DasChargeFramesP2, getDasChargeFramesP2());
+    }
+
+    public void setAutoRepeatFramesP2(int autoRepeatFrames) {
+        saveAutoRepeatFramesP2(autoRepeatFrames);
+        iterateOverReceivers(SettingKey.AutoRepeatFramesP2, getAutoRepeatFramesP2());
+    }
+
+    public void setSonicDropP2(boolean sonicDrop) {
+        saveSonicDropP2(sonicDrop);
+        iterateOverReceivers(SettingKey.SonicDropP2, getSonicDropP2());
+    }
+
+    public void setControlSchemeP2(ControlScheme controlScheme) {
+        saveControlSchemeP2(controlScheme);
+        iterateOverReceivers(SettingKey.ControlSchemeP2, getControlSchemeP2());
     }
 
     public void setGameplayMode(GameplayMode gameplayMode) {

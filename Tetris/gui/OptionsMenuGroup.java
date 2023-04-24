@@ -14,6 +14,10 @@ import javax.swing.JRadioButtonMenuItem;
 
 public class OptionsMenuGroup {
     private JMenu optionsMenu = new JMenu();
+
+    private JMenu p1Menu = new JMenu();
+    private JMenu p2Menu = new JMenu();
+
     private JMenu controlSchemeMenu = new JMenu();
     private JRadioButtonMenuItem wasdSchemeMenuItem = new JRadioButtonMenuItem();
     private JRadioButtonMenuItem classicSchemeMenuItem = new JRadioButtonMenuItem();
@@ -22,6 +26,16 @@ public class OptionsMenuGroup {
     private JRadioButtonMenuItem defaultHandlingMenuItem = new JRadioButtonMenuItem();
     private JRadioButtonMenuItem fastHandlingMenuItem = new JRadioButtonMenuItem();
     private JCheckBoxMenuItem sonicDropMenuItem = new JCheckBoxMenuItem();
+
+    private JMenu controlSchemeP2Menu = new JMenu();
+    private JRadioButtonMenuItem wasdSchemeP2MenuItem = new JRadioButtonMenuItem();
+    private JRadioButtonMenuItem classicSchemeP2MenuItem = new JRadioButtonMenuItem();
+    private JRadioButtonMenuItem slashBracketSchemeP2MenuItem = new JRadioButtonMenuItem();
+    private JMenu handlingP2Menu = new JMenu();
+    private JRadioButtonMenuItem defaultHandlingP2MenuItem = new JRadioButtonMenuItem();
+    private JRadioButtonMenuItem fastHandlingP2MenuItem = new JRadioButtonMenuItem();
+    private JCheckBoxMenuItem sonicDropP2MenuItem = new JCheckBoxMenuItem();
+
     private JMenu blockSkinMenu = new JMenu();
     private JRadioButtonMenuItem[] blockSkinMenuItems = new JRadioButtonMenuItem[BlockSkinManager
             .getBlockSkinFolders().length];
@@ -32,19 +46,40 @@ public class OptionsMenuGroup {
     private JRadioButtonMenuItem allConnectionMenuItem = new JRadioButtonMenuItem();
 
     public OptionsMenuGroup() {
-        detailControlSchemeMenu();
-        detailHandlingMenu();
-        sonicDropMenuItem.setText("Sonic Drop");
+        detailP1Menu();
+        detailP2Menu();
+
         detailBlockSkinMenu();
         detailBlockConnectionMenu();
 
         optionsMenu.setText("Options");
-        optionsMenu.add(controlSchemeMenu);
-        optionsMenu.add(handlingMenu);
-        optionsMenu.add(sonicDropMenuItem);
+        optionsMenu.add(p1Menu);
+        optionsMenu.add(p2Menu);
         optionsMenu.addSeparator();
         optionsMenu.add(blockSkinMenu);
         optionsMenu.add(blockConnectionMenu);
+    }
+
+    private void detailP1Menu() {
+        detailControlSchemeMenu();
+        detailHandlingMenu();
+        sonicDropMenuItem.setText("Sonic Drop");
+
+        p1Menu.setText("P1");
+        p1Menu.add(controlSchemeMenu);
+        p1Menu.add(handlingMenu);
+        p1Menu.add(sonicDropMenuItem);
+    }
+
+    private void detailP2Menu() {
+        detailControlSchemeP2Menu();
+        detailHandlingP2Menu();
+        sonicDropP2MenuItem.setText("Sonic Drop");
+
+        p2Menu.setText("P2");
+        p2Menu.add(controlSchemeP2Menu);
+        p2Menu.add(handlingP2Menu);
+        p2Menu.add(sonicDropP2MenuItem);
     }
 
     private void detailControlSchemeMenu() {
@@ -77,6 +112,38 @@ public class OptionsMenuGroup {
         ButtonGroup handlingGroup = new ButtonGroup();
         handlingGroup.add(defaultHandlingMenuItem);
         handlingGroup.add(fastHandlingMenuItem);
+    }
+
+    private void detailControlSchemeP2Menu() {
+        wasdSchemeP2MenuItem.setSelected(true);
+        wasdSchemeP2MenuItem.setText("WASD");
+
+        classicSchemeP2MenuItem.setText("Classic");
+
+        slashBracketSchemeP2MenuItem.setText("SlashBracket");
+
+        controlSchemeP2Menu.setText("Control Scheme");
+        controlSchemeP2Menu.add(wasdSchemeP2MenuItem);
+        controlSchemeP2Menu.add(classicSchemeP2MenuItem);
+        controlSchemeP2Menu.add(slashBracketSchemeP2MenuItem);
+        ButtonGroup controlSchemeGroup = new ButtonGroup();
+        controlSchemeGroup.add(wasdSchemeP2MenuItem);
+        controlSchemeGroup.add(classicSchemeP2MenuItem);
+        controlSchemeGroup.add(slashBracketSchemeP2MenuItem);
+    }
+
+    private void detailHandlingP2Menu() {
+        defaultHandlingP2MenuItem.setSelected(true);
+        defaultHandlingP2MenuItem.setText("Default");
+
+        fastHandlingP2MenuItem.setText("Fast");
+
+        handlingP2Menu.setText("Handling");
+        handlingP2Menu.add(defaultHandlingP2MenuItem);
+        handlingP2Menu.add(fastHandlingP2MenuItem);
+        ButtonGroup handlingGroup = new ButtonGroup();
+        handlingGroup.add(defaultHandlingP2MenuItem);
+        handlingGroup.add(fastHandlingP2MenuItem);
     }
 
     private void detailBlockSkinMenu() {
@@ -120,6 +187,9 @@ public class OptionsMenuGroup {
         bindControlSchemeMenuItems(s);
         bindHandlingMenuItems(s);
         sonicDropMenuItem.addItemListener(evt -> s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED));
+        bindControlSchemeP2MenuItems(s);
+        bindHandlingP2MenuItems(s);
+        sonicDropP2MenuItem.addItemListener(evt -> s.setSonicDropP2(evt.getStateChange() == ItemEvent.SELECTED));
         bindBlockSkinMenuItems(s);
         bindBlockConnectionMenuItems(s);
     }
@@ -147,6 +217,29 @@ public class OptionsMenuGroup {
                 break;
         }
         sonicDropMenuItem.setSelected(s.getSonicDrop());
+        switch (s.getControlSchemeP2()) {
+            case WASD:
+                wasdSchemeP2MenuItem.setSelected(true);
+                break;
+            case Classic:
+                classicSchemeP2MenuItem.setSelected(true);
+                break;
+            case SlashBracket:
+                slashBracketSchemeP2MenuItem.setSelected(true);
+                break;
+        }
+        switch (s.getHandlingPresetP2()) {
+            case Default:
+                defaultHandlingP2MenuItem.setSelected(true);
+                break;
+            case Fast:
+                fastHandlingP2MenuItem.setSelected(true);
+                break;
+            default:
+                break;
+        }
+        sonicDropP2MenuItem.setSelected(s.getSonicDropP2());
+
         String selectedSkin = s.getBlockSkin();
         for (JRadioButtonMenuItem v : blockSkinMenuItems) {
             if (v.getText().equals(selectedSkin)) {
@@ -199,6 +292,37 @@ public class OptionsMenuGroup {
         fastHandlingMenuItem.addItemListener(evt -> {
             if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setHandlingPreset(HandlingPreset.Fast);
+            }
+        });
+    }
+
+    private void bindControlSchemeP2MenuItems(Settings s) {
+        wasdSchemeP2MenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlSchemeP2(ControlScheme.WASD);
+            }
+        });
+        classicSchemeP2MenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlSchemeP2(ControlScheme.Classic);
+            }
+        });
+        slashBracketSchemeP2MenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlSchemeP2(ControlScheme.SlashBracket);
+            }
+        });
+    }
+
+    private void bindHandlingP2MenuItems(Settings s) {
+        defaultHandlingP2MenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setHandlingPresetP2(HandlingPreset.Default);
+            }
+        });
+        fastHandlingP2MenuItem.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setHandlingPresetP2(HandlingPreset.Fast);
             }
         });
     }
