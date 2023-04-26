@@ -154,7 +154,8 @@ public class OptionsMenuGroup {
             blockSkinMenuItems[i] = new JRadioButtonMenuItem();
             blockSkinMenuItems[i].setText(blockSkinFolders[i]);
             blockSkinMenuItems[i].setIcon(
-                    new ImageIcon(BlockSkinManager.getImagesFromFolder(blockSkinFolders[i], MinoColor.Red).images[0]));
+                    new ImageIcon(
+                            BlockSkinManager.getImagesFromFolder(blockSkinFolders[i], MinoColor.Red, 1).images[0]));
             blockSkinMenu.add(blockSkinMenuItems[i]);
             blockSkinGroup.add(blockSkinMenuItems[i]);
             if (i == 0) {

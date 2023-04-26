@@ -10,6 +10,7 @@ import Tetris.settings.SettingKey;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -78,6 +79,7 @@ public class BlockSkinManager implements ReceiveSettings {
     }
 
     private static String[] blockSkinFolders = findBlockSkinFolders();
+    private double uiScale = Toolkit.getDefaultToolkit().getScreenResolution() / 96.0;
     private String selectedFolder;
     private BlockConnectionMode blockConnectionMode = BlockConnectionMode.All;
     private Map<MinoColor, ReadResult> readResults = new EnumMap<>(MinoColor.class);
@@ -192,7 +194,7 @@ public class BlockSkinManager implements ReceiveSettings {
 
     private Image getImage(MinoColor mc, int bwcValue) {
         if (!readResults.containsKey(mc)) {
-            readResults.put(mc, getImagesFromFolder(selectedFolder, mc));
+            readResults.put(mc, getImagesFromFolder(selectedFolder, mc, uiScale));
         }
 
         return readResults.get(mc).images[getIndexFromBWCValue(readResults.get(mc).connection, bwcValue)];
@@ -224,7 +226,7 @@ public class BlockSkinManager implements ReceiveSettings {
         }
     }
 
-    public static ReadResult getImagesFromFolder(String folderName, MinoColor mc) {
+    public static ReadResult getImagesFromFolder(String folderName, MinoColor mc, double uiScale) {
         Image loadedImage;
         SkinConnection connected = SkinConnection.None;
         boolean requestSmooth = false;
@@ -238,7 +240,7 @@ public class BlockSkinManager implements ReceiveSettings {
             connected = SkinConnection.None;
         }
 
-        return new ReadResult(cutImageGrid(loadedImage, connected.width(), connected.height(), requestSmooth),
+        return new ReadResult(cutImageGrid(loadedImage, connected.width(), connected.height(), requestSmooth, uiScale),
                 connected);
     }
 
@@ -286,20 +288,27 @@ public class BlockSkinManager implements ReceiveSettings {
         return bi;
     }
 
-    private static Image[] cutImageGrid(Image loadedImage, int width, int height, boolean smoothScale) {
+    private static Image[] cutImageGrid(Image loadedImage, int width, int height, boolean smoothScale, double uiScale) {
+        int imageWidth = (int) (MinoPanel.BLOCK_WIDTH * uiScale);
+        int imageHeight = (int) (MinoPanel.BLOCK_HEIGHT * uiScale);
+
         Image[] currImages = new Image[width * height];
-        Image scaledImage = loadedImage.getScaledInstance(MinoPanel.BLOCK_WIDTH * width,
-                MinoPanel.BLOCK_HEIGHT * height, smoothScale ? Image.SCALE_SMOOTH : Image.SCALE_REPLICATE);
+        Image scaledImage = loadedImage.getScaledInstance(
+                imageWidth * width,
+                imageHeight * height,
+                smoothScale ? Image.SCALE_SMOOTH : Image.SCALE_REPLICATE);
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                BufferedImage bi = new BufferedImage(MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT,
+                BufferedImage bi = new BufferedImage(
+                        imageWidth,
+                        imageHeight,
                         BufferedImage.TYPE_INT_ARGB);
                 Graphics g = bi.getGraphics();
                 g.drawImage(scaledImage,
                         0, 0,
-                        MinoPanel.BLOCK_WIDTH, MinoPanel.BLOCK_HEIGHT,
-                        x * MinoPanel.BLOCK_WIDTH, y * MinoPanel.BLOCK_HEIGHT,
-                        (x + 1) * MinoPanel.BLOCK_WIDTH, (y + 1) * MinoPanel.BLOCK_HEIGHT,
+                        imageWidth, imageHeight,
+                        x * imageWidth, y * imageHeight,
+                        (x + 1) * imageWidth, (y + 1) * imageHeight,
                         null);
                 g.dispose();
                 currImages[x + (width * y)] = bi;
