@@ -3,6 +3,7 @@ package Tetris.gui;
 import java.awt.Font;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -19,12 +20,15 @@ public class CalloutsGroup {
         GroupLayout calloutsPanelLayout = new GroupLayout(calloutsPanel);
         calloutsPanel.setLayout(calloutsPanelLayout);
         calloutsPanelLayout.setHorizontalGroup(
-                calloutsPanelLayout.createParallelGroup(Alignment.TRAILING)
+                calloutsPanelLayout.createSequentialGroup()
                         .addComponent(spinLabel)
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(lineCalloutLabel)
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(b2bLabel)
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(comboLabel));
-        calloutsPanelLayout.setVerticalGroup(calloutsPanelLayout.createSequentialGroup()
+        calloutsPanelLayout.setVerticalGroup(calloutsPanelLayout.createParallelGroup(Alignment.CENTER)
                 .addComponent(spinLabel)
                 .addComponent(lineCalloutLabel)
                 .addComponent(b2bLabel)
@@ -34,19 +38,19 @@ public class CalloutsGroup {
     private void detailCallOutsLabel() {
         lineCalloutLabel.setFont(lineCalloutLabel.getFont().deriveFont(
                 lineCalloutLabel.getFont().getStyle() | Font.BOLD, lineCalloutLabel.getFont().getSize() + 6));
-        lineCalloutLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+        lineCalloutLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         b2bLabel.setFont(b2bLabel.getFont().deriveFont(b2bLabel.getFont().getStyle() | Font.BOLD,
                 b2bLabel.getFont().getSize() + 2));
-        b2bLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+        b2bLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         comboLabel.setFont(comboLabel.getFont().deriveFont(comboLabel.getFont().getStyle() | Font.BOLD,
                 comboLabel.getFont().getSize() + 2));
-        comboLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+        comboLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         spinLabel.setFont(spinLabel.getFont().deriveFont(spinLabel.getFont().getStyle() | Font.BOLD,
                 spinLabel.getFont().getSize() + 2));
-        spinLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+        spinLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     public JPanel getPanel() {
