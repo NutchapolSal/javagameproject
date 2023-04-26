@@ -3,7 +3,23 @@ package Tetris.data.mino;
 import Tetris.input.Rotation;
 
 public enum Direction {
-    Up, Right, Down, Left;
+    Up(0, 1), Right(1, 0), Down(0, -1), Left(-1, 0);
+
+    private final int xOffset;
+    private final int yOffset;
+
+    Direction(int xOffset, int yOffset) {
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+    }
+
+    public int getXOffset() {
+        return xOffset;
+    }
+
+    public int getYOffset() {
+        return yOffset;
+    }
 
     private static final Direction[] vals = values();
 

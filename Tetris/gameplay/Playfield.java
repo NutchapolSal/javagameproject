@@ -218,8 +218,27 @@ public class Playfield {
                 }
             }
         }
-
         playerDatas[index] = null;
+
+        for (int i = 0; i < playerDatas.length; i++) {
+            if (playerDatas[i] == null) {
+                continue;
+            }
+
+            boolean success = movePlayerMino(i, 0, 0);
+            if (success) {
+                continue;
+            }
+
+            friendKickLoop: for (int j = 1; j < fieldWidth && j < fieldHeight; j++) {
+                for (Direction dir : Direction.values()) {
+                    boolean friendKickSuccess = movePlayerMino(i, dir.getXOffset() * j, dir.getYOffset() * j);
+                    if (friendKickSuccess) {
+                        break friendKickLoop;
+                    }
+                }
+            }
+        }
         return output;
     }
 
