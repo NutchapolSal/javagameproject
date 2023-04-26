@@ -3,7 +3,7 @@ package Tetris.data;
 import Tetris.data.mino.MinoColor;
 
 public class BlockWithConnection {
-    public enum Dir {
+    public static enum Dir {
         Up(0, 0, 1),
         UpRight(1, 1, 1),
         Right(2, 1, 0),
@@ -16,6 +16,7 @@ public class BlockWithConnection {
         private final int bit;
         private final int x;
         private final int y;
+        private static final Dir[] valuesArr = Dir.values();
 
         Dir(int bit, int x, int y) {
             this.bit = bit;
@@ -40,15 +41,15 @@ public class BlockWithConnection {
         }
 
         public Dir opposite() {
-            return Dir.values()[(this.ordinal() + 4) % 8];
+            return valuesArr[(this.ordinal() + 4) % 8];
         }
 
         public Dir next() {
-            return Dir.values()[(this.ordinal() + 1) % 8];
+            return valuesArr[(this.ordinal() + 1) % 8];
         }
 
         public Dir previous() {
-            return Dir.values()[(this.ordinal() + 8 - 1) % 8];
+            return valuesArr[(this.ordinal() + 8 - 1) % 8];
         }
 
         public static Dir[] corners() {
