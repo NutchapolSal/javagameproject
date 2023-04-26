@@ -337,8 +337,6 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(playerGroups[0].getPanel())
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(calloutsGroup.getPanel())
                         .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
                                 Integer.MAX_VALUE)
                         .addComponent(statsGroup.getPanel()))
