@@ -326,30 +326,31 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                         .addComponent(statsGroup.getPanel()))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addGroup(centerPanelLayout.createParallelGroup(Alignment.CENTER)
-                        .addComponent(playfield)
-                        .addComponent(calloutsGroup.getPanel()))
+                        .addComponent(calloutsGroup.getPanel())
+                        .addComponent(playfield))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addGroup(centerPanelLayout.createParallelGroup()
                         .addComponent(playerGroups[1].getPanel())
                         .addComponent(newGameButton)
 
                 ));
-        centerPanelLayout.setVerticalGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
-                .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(playerGroups[0].getPanel())
-                        .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-                                Integer.MAX_VALUE)
-                        .addComponent(statsGroup.getPanel()))
-                .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(playfield)
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(calloutsGroup.getPanel()))
-                .addGroup(centerPanelLayout.createSequentialGroup()
-                        .addComponent(playerGroups[1].getPanel())
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(newGameButton)
+        centerPanelLayout.setVerticalGroup(centerPanelLayout.createSequentialGroup()
+                .addComponent(calloutsGroup.getPanel())
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addGroup(centerPanelLayout.createParallelGroup(Alignment.LEADING, false)
+                        .addGroup(centerPanelLayout.createSequentialGroup()
+                                .addComponent(playerGroups[0].getPanel())
+                                .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+                                        Integer.MAX_VALUE)
+                                .addComponent(statsGroup.getPanel()))
 
-                ));
+                        .addComponent(playfield)
+                        .addGroup(centerPanelLayout.createSequentialGroup()
+                                .addComponent(playerGroups[1].getPanel())
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(newGameButton)
+
+                        )));
     }
 
     public KeyboardHandler getKeyboardHandler(int index) {
