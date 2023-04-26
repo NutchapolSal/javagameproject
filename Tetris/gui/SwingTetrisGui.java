@@ -342,6 +342,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                         .addComponent(statsGroup.getPanel()))
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(playfield)
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(calloutsGroup.getPanel()))
                 .addGroup(centerPanelLayout.createSequentialGroup()
                         .addComponent(playerGroups[1].getPanel())
