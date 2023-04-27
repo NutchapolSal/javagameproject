@@ -24,7 +24,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
 public class QuickSettings implements ReceiveSettings {
     private JFrame f = new JFrame("Quick Settings");
@@ -43,7 +42,7 @@ public class QuickSettings implements ReceiveSettings {
     private JRadioButton p1ha1RadioButton = new JRadioButton();
     private JRadioButton p1ha2RadioButton = new JRadioButton();
     private JCheckBox p1sdCheckBox = new JCheckBox();
-    private JTextField p1NameField = new JTextField();
+    private PlayerNameField p1NameField = new PlayerNameField();
 
     private JPanel p2Panel = new JPanel();
     private JLabel p2Label = new JLabel();
@@ -55,7 +54,7 @@ public class QuickSettings implements ReceiveSettings {
     private JRadioButton p2ha1RadioButton = new JRadioButton();
     private JRadioButton p2ha2RadioButton = new JRadioButton();
     private JCheckBox p2sdCheckBox = new JCheckBox();
-    private JTextField p2NameField = new JTextField();
+    private PlayerNameField p2NameField = new PlayerNameField();
 
     private JPanel skinPanel = new JPanel();
     private SkinTestPanel skinTestPanel;
@@ -123,7 +122,8 @@ public class QuickSettings implements ReceiveSettings {
         p1ha1RadioButton.setText("Default");
         p1ha2RadioButton.setText("Fast");
         p1sdCheckBox.setText("Sonic Drop");
-        p1NameField.setText("P1!");
+
+        p1NameField.setPlaceholder("P1...");
 
         p1cs1RadioButton.setSelected(true);
         p1ha1RadioButton.setSelected(true);
@@ -135,9 +135,6 @@ public class QuickSettings implements ReceiveSettings {
         ButtonGroup hsButtonGroup = new ButtonGroup();
         hsButtonGroup.add(p1ha1RadioButton);
         hsButtonGroup.add(p1ha2RadioButton);
-
-        p1NameField.setFont(p1NameField.getFont().deriveFont(p1NameField.getFont().getStyle() | Font.BOLD,
-                p1NameField.getFont().getSize() + 8));
 
         GroupLayout layout = new GroupLayout(p1Panel);
         p1Panel.setLayout(layout);
@@ -184,7 +181,7 @@ public class QuickSettings implements ReceiveSettings {
         p2ha1RadioButton.setText("Default");
         p2ha2RadioButton.setText("Fast");
         p2sdCheckBox.setText("Sonic Drop");
-        p2NameField.setText("P2!");
+        p2NameField.setPlaceholder("P2...");
 
         p2cs1RadioButton.setSelected(true);
         p2ha1RadioButton.setSelected(true);
@@ -196,9 +193,6 @@ public class QuickSettings implements ReceiveSettings {
         ButtonGroup hsButtonGroup = new ButtonGroup();
         hsButtonGroup.add(p2ha1RadioButton);
         hsButtonGroup.add(p2ha2RadioButton);
-
-        p2NameField.setFont(p2NameField.getFont().deriveFont(p2NameField.getFont().getStyle() | Font.BOLD,
-                p2NameField.getFont().getSize() + 8));
 
         GroupLayout layout = new GroupLayout(p2Panel);
         p2Panel.setLayout(layout);
