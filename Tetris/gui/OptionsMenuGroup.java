@@ -4,15 +4,21 @@ import Tetris.data.mino.MinoColor;
 import Tetris.settings.BlockConnectionMode;
 import Tetris.settings.ControlScheme;
 import Tetris.settings.HandlingPreset;
+import Tetris.settings.ReceiveSettings;
+import Tetris.settings.SettingKey;
 import Tetris.settings.Settings;
 import java.awt.event.ItemEvent;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.function.Consumer;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 
-public class OptionsMenuGroup {
+public class OptionsMenuGroup implements ReceiveSettings {
     private JMenu optionsMenu = new JMenu();
 
     private JMenu p1Menu = new JMenu();
@@ -45,6 +51,8 @@ public class OptionsMenuGroup {
     private JRadioButtonMenuItem colorConnectionMenuItem = new JRadioButtonMenuItem();
     private JRadioButtonMenuItem allConnectionMenuItem = new JRadioButtonMenuItem();
 
+    private JMenuItem quickSettingsMenuItem = new JMenuItem();
+
     public OptionsMenuGroup() {
         detailP1Menu();
         detailP2Menu();
@@ -52,12 +60,20 @@ public class OptionsMenuGroup {
         detailBlockSkinMenu();
         detailBlockConnectionMenu();
 
+        detailQuickSettingsItem();
+
         optionsMenu.setText("Options");
         optionsMenu.add(p1Menu);
         optionsMenu.add(p2Menu);
         optionsMenu.addSeparator();
         optionsMenu.add(blockSkinMenu);
         optionsMenu.add(blockConnectionMenu);
+        optionsMenu.addSeparator();
+        optionsMenu.add(quickSettingsMenuItem);
+    }
+
+    private void detailQuickSettingsItem() {
+        quickSettingsMenuItem.setText("Quick Settings");
     }
 
     private void detailP1Menu() {
@@ -365,4 +381,102 @@ public class OptionsMenuGroup {
     public JMenu getMenu() {
         return optionsMenu;
     }
+
+    @Override
+    public Map<SettingKey, Consumer<Object>> getReceivers() {
+        Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
+        receiversMap.put(SettingKey.ControlScheme, x -> {
+            switch ((ControlScheme) x) {
+                case WASD:
+                    wasdSchemeMenuItem.setSelected(true);
+                    break;
+                case Classic:
+                    classicSchemeMenuItem.setSelected(true);
+                    break;
+                case SlashBracket:
+                    slashBracketSchemeMenuItem.setSelected(true);
+                    break;
+            }
+        });
+        receiversMap.put(SettingKey.ControlSchemeP2, x -> {
+            switch ((ControlScheme) x) {
+                case WASD:
+                    wasdSchemeP2MenuItem.setSelected(true);
+                    break;
+                case Classic:
+                    classicSchemeP2MenuItem.setSelected(true);
+                    break;
+                case SlashBracket:
+                    slashBracketSchemeP2MenuItem.setSelected(true);
+                    break;
+            }
+        });
+        receiversMap.put(SettingKey.HandlingPreset, x -> {
+            switch ((HandlingPreset) x) {
+                case Default:
+                    defaultHandlingMenuItem.setSelected(true);
+                    break;
+                case Fast:
+                    fastHandlingMenuItem.setSelected(true);
+                    break;
+                default:
+                    defaultHandlingMenuItem.setSelected(false);
+                    fastHandlingMenuItem.setSelected(false);
+                    break;
+            }
+        });
+        receiversMap.put(SettingKey.HandlingPresetP2, x -> {
+            switch ((HandlingPreset) x) {
+                case Default:
+                    defaultHandlingP2MenuItem.setSelected(true);
+                    break;
+                case Fast:
+                    fastHandlingP2MenuItem.setSelected(true);
+                    break;
+                default:
+                    defaultHandlingP2MenuItem.setSelected(false);
+                    fastHandlingP2MenuItem.setSelected(false);
+                    break;
+            }
+        });
+        receiversMap.put(SettingKey.SonicDrop, x -> {
+            sonicDropMenuItem.setSelected((boolean) x);
+        });
+        receiversMap.put(SettingKey.SonicDropP2, x -> {
+            sonicDropP2MenuItem.setSelected((boolean) x);
+        });
+        receiversMap.put(SettingKey.BlockSkin, x -> {
+            String selectedSkin = (String) x;
+            for (JRadioButtonMenuItem v : blockSkinMenuItems) {
+                if (v.getText().equals(selectedSkin)) {
+                    v.setSelected(true);
+                    break;
+                }
+            }
+        });
+        receiversMap.put(SettingKey.BlockConnectionMode, x -> {
+            switch ((BlockConnectionMode) x) {
+                case None:
+                    noneConnectionMenuItem.setSelected(true);
+                    break;
+                case Mino:
+                    minoConnectionMenuItem.setSelected(true);
+                    break;
+                case Color:
+                    colorConnectionMenuItem.setSelected(true);
+                    break;
+                case All:
+                    allConnectionMenuItem.setSelected(true);
+                    break;
+                default:
+                    break;
+            }
+        });
+        return receiversMap;
+    }
+
+    public JMenuItem getQuickSettingsMenuItem() {
+        return quickSettingsMenuItem;
+    }
+
 }

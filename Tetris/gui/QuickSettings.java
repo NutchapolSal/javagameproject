@@ -1,11 +1,15 @@
 package Tetris.gui;
 
+import Tetris.settings.ControlScheme;
+import Tetris.settings.HandlingPreset;
 import Tetris.settings.ReceiveSettings;
 import Tetris.settings.SettingKey;
 import Tetris.settings.Settings;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import javax.swing.Box;
@@ -252,6 +256,22 @@ public class QuickSettings implements ReceiveSettings {
                         .addComponent(skinComboBox)
                         .addComponent(skinNextButton)));
 
+        skinNextButton.addActionListener(evt -> {
+            int index = skinComboBox.getSelectedIndex();
+            int length = skinComboBox.getItemCount();
+            skinComboBox.setEnabled(false);
+            skinComboBox.setSelectedIndex((index + 1) % length);
+            skinComboBox.setEnabled(true);
+        });
+
+        skinPrevButton.addActionListener(evt -> {
+            int index = skinComboBox.getSelectedIndex();
+            int length = skinComboBox.getItemCount();
+            skinComboBox.setEnabled(false);
+            skinComboBox.setSelectedIndex((index + length - 1) % length);
+            skinComboBox.setEnabled(true);
+        });
+
         detailSkinChoices();
     }
 
@@ -267,7 +287,68 @@ public class QuickSettings implements ReceiveSettings {
     }
 
     public void bindToSettings(Settings s) {
-        updateToSettings(s);
+        // updateToSettings(s);
+
+        p1cs1RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlScheme(ControlScheme.WASD);
+            }
+        });
+        p1cs2RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlScheme(ControlScheme.Classic);
+            }
+        });
+        p1cs3RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlScheme(ControlScheme.SlashBracket);
+            }
+        });
+        p2cs1RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlSchemeP2(ControlScheme.WASD);
+            }
+        });
+        p2cs2RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlSchemeP2(ControlScheme.Classic);
+            }
+        });
+        p2cs3RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setControlSchemeP2(ControlScheme.SlashBracket);
+            }
+        });
+
+        p1ha1RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setHandlingPreset(HandlingPreset.Default);
+            }
+        });
+        p1ha2RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setHandlingPreset(HandlingPreset.Fast);
+            }
+        });
+        p2ha1RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setHandlingPresetP2(HandlingPreset.Default);
+            }
+        });
+        p2ha2RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setHandlingPresetP2(HandlingPreset.Fast);
+            }
+        });
+
+        p1sdCheckBox.addItemListener(evt -> s.setSonicDrop(evt.getStateChange() == ItemEvent.SELECTED));
+        p2sdCheckBox.addItemListener(evt -> s.setSonicDropP2(evt.getStateChange() == ItemEvent.SELECTED));
+
+        skinComboBox.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setBlockSkin((String) evt.getItem());
+            }
+        });
     }
 
     private void updateToSettings(Settings s) {
@@ -321,8 +402,77 @@ public class QuickSettings implements ReceiveSettings {
 
     @Override
     public Map<SettingKey, Consumer<Object>> getReceivers() {
-        // TODO Auto-generated method stub
-        return null;
+        Map<SettingKey, Consumer<Object>> receiversMap = new EnumMap<>(SettingKey.class);
+        receiversMap.put(SettingKey.BlockSkin, x -> {
+            skinComboBox.setEnabled(false);
+            skinComboBox.setSelectedItem((String) x);
+            skinComboBox.setEnabled(true);
+            skinTestPanel.repaint();
+        });
+        receiversMap.put(SettingKey.BlockConnectionMode, x -> {
+            skinTestPanel.repaint();
+        });
+        receiversMap.put(SettingKey.ControlScheme, x -> {
+            switch ((ControlScheme) x) {
+                case WASD:
+                    p1cs1RadioButton.setSelected(true);
+                    break;
+                case Classic:
+                    p1cs2RadioButton.setSelected(true);
+                    break;
+                case SlashBracket:
+                    p1cs3RadioButton.setSelected(true);
+                    break;
+            }
+        });
+        receiversMap.put(SettingKey.ControlSchemeP2, x -> {
+            switch ((ControlScheme) x) {
+                case WASD:
+                    p2cs1RadioButton.setSelected(true);
+                    break;
+                case Classic:
+                    p2cs2RadioButton.setSelected(true);
+                    break;
+                case SlashBracket:
+                    p2cs3RadioButton.setSelected(true);
+                    break;
+            }
+        });
+        receiversMap.put(SettingKey.HandlingPreset, x -> {
+            switch ((HandlingPreset) x) {
+                case Default:
+                    p1ha1RadioButton.setSelected(true);
+                    break;
+                case Fast:
+                    p1ha2RadioButton.setSelected(true);
+                    break;
+                default:
+                    p1ha1RadioButton.setSelected(false);
+                    p1ha2RadioButton.setSelected(false);
+                    break;
+            }
+        });
+        receiversMap.put(SettingKey.HandlingPresetP2, x -> {
+            switch ((HandlingPreset) x) {
+                case Default:
+                    p2ha1RadioButton.setSelected(true);
+                    break;
+                case Fast:
+                    p2ha2RadioButton.setSelected(true);
+                    break;
+                default:
+                    p2ha1RadioButton.setSelected(false);
+                    p2ha2RadioButton.setSelected(false);
+                    break;
+            }
+        });
+        receiversMap.put(SettingKey.SonicDrop, x -> {
+            p1sdCheckBox.setSelected((boolean) x);
+        });
+        receiversMap.put(SettingKey.SonicDropP2, x -> {
+            p2sdCheckBox.setSelected((boolean) x);
+        });
+        return receiversMap;
     }
 
 }

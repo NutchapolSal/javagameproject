@@ -22,6 +22,8 @@ public class App {
         settings.bindReceivers(gui.getKeyboardHandler(0));
         settings.bindReceivers(gui.getKeyboardHandler(1));
         settings.bindReceivers(gui.getBlockSkinManager());
+        settings.bindReceivers(gui.getQuickSettings());
+        settings.bindReceivers(gui.getOptionsMenuGroup());
         settings.loadSettingsToReceivers();
 
         ActionListener newGameAction = new ActionListener() {

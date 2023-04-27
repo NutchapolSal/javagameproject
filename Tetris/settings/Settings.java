@@ -163,10 +163,12 @@ public class Settings {
         iterateOverReceivers(SettingKey.AutoRepeatFrames, getAutoRepeatFrames());
         iterateOverReceivers(SettingKey.SonicDrop, getSonicDrop());
         iterateOverReceivers(SettingKey.ControlScheme, getControlScheme());
+        iterateOverReceivers(SettingKey.HandlingPreset, getHandlingPreset());
         iterateOverReceivers(SettingKey.DasChargeFramesP2, getDasChargeFramesP2());
         iterateOverReceivers(SettingKey.AutoRepeatFramesP2, getAutoRepeatFramesP2());
         iterateOverReceivers(SettingKey.SonicDropP2, getSonicDropP2());
         iterateOverReceivers(SettingKey.ControlSchemeP2, getControlSchemeP2());
+        iterateOverReceivers(SettingKey.HandlingPresetP2, getHandlingPresetP2());
         iterateOverReceivers(SettingKey.GameplayMode, getGameplayMode());
         iterateOverReceivers(SettingKey.BlockSkin, getBlockSkin());
         iterateOverReceivers(SettingKey.BlockConnectionMode, getBlockConnectionMode());
@@ -192,6 +194,7 @@ public class Settings {
                 break;
         }
         this.handlingPreset = handlingPreset;
+        iterateOverReceivers(SettingKey.HandlingPreset, handlingPreset);
     }
 
     public void setHandlingPresetP2(HandlingPreset handlingPreset) {
@@ -208,6 +211,7 @@ public class Settings {
                 break;
         }
         this.handlingPresetP2 = handlingPreset;
+        iterateOverReceivers(SettingKey.HandlingPresetP2, handlingPreset);
     }
 
     public void setDasChargeFrames(int dasChargeFrames) {

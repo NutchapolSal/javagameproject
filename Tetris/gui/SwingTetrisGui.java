@@ -262,6 +262,10 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
         quickSettings = new QuickSettings(f, blockSkinManager);
         showQuickSettings();
+
+        optionsMenuGroup.getQuickSettingsMenuItem().addActionListener(evt -> {
+            showQuickSettings();
+        });
     }
 
     private void showQuickSettings() {
@@ -661,5 +665,13 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     public BlockSkinManager getBlockSkinManager() {
         return blockSkinManager;
+    }
+
+    public QuickSettings getQuickSettings() {
+        return quickSettings;
+    }
+
+    public OptionsMenuGroup getOptionsMenuGroup() {
+        return optionsMenuGroup;
     }
 }
