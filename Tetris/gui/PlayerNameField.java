@@ -39,9 +39,6 @@ public class PlayerNameField extends JTextField {
         deriveMap.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
         deriveMap.put(TextAttribute.SIZE, getFont().getSize() + (customFontAvailable ? customFontPlusSize : 0) + 8);
         this.setFont(getFont().deriveFont(deriveMap));
-
-        // setFont(getFont().deriveFont(getFont().getStyle() | Font.BOLD,
-        // getFont().getSize() + 8));
     }
 
     @Override
