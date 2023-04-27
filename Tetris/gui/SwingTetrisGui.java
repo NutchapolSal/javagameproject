@@ -60,6 +60,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private GameMenuGroup gameMenuGroup;
     private OptionsMenuGroup optionsMenuGroup;
     private ActionListener newGameAction;
+    private QuickSettings quickSettings;
 
     private double windowDeltaX;
     private double windowDeltaY;
@@ -246,7 +247,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     public SwingTetrisGui() {
         setLookAndFeel();
         f = new JFrame("Tetris");
-        f.setSize(800, 600);
+        f.setSize(800, 550);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
 
@@ -255,6 +256,18 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
         f.setLocationRelativeTo(null);
         f.setVisible(true);
+
+        var loc = f.getLocationOnScreen();
+        f.setLocation(loc.x, (int) (loc.y * 0.65));
+
+        quickSettings = new QuickSettings(f, blockSkinManager);
+        showQuickSettings();
+    }
+
+    private void showQuickSettings() {
+        f.setAlwaysOnTop(true);
+        quickSettings.setVisible(true);
+        f.setAlwaysOnTop(false);
     }
 
     private void setLookAndFeel() {
@@ -598,6 +611,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         bindSelectModeMenuItems(s);
 
         optionsMenuGroup.bindToSettings(s);
+
+        quickSettings.bindToSettings(s);
     }
 
     private void bindSelectModeMenuItems(Settings s) {
