@@ -270,9 +270,7 @@ public class QuickSettings implements ReceiveSettings {
         skinPrevButton.setText("<");
         skinNextButton.setText(">");
 
-        connectionLabel.setText("Connection");
-        sc1RadioButton.setText("None");
-        sc4RadioButton.setText("All");
+        connectionLabel.setText("-  Connection  +");
 
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(sc1RadioButton);
