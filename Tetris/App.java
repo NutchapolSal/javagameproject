@@ -39,6 +39,6 @@ public class App {
                 gui.update(gameplay.getGuiData());
             }
         };
-        new Timer(8, guiUpdater).start();
+        new Timer(4, guiUpdater).start();
     }
 }
