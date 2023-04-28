@@ -2,7 +2,6 @@ package Tetris.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
 import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,20 +9,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JLabel;
 
 public class CalloutLabel extends JLabel {
-    private static final String customFontName = "Tw Cen MT";
-    private static final int customFontPlusSize = 3;
-    private static final boolean customFontAvailable = getCustomFontAvailable();
     private static long animDuration = TimeUnit.SECONDS.toNanos(3);
-
-    private static boolean getCustomFontAvailable() {
-        String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        for (String name : fontFamilyNames) {
-            if (name.equals(customFontName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private long startTime;
     private boolean isFadeOut = true;
@@ -32,10 +18,11 @@ public class CalloutLabel extends JLabel {
         setText(" ");
         startTime = System.nanoTime() - animDuration;
 
-        if (customFontAvailable) {
+        var cf = CustomFontChecker.getFontChecker("Tw Cen MT");
+        if (cf.available) {
             Map<TextAttribute, Object> deriveMap = new HashMap<>();
-            deriveMap.put(TextAttribute.FAMILY, customFontName);
-            deriveMap.put(TextAttribute.SIZE, getFont().getSize() + customFontPlusSize);
+            deriveMap.put(TextAttribute.FAMILY, cf.fontName);
+            deriveMap.put(TextAttribute.SIZE, getFont().getSize() + cf.plusSize);
             this.setFont(getFont().deriveFont(deriveMap));
         }
     }

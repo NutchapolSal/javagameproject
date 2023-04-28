@@ -1,11 +1,13 @@
 package Tetris.gui;
 
 import Tetris.leaderboard.Leaderboard.LeaderboardEntry;
+import java.awt.font.TextAttribute;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout.Group;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class LeaderboardEntryLabels {
     private JLabel indexLabel = new JLabel();
@@ -38,7 +40,7 @@ public class LeaderboardEntryLabels {
         timeHGroup.addComponent(timeLabel);
         timeCountHGroup.addComponent(timeCountLabel);
 
-        vGroup.addGroup(layout.createParallelGroup()
+        vGroup.addGroup(layout.createParallelGroup(Alignment.CENTER)
                 .addComponent(indexLabel)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(nameLabel)
@@ -54,11 +56,25 @@ public class LeaderboardEntryLabels {
     private void detailComponents() {
         setData(0, null);
 
-        nameLabel.setFont(nameLabel.getFont().deriveFont(nameLabel.getFont().getStyle() | java.awt.Font.BOLD,
-                nameLabel.getFont().getSize() + 8));
+        var cf = CustomFontChecker.getFontChecker("Tw Cen MT");
 
-        indexLabel.setFont(indexLabel.getFont().deriveFont(indexLabel.getFont().getStyle() | java.awt.Font.BOLD,
-                indexLabel.getFont().getSize() + 18));
+        Map<TextAttribute, Object> nameDeriveMap = new HashMap<>();
+        nameDeriveMap.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+        if (cf.available) {
+            nameDeriveMap.put(TextAttribute.FAMILY, cf.fontName);
+        }
+        nameDeriveMap.put(TextAttribute.SIZE,
+                nameLabel.getFont().getSize() + 8 + (cf.available ? cf.plusSize : 0));
+        nameLabel.setFont(nameLabel.getFont().deriveFont(nameDeriveMap));
+
+        Map<TextAttribute, Object> indexDeriveMap = new HashMap<>();
+        indexDeriveMap.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+        if (cf.available) {
+            indexDeriveMap.put(TextAttribute.FAMILY, cf.fontName);
+        }
+        indexDeriveMap.put(TextAttribute.SIZE,
+                indexLabel.getFont().getSize() + 18 + (cf.available ? cf.plusSize : 0));
+        indexLabel.setFont(indexLabel.getFont().deriveFont(indexDeriveMap));
 
         scoreCountLabel.setFont(
                 scoreCountLabel.getFont().deriveFont(scoreCountLabel.getFont().getStyle() | java.awt.Font.BOLD));

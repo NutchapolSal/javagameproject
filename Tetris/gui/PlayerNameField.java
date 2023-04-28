@@ -3,7 +3,6 @@ package Tetris.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.font.TextAttribute;
 import java.util.HashMap;
@@ -15,29 +14,16 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
 public class PlayerNameField extends JTextField {
-    private static final String customFontName = "Tw Cen MT";
-    private static final int customFontPlusSize = 3;
-    private static final boolean customFontAvailable = getCustomFontAvailable();
-
-    private static boolean getCustomFontAvailable() {
-        String[] fontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        for (String name : fontFamilyNames) {
-            if (name.equals(customFontName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private String placeholder;
 
     public PlayerNameField() {
+        var cf = CustomFontChecker.getFontChecker("Tw Cen MT");
         Map<TextAttribute, Object> deriveMap = new HashMap<>();
-        if (customFontAvailable) {
-            deriveMap.put(TextAttribute.FAMILY, customFontName);
+        if (cf.available) {
+            deriveMap.put(TextAttribute.FAMILY, cf.fontName);
         }
         deriveMap.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
-        deriveMap.put(TextAttribute.SIZE, getFont().getSize() + (customFontAvailable ? customFontPlusSize : 0) + 8);
+        deriveMap.put(TextAttribute.SIZE, getFont().getSize() + (cf.available ? cf.plusSize : 0) + 8);
         this.setFont(getFont().deriveFont(deriveMap));
     }
 

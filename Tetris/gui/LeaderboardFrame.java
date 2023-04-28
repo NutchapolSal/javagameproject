@@ -4,6 +4,7 @@ import Tetris.leaderboard.Leaderboard.LeaderboardEntry;
 import java.awt.Component;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class LeaderboardFrame {
@@ -32,7 +33,7 @@ public class LeaderboardFrame {
 
         var vGroup = layout.createSequentialGroup();
         vGroup.addGap(15);
-        var indexHGroup = layout.createParallelGroup();
+        var indexHGroup = layout.createParallelGroup(Alignment.TRAILING);
         var nameHGroup = layout.createParallelGroup();
         var scoreHGroup = layout.createParallelGroup();
         var scoreCountHGroup = layout.createParallelGroup();
