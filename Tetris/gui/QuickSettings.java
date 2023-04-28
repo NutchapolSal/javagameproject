@@ -8,15 +8,18 @@ import Tetris.settings.Settings;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -26,6 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 public class QuickSettings implements ReceiveSettings {
+    private Component parent;
+
     private JFrame f = new JFrame("Quick Settings");
     private BlockSkinManager bsm;
 
@@ -62,18 +67,43 @@ public class QuickSettings implements ReceiveSettings {
     private JButton skinNextButton = new JButton();
     private JComboBox<String> skinComboBox = new JComboBox<>();
 
+    private JButton newGameButton = new JButton();
+
+    private long lastFrameTime = System.nanoTime();
+    private long frameTimeAccumulator = 0;
+
+    private double windowDeltaX;
+    private double windowDeltaY;
+    private double windowLastDeltaX;
+    private double windowLastDeltaY;
+
     public QuickSettings(Component parent, BlockSkinManager bsm) {
+        this.parent = parent;
         this.bsm = bsm;
 
         f.setSize(800, 180);
         f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         detailComponents();
 
-        var parentLocation = parent.getLocationOnScreen();
-        var parentSize = parent.getSize();
-        f.setLocation(parentLocation.x, parentLocation.y + parentSize.height - 20);
+        moveFrame(true);
 
         f.setAutoRequestFocus(false);
+    }
+
+    public void moveFrame(boolean covering) {
+        var parentLocation = parent.getLocationOnScreen();
+        var parentSize = parent.getSize();
+        int yOffset = (int) (parentSize.height * (covering ? 0.5 : 1)) + (covering ? 0 : -20);
+
+        if (f.isVisible()) {
+            var selfLocation = f.getLocationOnScreen();
+            windowDeltaX -= parentLocation.x - selfLocation.x;
+            windowLastDeltaX -= parentLocation.x - selfLocation.x;
+            windowDeltaY -= parentLocation.y + yOffset - selfLocation.y;
+            windowLastDeltaY -= parentLocation.y + yOffset - selfLocation.y;
+        } else {
+            f.setLocation(parentLocation.x, parentLocation.y + yOffset);
+        }
     }
 
     private void detailComponents() {
@@ -234,6 +264,8 @@ public class QuickSettings implements ReceiveSettings {
         skinPrevButton.setText("<");
         skinNextButton.setText(">");
 
+        newGameButton.setText("New Game");
+
         GroupLayout layout = new GroupLayout(skinPanel);
         skinPanel.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(Alignment.CENTER, false)
@@ -241,14 +273,17 @@ public class QuickSettings implements ReceiveSettings {
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(skinPrevButton)
                         .addComponent(skinComboBox)
-                        .addComponent(skinNextButton)));
+                        .addComponent(skinNextButton))
+                .addComponent(newGameButton));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(skinTestPanel.getPanel())
                 .addGroup(layout.createParallelGroup(Alignment.CENTER, false)
                         .addComponent(skinPrevButton)
                         .addComponent(skinComboBox)
-                        .addComponent(skinNextButton)));
+                        .addComponent(skinNextButton))
+                .addPreferredGap(ComponentPlacement.UNRELATED)
+                .addComponent(newGameButton));
 
         skinNextButton.addActionListener(evt -> {
             int index = skinComboBox.getSelectedIndex();
@@ -469,4 +504,46 @@ public class QuickSettings implements ReceiveSettings {
         return receiversMap;
     }
 
+    public void setNewGameAction(ActionListener a) {
+        newGameButton.addActionListener(a);
+    }
+
+    public void focusAndBringToFront() {
+        f.setAlwaysOnTop(true);
+        f.setAlwaysOnTop(false);
+        f.getRootPane().requestFocusInWindow();
+    }
+
+    public void resetNames() {
+        p1NameField.setText("");
+        p2NameField.setText("");
+    }
+
+    public void update() {
+        long currFrameTime = System.nanoTime();
+        long deltaFrameTime = currFrameTime - lastFrameTime;
+        frameTimeAccumulator += deltaFrameTime;
+
+        if (TimeUnit.MILLISECONDS.toNanos(16) < frameTimeAccumulator) {
+            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.MILLISECONDS.toNanos(16));
+
+            windowDeltaX *= Math.pow(11.0 / 12.0,
+                    TimeUnit.MILLISECONDS.toNanos(16) / TimeUnit.MILLISECONDS.toNanos(10));
+            windowDeltaY *= Math.pow(11.0 / 12.0,
+                    TimeUnit.MILLISECONDS.toNanos(16) / TimeUnit.MILLISECONDS.toNanos(10));
+
+            int windowVelocityX = (int) (windowDeltaX - windowLastDeltaX);
+            int windowVelocityY = (int) (windowDeltaY - windowLastDeltaY);
+
+            windowLastDeltaX += windowVelocityX;
+            windowLastDeltaY += windowVelocityY;
+
+            if (windowVelocityX != 0 || windowVelocityY != 0) {
+                var frameLoc = f.getLocationOnScreen();
+                f.setLocation(frameLoc.x + windowVelocityX, frameLoc.y + windowVelocityY);
+            }
+        }
+
+        lastFrameTime = currFrameTime;
+    }
 }

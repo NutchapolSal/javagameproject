@@ -37,6 +37,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 
@@ -78,6 +79,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     // private boolean controlSchemeSonicDrop;
     private BlockSkinManager blockSkinManager = new BlockSkinManager();
     private boolean lastDanger = false;
+
+    private Timer resetQuickSettingsTimer;
 
     private static double roundToZero(double in) {
         if (in < 0) {
@@ -210,6 +213,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                         playfield.startAnimation("GAME OVER");
                         playfield.setPlayerOverrideColor(MinoColor.Gray);
                         calloutsGroup.getB2bLabel().doFadeOut();
+                        resetQuickSettingsTimer.start();
                         lastB2B = 0;
                         break;
                     default:
@@ -242,6 +246,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         }
 
         lastFrameTime = currFrameTime;
+
+        quickSettings.update();
     }
 
     public SwingTetrisGui() {
@@ -266,12 +272,28 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         optionsMenuGroup.getQuickSettingsMenuItem().addActionListener(evt -> {
             showQuickSettings();
         });
+
+        resetQuickSettingsTimer = new Timer(2500, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                quickSettings.focusAndBringToFront();
+                quickSettings.moveFrame(true);
+                quickSettings.resetNames();
+            }
+        });
+        resetQuickSettingsTimer.setRepeats(false);
+
+        setupFocusOnNewGame();
     }
 
     private void showQuickSettings() {
-        f.setAlwaysOnTop(true);
         quickSettings.setVisible(true);
+        // focusAndBringToFront();
+    }
+
+    private void focusAndBringToFront() {
+        f.setAlwaysOnTop(true);
         f.setAlwaysOnTop(false);
+        f.getRootPane().requestFocusInWindow();
     }
 
     private void setLookAndFeel() {
@@ -590,7 +612,20 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     public void setNewGameAction(ActionListener a) {
         newGameButton.addActionListener(a);
         gameMenuGroup.getNewGameMenuItem().addActionListener(a);
+        quickSettings.setNewGameAction(a);
         newGameAction = a;
+    }
+
+    private void setupFocusOnNewGame() {
+        ActionListener a = evt -> {
+            quickSettings.moveFrame(false);
+            resetQuickSettingsTimer.stop();
+            focusAndBringToFront();
+        };
+
+        newGameButton.addActionListener(a);
+        gameMenuGroup.getNewGameMenuItem().addActionListener(a);
+        quickSettings.setNewGameAction(a);
     }
 
     public Map<SettingKey, Consumer<Object>> getReceivers() {
