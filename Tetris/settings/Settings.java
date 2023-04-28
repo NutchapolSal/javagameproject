@@ -268,4 +268,13 @@ public class Settings {
         saveBlockConnectionMode(blockConnectionMode);
         iterateOverReceivers(SettingKey.BlockConnectionMode, getBlockConnectionMode());
     }
+
+    public void resetPlayerSettings() {
+        setControlScheme(ControlScheme.WASD);
+        setControlSchemeP2(ControlScheme.Classic);
+        setHandlingPresetP2(HandlingPreset.Default);
+        setHandlingPreset(HandlingPreset.Default);
+        setSonicDrop(false);
+        setSonicDropP2(false);
+    }
 }

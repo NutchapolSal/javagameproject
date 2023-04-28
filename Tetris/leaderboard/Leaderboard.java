@@ -2,6 +2,8 @@ package Tetris.leaderboard;
 
 import Tetris.settings.GameplayMode;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -53,6 +55,7 @@ public class Leaderboard {
         } catch (BackingStoreException e) {
             System.err.println(e);
         }
+        System.out.println(records);
     }
 
     private LeaderboardEntry getEntry(String id) {
@@ -94,5 +97,15 @@ public class Leaderboard {
         } catch (Exception e) {
             System.err.println(e);
         }
+    }
+
+    public LeaderboardEntry[] getEntriesForRender() {
+        var out = records.toArray(new LeaderboardEntry[0]);
+        Arrays.sort(out, new Comparator<LeaderboardEntry>() {
+            public int compare(LeaderboardEntry a, LeaderboardEntry b) {
+                return b.score - a.score;
+            }
+        });
+        return out;
     }
 }

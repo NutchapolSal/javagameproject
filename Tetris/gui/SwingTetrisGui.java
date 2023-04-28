@@ -62,6 +62,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private OptionsMenuGroup optionsMenuGroup;
     private ActionListener newGameAction;
     private QuickSettings quickSettings;
+    private LeaderboardFrame leaderboardFrame;
+    private Runnable resetSettingsRunnable;
 
     private double windowDeltaX;
     private double windowDeltaY;
@@ -278,6 +280,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         quickSettings = new QuickSettings(f, blockSkinManager);
         showQuickSettings();
 
+        leaderboardFrame = new LeaderboardFrame(f);
+        leaderboardFrame.setVisible(true);
+
         optionsMenuGroup.getQuickSettingsMenuItem().addActionListener(evt -> {
             showQuickSettings();
         });
@@ -287,6 +292,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 quickSettings.focusAndBringToFront();
                 quickSettings.moveFrame(true);
                 quickSettings.resetNames();
+                resetSettingsRunnable.run();
             }
         });
         resetQuickSettingsTimer.setRepeats(false);
@@ -717,5 +723,13 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     public OptionsMenuGroup getOptionsMenuGroup() {
         return optionsMenuGroup;
+    }
+
+    public LeaderboardFrame getLeaderboardFrame() {
+        return leaderboardFrame;
+    }
+
+    public void setResetSettingsRunnable(Runnable resetSettingsRunnable) {
+        this.resetSettingsRunnable = resetSettingsRunnable;
     }
 }

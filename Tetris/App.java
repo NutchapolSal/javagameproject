@@ -35,6 +35,7 @@ public class App {
         };
 
         gui.setNewGameAction(newGameAction);
+        gui.setResetSettingsRunnable(() -> settings.resetPlayerSettings());
 
         ActionListener submitToLeaderboard = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -42,9 +43,11 @@ public class App {
                 var b = gameplay.getLeaderboardData();
                 leaderboard.addEntry(b.date, a.nameP1, a.nameP2, b.gameplayMode,
                         b.lines, b.time, b.score);
+                gui.getLeaderboardFrame().updateLeaderboard(leaderboard.getEntriesForRender());
             }
         };
         gameplay.setSubmitLeaderboardAction(submitToLeaderboard);
+        gui.getLeaderboardFrame().updateLeaderboard(leaderboard.getEntriesForRender());
 
         ActionListener guiUpdater = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
