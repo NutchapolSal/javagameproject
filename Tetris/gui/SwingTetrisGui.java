@@ -34,6 +34,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -53,6 +54,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private StatsGroup statsGroup;
     // private JPanel miscPanel;
     private JButton newGameButton;
+    private JLabel restartAskLabel;
     // private JLabel controlsText;
     private DangerBorder dangerBorder;
 
@@ -69,7 +71,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private double windowDeltaY;
     private double windowLastDeltaX;
     private double windowLastDeltaY;
-    private long windowDeltaFrameTimeAccumulator;
+    private long frameTimeAccumulatorB;
 
     private long lastFrameTime = System.nanoTime();
     private long frameTimeAccumulator = 0;
@@ -82,6 +84,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     // private boolean controlSchemeSonicDrop;
     private BlockSkinManager blockSkinManager = new BlockSkinManager();
     private boolean lastDanger = false;
+    private long restartCountdown;
+    private boolean restartCountdownActive;
 
     private Timer resetQuickSettingsTimer;
 
@@ -97,7 +101,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         long currFrameTime = System.nanoTime();
         long deltaFrameTime = currFrameTime - lastFrameTime;
         frameTimeAccumulator += deltaFrameTime;
-        windowDeltaFrameTimeAccumulator += deltaFrameTime;
+        frameTimeAccumulatorB += deltaFrameTime;
         if (gds != null) {
             frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.MILLISECONDS.toNanos(8));
             if (gds.spinName != null) {
@@ -222,6 +226,8 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                         playfield.setPlayerOverrideColor(MinoColor.Gray);
                         calloutsGroup.getB2bLabel().doFadeOut();
                         resetQuickSettingsTimer.start();
+                        restartCountdown = 10000;
+                        restartCountdownActive = true;
                         lastB2B = 0;
                         break;
                     default:
@@ -242,9 +248,21 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             f.repaint();
         }
 
-        if (TimeUnit.MILLISECONDS.toNanos(16) < windowDeltaFrameTimeAccumulator) {
-            windowDeltaFrameTimeAccumulator = Math.max(0,
-                    windowDeltaFrameTimeAccumulator - TimeUnit.MILLISECONDS.toNanos(16));
+        if (TimeUnit.MILLISECONDS.toNanos(16) < frameTimeAccumulatorB) {
+            frameTimeAccumulatorB = Math.max(0,
+                    frameTimeAccumulatorB - TimeUnit.MILLISECONDS.toNanos(16));
+
+            if (restartCountdownActive) {
+                if (0 < restartCountdown) {
+                    restartAskLabel.setText(
+                            "^ Restart? " + String.format("%04.2f",
+                                    restartCountdown / 1000d));
+                    restartCountdown -= 16;
+                } else {
+                    restartAskLabel.setText(null);
+                    restartCountdownActive = false;
+                }
+            }
 
             windowDeltaX *= Math.pow(11.0 / 12.0,
                     TimeUnit.MILLISECONDS.toNanos(16) / TimeUnit.MILLISECONDS.toNanos(10));
@@ -294,7 +312,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             showQuickSettings();
         });
 
-        resetQuickSettingsTimer = new Timer(2500, new ActionListener() {
+        resetQuickSettingsTimer = new Timer(10000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 quickSettings.focusAndBringToFront();
                 quickSettings.moveFrame(true);
@@ -375,6 +393,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         calloutsGroup = new CalloutsGroup();
 
         newGameButton = new JButton();
+        restartAskLabel = new JLabel();
 
         newGameButton.setFocusable(false);
         newGameButton.setText("New Game");
@@ -393,6 +412,10 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 .addGroup(centerPanelLayout.createParallelGroup()
                         .addComponent(playerGroups[1].getPanel())
                         .addComponent(newGameButton)
+                        .addGroup(
+                                centerPanelLayout.createSequentialGroup()
+                                        .addGap(20)
+                                        .addComponent(restartAskLabel))
 
                 ));
         centerPanelLayout.setVerticalGroup(centerPanelLayout.createSequentialGroup()
@@ -410,6 +433,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                                 .addComponent(playerGroups[1].getPanel())
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(newGameButton)
+                                .addComponent(restartAskLabel)
 
                         )));
     }
@@ -642,6 +666,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     private void setupFocusOnNewGame() {
         ActionListener a = evt -> {
+            restartCountdown = 0;
             quickSettings.moveFrame(false);
             resetQuickSettingsTimer.stop();
             focusAndBringToFront();
