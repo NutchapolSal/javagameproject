@@ -1,5 +1,6 @@
 package Tetris.gui;
 
+import Tetris.settings.BlockConnectionMode;
 import Tetris.settings.ControlScheme;
 import Tetris.settings.HandlingPreset;
 import Tetris.settings.ReceiveSettings;
@@ -26,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 
 public class QuickSettings implements ReceiveSettings {
     private Component parent;
@@ -65,6 +67,11 @@ public class QuickSettings implements ReceiveSettings {
     private JButton skinPrevButton = new JButton();
     private JButton skinNextButton = new JButton();
     private JComboBox<String> skinComboBox = new JComboBox<>();
+    private JLabel connectionLabel = new JLabel();
+    private JRadioButton sc1RadioButton = new JRadioButton();
+    private JRadioButton sc2RadioButton = new JRadioButton();
+    private JRadioButton sc3RadioButton = new JRadioButton();
+    private JRadioButton sc4RadioButton = new JRadioButton();
 
     private JButton newGameButton = new JButton();
 
@@ -263,6 +270,18 @@ public class QuickSettings implements ReceiveSettings {
         skinPrevButton.setText("<");
         skinNextButton.setText(">");
 
+        connectionLabel.setText("Connection");
+        sc1RadioButton.setText("None");
+        sc4RadioButton.setText("All");
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(sc1RadioButton);
+        buttonGroup.add(sc2RadioButton);
+        buttonGroup.add(sc3RadioButton);
+        buttonGroup.add(sc4RadioButton);
+
+        sc1RadioButton.setHorizontalTextPosition(SwingConstants.LEADING);
+
         newGameButton.setText("New Game");
 
         GroupLayout layout = new GroupLayout(skinPanel);
@@ -273,6 +292,15 @@ public class QuickSettings implements ReceiveSettings {
                         .addComponent(skinPrevButton)
                         .addComponent(skinComboBox)
                         .addComponent(skinNextButton))
+
+                .addComponent(connectionLabel)
+                .addGroup(
+                        layout.createSequentialGroup()
+                                .addComponent(sc1RadioButton)
+                                .addComponent(sc2RadioButton)
+                                .addComponent(sc3RadioButton)
+                                .addComponent(sc4RadioButton))
+
                 .addComponent(newGameButton));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -281,6 +309,12 @@ public class QuickSettings implements ReceiveSettings {
                         .addComponent(skinPrevButton)
                         .addComponent(skinComboBox)
                         .addComponent(skinNextButton))
+                .addComponent(connectionLabel)
+                .addGroup(layout.createParallelGroup(Alignment.CENTER, false)
+                        .addComponent(sc1RadioButton)
+                        .addComponent(sc2RadioButton)
+                        .addComponent(sc3RadioButton)
+                        .addComponent(sc4RadioButton))
                 .addPreferredGap(ComponentPlacement.UNRELATED)
                 .addComponent(newGameButton));
 
@@ -375,6 +409,27 @@ public class QuickSettings implements ReceiveSettings {
         skinComboBox.addItemListener(evt -> {
             if (evt.getStateChange() == ItemEvent.SELECTED) {
                 s.setBlockSkin((String) evt.getItem());
+            }
+        });
+
+        sc1RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setBlockConnectionMode(BlockConnectionMode.None);
+            }
+        });
+        sc2RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setBlockConnectionMode(BlockConnectionMode.Mino);
+            }
+        });
+        sc3RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setBlockConnectionMode(BlockConnectionMode.Color);
+            }
+        });
+        sc4RadioButton.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                s.setBlockConnectionMode(BlockConnectionMode.All);
             }
         });
     }
@@ -499,6 +554,23 @@ public class QuickSettings implements ReceiveSettings {
         });
         receiversMap.put(SettingKey.SonicDropP2, x -> {
             p2sdCheckBox.setSelected((boolean) x);
+        });
+        receiversMap.put(SettingKey.BlockConnectionMode, x -> {
+            skinTestPanel.repaint();
+            switch ((BlockConnectionMode) x) {
+                case All:
+                    sc4RadioButton.setSelected(true);
+                    break;
+                case Color:
+                    sc3RadioButton.setSelected(true);
+                    break;
+                case Mino:
+                    sc2RadioButton.setSelected(true);
+                    break;
+                case None:
+                    sc1RadioButton.setSelected(true);
+                    break;
+            }
         });
         return receiversMap;
     }
