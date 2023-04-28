@@ -58,7 +58,6 @@ public class Leaderboard {
         } catch (BackingStoreException e) {
             System.err.println(e);
         }
-        System.out.println(records);
     }
 
     private LeaderboardEntry getEntry(String id) {
