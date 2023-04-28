@@ -234,8 +234,11 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             windowDeltaY += gds.windowNudgeY;
         }
 
-        if (gds != null || TimeUnit.MILLISECONDS.toNanos(8) < frameTimeAccumulator) {
-            frameTimeAccumulator = 0;
+        boolean frameOverDue = TimeUnit.MILLISECONDS.toNanos(8) < frameTimeAccumulator;
+        if (gds != null || frameOverDue) {
+            if (frameOverDue) {
+                frameTimeAccumulator = 0;
+            }
             f.repaint();
         }
 
