@@ -11,21 +11,26 @@ public class SkinTestPanel {
     private static ObjectDataGrid<BlockWithConnection> renderBlocks = new ObjectDataGrid<>(7, 2);
 
     static {
-        Playfield pf = new Playfield(7, 2, 1);
+        Playfield pf = new Playfield(9, 2, 1);
 
         pf.spawnPlayerMino(0, Tetromino.J());
-        pf.moveXPlayerMino(0, -2);
+        pf.moveXPlayerMino(0, -3);
         pf.sonicDropPlayerMino(0);
         pf.lockPlayerMino(0);
 
         pf.spawnPlayerMino(0, Tetromino.J());
-        pf.moveXPlayerMino(0, -1);
+        pf.moveXPlayerMino(0, -2);
         pf.rotatePlayerMino(0, Rotation.Flip);
         pf.sonicDropPlayerMino(0);
         pf.lockPlayerMino(0);
 
         pf.spawnPlayerMino(0, Tetromino.T());
-        pf.moveXPlayerMino(0, 2);
+        pf.moveXPlayerMino(0, 1);
+        pf.sonicDropPlayerMino(0);
+        pf.lockPlayerMino(0);
+
+        pf.spawnPlayerMino(0, Tetromino.Z());
+        pf.moveXPlayerMino(0, 3);
         pf.sonicDropPlayerMino(0);
         pf.lockPlayerMino(0);
 
