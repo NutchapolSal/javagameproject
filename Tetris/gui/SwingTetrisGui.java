@@ -209,12 +209,16 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
                 switch (gds.goalState) {
                     case WIN:
                         playfield.startAnimation("FINISH");
-                        playfield.setPlayerOverrideColor(MinoColor.Gray);
-                        calloutsGroup.getB2bLabel().doFadeOut();
-                        lastB2B = 0;
                         break;
                     case LOSE:
                         playfield.startAnimation("GAME OVER");
+                        break;
+                    default:
+                        break;
+                }
+                switch (gds.goalState) {
+                    case WIN:
+                    case LOSE:
                         playfield.setPlayerOverrideColor(MinoColor.Gray);
                         calloutsGroup.getB2bLabel().doFadeOut();
                         resetQuickSettingsTimer.start();
