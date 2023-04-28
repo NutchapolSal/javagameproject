@@ -467,18 +467,20 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             setupKeyAction(GameplayButton.Right, KeyEvent.VK_D);
             setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_W);
             setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_S);
-            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_F);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_Y);
             setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_R);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_T);
         }
 
         private void setupWASDP2() {
             cleanupKeyActions();
-            setupKeyAction(GameplayButton.Left, KeyEvent.VK_J);
-            setupKeyAction(GameplayButton.Right, KeyEvent.VK_L);
-            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_I);
-            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_K);
-            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_COLON);
-            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_P);
+            setupKeyAction(GameplayButton.Left, KeyEvent.VK_LEFT);
+            setupKeyAction(GameplayButton.Right, KeyEvent.VK_RIGHT);
+            setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_UP);
+            setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_DOWN);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_NUMPAD9);
+            setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_NUMPAD1);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_NUMPAD5);
         }
 
         private void setupClassicP1() {

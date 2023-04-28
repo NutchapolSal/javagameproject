@@ -23,17 +23,19 @@ class ControlsTextData {
                                 new ControlsTextData("A D", "Move"),
                                 new ControlsTextData("S", sonicDropText),
                                 new ControlsTextData("W", "Hard Drop"),
-                                new ControlsTextData("R", "Rotate"),
-                                new ControlsTextData("F", "Hold"),
+                                new ControlsTextData("R", "Rotate CCW"),
+                                new ControlsTextData("T", "Rotate CW"),
+                                new ControlsTextData("Y", "Hold"),
                         };
                         break;
                     case 1:
                         ctds = new ControlsTextData[] {
-                                new ControlsTextData("J L", "Move"),
-                                new ControlsTextData("K", sonicDropText),
-                                new ControlsTextData("I", "Hard Drop"),
-                                new ControlsTextData("P", "Rotate"),
-                                new ControlsTextData(";", "Hold"),
+                                new ControlsTextData("⬅ ➡", "Move"),
+                                new ControlsTextData("⬇", sonicDropText),
+                                new ControlsTextData("⬆", "Hard Drop"),
+                                new ControlsTextData("NP1", "Rotate CCW"),
+                                new ControlsTextData("NP5", "Rotate CW"),
+                                new ControlsTextData("NP9", "Hold"),
                         };
                         break;
                 }

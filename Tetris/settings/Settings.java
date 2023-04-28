@@ -271,7 +271,7 @@ public class Settings {
 
     public void resetPlayerSettings() {
         setControlScheme(ControlScheme.WASD);
-        setControlSchemeP2(ControlScheme.Classic);
+        setControlSchemeP2(ControlScheme.WASD);
         setHandlingPresetP2(HandlingPreset.Default);
         setHandlingPreset(HandlingPreset.Default);
         setSonicDrop(false);
