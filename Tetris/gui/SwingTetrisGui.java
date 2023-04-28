@@ -37,8 +37,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.Timer;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 
 public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings {

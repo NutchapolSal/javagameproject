@@ -31,7 +31,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import javax.swing.Action;
 
 public class Gameplay implements ReceiveSettings {
     private final class GameLoopTask extends TimerTask {
