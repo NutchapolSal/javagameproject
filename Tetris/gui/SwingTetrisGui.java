@@ -67,6 +67,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
     private double windowDeltaY;
     private double windowLastDeltaX;
     private double windowLastDeltaY;
+    private long windowDeltaFrameTimeAccumulator;
 
     private long lastFrameTime = System.nanoTime();
     private long frameTimeAccumulator = 0;
@@ -94,8 +95,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
         long currFrameTime = System.nanoTime();
         long deltaFrameTime = currFrameTime - lastFrameTime;
         frameTimeAccumulator += deltaFrameTime;
+        windowDeltaFrameTimeAccumulator += deltaFrameTime;
         if (gds != null) {
-            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.NANOSECONDS.toMillis(33));
+            frameTimeAccumulator = Math.max(0, frameTimeAccumulator - TimeUnit.MILLISECONDS.toNanos(8));
             if (gds.spinName != null) {
                 calloutsGroup.getSpinLabel()
                         .startAnimation((gds.spinMini ? "MINI " : "") + gds.spinName.toUpperCase() + "-SPIN");
@@ -226,23 +228,30 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             windowDeltaY += gds.windowNudgeY;
         }
 
-        if (gds != null || TimeUnit.NANOSECONDS.toMillis(33) < frameTimeAccumulator) {
+        if (gds != null || TimeUnit.MILLISECONDS.toNanos(8) < frameTimeAccumulator) {
             frameTimeAccumulator = 0;
             f.repaint();
         }
 
-        windowDeltaX *= Math.pow(11.0 / 12.0, deltaFrameTime / TimeUnit.MILLISECONDS.toNanos(10));
-        windowDeltaY *= Math.pow(11.0 / 12.0, deltaFrameTime / TimeUnit.MILLISECONDS.toNanos(10));
+        if (TimeUnit.MILLISECONDS.toNanos(16) < windowDeltaFrameTimeAccumulator) {
+            windowDeltaFrameTimeAccumulator = Math.max(0,
+                    windowDeltaFrameTimeAccumulator - TimeUnit.MILLISECONDS.toNanos(16));
 
-        int windowVelocityX = (int) roundToZero(windowDeltaX - windowLastDeltaX);
-        int windowVelocityY = (int) roundToZero(windowDeltaY - windowLastDeltaY);
+            windowDeltaX *= Math.pow(11.0 / 12.0,
+                    TimeUnit.MILLISECONDS.toNanos(16) / TimeUnit.MILLISECONDS.toNanos(10));
+            windowDeltaY *= Math.pow(11.0 / 12.0,
+                    TimeUnit.MILLISECONDS.toNanos(16) / TimeUnit.MILLISECONDS.toNanos(10));
 
-        windowLastDeltaX += windowVelocityX;
-        windowLastDeltaY += windowVelocityY;
+            int windowVelocityX = (int) roundToZero(windowDeltaX - windowLastDeltaX);
+            int windowVelocityY = (int) roundToZero(windowDeltaY - windowLastDeltaY);
 
-        if (windowVelocityX != 0 || windowVelocityY != 0) {
-            var frameLoc = f.getLocationOnScreen();
-            f.setLocation(frameLoc.x + windowVelocityX, frameLoc.y + windowVelocityY);
+            windowLastDeltaX += windowVelocityX;
+            windowLastDeltaY += windowVelocityY;
+
+            if (windowVelocityX != 0 || windowVelocityY != 0) {
+                var frameLoc = f.getLocationOnScreen();
+                f.setLocation(frameLoc.x + windowVelocityX, frameLoc.y + windowVelocityY);
+            }
         }
 
         lastFrameTime = currFrameTime;
