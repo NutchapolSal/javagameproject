@@ -101,7 +101,9 @@ public class LeaderboardEntryLabels {
         scoreLabel.setText("Score");
         lineLabel.setText("Lines");
         timeLabel.setText("Time");
-        nameLabel.setText(lb.nameP1 + " x " + lb.nameP2);
+        String nameA = lb.nameP1 != null ? lb.nameP1 : "anon";
+        String nameB = lb.nameP2 != null ? lb.nameP2 : "anon";
+        nameLabel.setText(nameA + " x " + nameB);
         scoreCountLabel.setText(lb.score == -1 ? "?" : Integer.toString(lb.score));
         lineCountLabel.setText(lb.lines == -1 ? "?" : Integer.toString(lb.lines));
         timeCountLabel.setText(lb.time == -1 ? "?"

@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -64,8 +67,8 @@ public class Leaderboard {
         return new LeaderboardEntry(
                 id,
                 new Date(entryNode.getLong("date", 0)),
-                entryNode.get("nameP1", "?"),
-                entryNode.get("nameP2", "?"),
+                entryNode.get("nameP1", null),
+                entryNode.get("nameP2", null),
                 GameplayMode.valueOf(entryNode.get("gamemode", GameplayMode.Marathon.name())),
                 entryNode.getInt("lines", -1),
                 entryNode.getLong("time", -1),
@@ -78,8 +81,12 @@ public class Leaderboard {
         String id = uuid.toString();
 
         Preferences entryNode = prefs.node(id);
-        entryNode.put("nameP1", nameP1);
-        entryNode.put("nameP2", nameP2);
+        if (nameP1 != null) {
+            entryNode.put("nameP1", nameP1);
+        }
+        if (nameP2 != null) {
+            entryNode.put("nameP2", nameP2);
+        }
         entryNode.putLong("date", date.getTime());
         entryNode.put("gamemode", gameplayMode.name());
         entryNode.putInt("lines", lines);
@@ -100,12 +107,29 @@ public class Leaderboard {
     }
 
     public LeaderboardEntry[] getEntriesForRender() {
-        var out = records.toArray(new LeaderboardEntry[0]);
-        Arrays.sort(out, new Comparator<LeaderboardEntry>() {
+        var copy = new ArrayList<>(records);
+        copy.sort(new Comparator<LeaderboardEntry>() {
             public int compare(LeaderboardEntry a, LeaderboardEntry b) {
                 return b.score - a.score;
             }
         });
-        return out;
+
+        Set<Integer> seens = new HashSet<>();
+
+        for (int i = 0; i < copy.size(); i++) {
+            var entry = copy.get(i);
+            if (entry.nameP1 == null || entry.nameP2 == null) {
+                continue;
+            }
+            var currHash = Objects.hash(entry.nameP1, entry.nameP2);
+            if (seens.contains(currHash)) {
+                copy.remove(i);
+                i--;
+                continue;
+            }
+            seens.add(currHash);
+        }
+
+        return copy.toArray(new LeaderboardEntry[0]);
     }
 }

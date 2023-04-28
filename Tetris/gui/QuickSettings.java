@@ -560,10 +560,10 @@ public class QuickSettings implements ReceiveSettings {
         String p1 = p1NameField.getText();
         String p2 = p2NameField.getText();
         if (p1.length() == 0) {
-            p1 = "P1";
+            p1 = null;
         }
         if (p2.length() == 0) {
-            p2 = "P2";
+            p2 = null;
         }
         return new PartialLeaderboardEntry(p1, p2);
     }
