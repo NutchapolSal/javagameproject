@@ -20,7 +20,9 @@ import Tetris.input.Rotation;
 import Tetris.settings.GameplayMode;
 import Tetris.settings.ReceiveSettings;
 import Tetris.settings.SettingKey;
+import java.awt.event.ActionListener;
 import java.util.ArrayDeque;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Queue;
@@ -29,6 +31,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import javax.swing.Action;
 
 public class Gameplay implements ReceiveSettings {
     private final class GameLoopTask extends TimerTask {
@@ -209,6 +212,10 @@ public class Gameplay implements ReceiveSettings {
     private String gamemodeName = "";
     private boolean danger;
 
+    private GameplayMode gameplayMode;
+    private Date dateStarted;
+    private ActionListener submitToLeaderboardAction;
+
     public void setRawInputSource(int index, RawInputSource ris) {
         if (pis[index] == null) {
             pis[index] = new PlayerInput();
@@ -259,6 +266,8 @@ public class Gameplay implements ReceiveSettings {
         for (int i = 0; i < playerDatas.length; i++) {
             playerDatas[i].generateNextQueueGuiData();
         }
+
+        dateStarted = new Date();
 
         renderFrame();
 
@@ -507,6 +516,7 @@ public class Gameplay implements ReceiveSettings {
     private void renderEnd() {
         danger = false;
         renderFrame();
+        submitToLeaderboardAction.actionPerformed(null);
     }
 
     private void renderFrame() {
@@ -589,6 +599,7 @@ public class Gameplay implements ReceiveSettings {
         });
         receiversMap.put(SettingKey.GameplayMode, x -> {
             newGoal.poll();
+            gameplayMode = (GameplayMode) x;
             switch ((GameplayMode) x) {
                 case Marathon:
                     newGoal.offer(new LineGoal(150));
@@ -609,5 +620,30 @@ public class Gameplay implements ReceiveSettings {
             }
         });
         return receiversMap;
+    }
+
+    public static class PartialLeaderboardEntry {
+        public final Date date;
+        public final GameplayMode gameplayMode;
+        public final int lines;
+        public final long time;
+        public final int score;
+
+        public PartialLeaderboardEntry(Date date, GameplayMode gameplayMode, int lines, long time, int score) {
+            this.date = date;
+            this.gameplayMode = gameplayMode;
+            this.lines = lines;
+            this.time = time;
+            this.score = score;
+        }
+
+    }
+
+    public PartialLeaderboardEntry getLeaderboardData() {
+        return new PartialLeaderboardEntry(dateStarted, gameplayMode, linesCleared, timeMillis, score);
+    }
+
+    public void setSubmitLeaderboardAction(ActionListener a) {
+        submitToLeaderboardAction = a;
     }
 }

@@ -2,6 +2,7 @@ package Tetris;
 
 import Tetris.gameplay.Gameplay;
 import Tetris.gui.SwingTetrisGui;
+import Tetris.leaderboard.Leaderboard;
 import Tetris.settings.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +11,7 @@ import javax.swing.Timer;
 public class App {
 
     public App() {
+        Leaderboard leaderboard = new Leaderboard();
         Settings settings = new Settings();
         SwingTetrisGui gui = new SwingTetrisGui();
         gui.bindToSettings(settings);
@@ -33,6 +35,16 @@ public class App {
         };
 
         gui.setNewGameAction(newGameAction);
+
+        ActionListener submitToLeaderboard = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                var a = gui.getQuickSettings().getLeaderboardData();
+                var b = gameplay.getLeaderboardData();
+                leaderboard.addEntry(b.date, a.nameP1, a.nameP2, b.gameplayMode,
+                        b.lines, b.time, b.score);
+            }
+        };
+        gameplay.setSubmitLeaderboardAction(submitToLeaderboard);
 
         ActionListener guiUpdater = new ActionListener() {
             public void actionPerformed(ActionEvent e) {

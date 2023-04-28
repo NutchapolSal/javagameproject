@@ -546,4 +546,27 @@ public class QuickSettings implements ReceiveSettings {
 
         lastFrameTime = currFrameTime;
     }
+
+    public static class PartialLeaderboardEntry {
+        public final String nameP1;
+        public final String nameP2;
+
+        public PartialLeaderboardEntry(String nameP1, String nameP2) {
+            this.nameP1 = nameP1;
+            this.nameP2 = nameP2;
+        }
+    }
+
+    public PartialLeaderboardEntry getLeaderboardData() {
+        String p1 = p1NameField.getText();
+        String p2 = p2NameField.getText();
+        if (p1.length() == 0) {
+            p1 = "P1";
+        }
+        if (p2.length() == 0) {
+            p2 = "P2";
+        }
+        return new PartialLeaderboardEntry(p1, p2);
+    }
+
 }
