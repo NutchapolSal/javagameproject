@@ -121,12 +121,12 @@ public class QuickSettings implements ReceiveSettings {
 
         Box.Filler fillerA = new Box.Filler(
                 new Dimension(0, 0),
-                new Dimension(10, 0),
-                new Dimension(10, 0));
+                new Dimension(135, 0),
+                new Dimension(135, 0));
         Box.Filler fillerB = new Box.Filler(
                 new Dimension(0, 0),
-                new Dimension(10, 0),
-                new Dimension(10, 0));
+                new Dimension(135, 0),
+                new Dimension(135, 0));
 
         var contentPane = f.getContentPane();
 
@@ -142,7 +142,7 @@ public class QuickSettings implements ReceiveSettings {
     }
 
     private void detailP1Panel() {
-        p1Label.setText("Player 1");
+        p1Label.setText("Player 1:");
         p1csLabel.setText("Control Scheme");
         p1haLabel.setText("Handling");
         p1cs1RadioButton.setText("WASD");
@@ -152,7 +152,7 @@ public class QuickSettings implements ReceiveSettings {
         p1ha2RadioButton.setText("Fast");
         p1sdCheckBox.setText("Sonic Drop");
 
-        p1NameField.setPlaceholder("P1...");
+        p1NameField.setPlaceholder("NAME...");
 
         p1cs1RadioButton.setSelected(true);
         p1ha1RadioButton.setSelected(true);
@@ -201,7 +201,7 @@ public class QuickSettings implements ReceiveSettings {
     }
 
     private void detailP2Panel() {
-        p2Label.setText("Player 2");
+        p2Label.setText("Player 2:");
         p2csLabel.setText("Control Scheme");
         p2haLabel.setText("Handling");
         p2cs1RadioButton.setText("WASD");
@@ -210,7 +210,7 @@ public class QuickSettings implements ReceiveSettings {
         p2ha1RadioButton.setText("Default");
         p2ha2RadioButton.setText("Fast");
         p2sdCheckBox.setText("Sonic Drop");
-        p2NameField.setPlaceholder("P2...");
+        p2NameField.setPlaceholder("NAME...");
 
         p2cs1RadioButton.setSelected(true);
         p2ha1RadioButton.setSelected(true);
