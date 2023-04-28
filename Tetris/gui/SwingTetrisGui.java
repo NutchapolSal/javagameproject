@@ -15,6 +15,7 @@ import Tetris.settings.Settings;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -397,6 +398,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
         newGameButton.setFocusable(false);
         newGameButton.setText("New Game");
+
+        restartAskLabel.setFont(restartAskLabel.getFont().deriveFont(
+                restartAskLabel.getFont().getStyle() | Font.BOLD, restartAskLabel.getFont().getSize() + 2));
 
         GroupLayout centerPanelLayout = new GroupLayout(centerPanel);
         centerPanel.setLayout(centerPanelLayout);
