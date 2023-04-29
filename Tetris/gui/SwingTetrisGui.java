@@ -315,6 +315,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
         resetQuickSettingsTimer = new Timer(10000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                playfield.startAnimation("THANK YOU FOR PLAYING!");
                 quickSettings.focusAndBringToFront();
                 quickSettings.moveFrame(true);
                 quickSettings.resetNames();
