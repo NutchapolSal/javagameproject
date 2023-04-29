@@ -289,7 +289,7 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
 
     public SwingTetrisGui() {
         setLookAndFeel();
-        f = new JFrame("Tetris");
+        f = new JFrame("Friendship Stacker");
         f.setSize(800, 550);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailComponents();
