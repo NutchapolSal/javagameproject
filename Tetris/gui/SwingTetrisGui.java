@@ -514,9 +514,9 @@ public class SwingTetrisGui implements TetrisGui, SendSettings, ReceiveSettings 
             setupKeyAction(GameplayButton.Right, KeyEvent.VK_RIGHT);
             setupKeyAction(GameplayButton.HardDrop, KeyEvent.VK_UP);
             setupKeyAction(GameplayButton.SoftDrop, KeyEvent.VK_DOWN);
-            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_NUMPAD9);
+            setupKeyAction(GameplayButton.Hold, KeyEvent.VK_NUMPAD3);
             setupKeyAction(GameplayButton.RotateCCW, KeyEvent.VK_NUMPAD1);
-            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_NUMPAD5);
+            setupKeyAction(GameplayButton.RotateCW, KeyEvent.VK_NUMPAD2);
         }
 
         private void setupClassicP1() {

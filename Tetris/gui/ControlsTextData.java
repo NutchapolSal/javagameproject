@@ -34,8 +34,8 @@ class ControlsTextData {
                                 new ControlsTextData("⬇", sonicDropText),
                                 new ControlsTextData("⬆", "Hard Drop"),
                                 new ControlsTextData("NP1", "Rotate CCW"),
-                                new ControlsTextData("NP5", "Rotate CW"),
-                                new ControlsTextData("NP9", "Hold"),
+                                new ControlsTextData("NP2", "Rotate CW"),
+                                new ControlsTextData("NP3", "Hold"),
                         };
                         break;
                 }
